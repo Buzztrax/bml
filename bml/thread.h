@@ -29,6 +29,10 @@
 #include <winternl.h>
 #include "windef16.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct _SECURITY_ATTRIBUTES;
 struct tagSYSLEVEL;
 struct server_buffer_info;
@@ -140,5 +144,9 @@ typedef struct _TEB
 
 /* scheduler/thread.c */
 extern TEB *THREAD_InitStack( TEB *teb, DWORD stack_size );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  /* __WINE_THREAD_H */

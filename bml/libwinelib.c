@@ -254,18 +254,18 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCm
 	longjmp (jump, jmpstat);
 }
 
-/*
-	WineLoadLibrary is used by System.Windows.Forms to import the Wine dlls
-*/
-void *
-WineLoadLibrary(unsigned char *dll)
-{
+/**
+ * Wine API wrapper
+ */
+void * WineLoadLibrary(const char *dll) {
 	return(LoadLibraryA(dll));
 }
 
-void *
-WineGetProcAddress(void *handle, unsigned char *function)
-{
+void WineFreeLibrary(void *handle) {
+	FreeLibrary(handle);
+}
+
+void * WineGetProcAddress(void *handle, const char *function) {
 	return(GetProcAddress(handle, function));
 }
 
@@ -286,7 +286,7 @@ get_stack_ptr ()
 }
 
 int
-SharedWineInit (void (*sighandler)(int,siginfo_t*,void*))
+SharedWineInit(void (*sighandler)(int,siginfo_t*,void*))
 {
 	unsigned char	Error[1024]="";
 	char *WineArguments[] = {"sharedapp", LIBPATH "/libbml.so", NULL};

@@ -15,6 +15,10 @@
 #include <windef.h>
 #include <winbase.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct request_header
 {
     int          req;
@@ -3730,5 +3734,9 @@ union generic_reply
 };
 
 #define SERVER_PROTOCOL_VERSION 133
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __WINE_WINE_SERVER_PROTOCOL_H */

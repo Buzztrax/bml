@@ -13,12 +13,21 @@
 #include <signal.h>
 #include <windows.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern HANDLE gui_thread;
 extern DWORD  gui_thread_id;
 
-void * WineLoadLibrary(unsigned char *dll);
-void * WineGetProcAddress(void *handle, unsigned char *function);
+void * WineLoadLibrary(const char *dll);
+void WineFreeLibrary(void *handle);
+void * WineGetProcAddress(void *handle, const char *function);
 int SharedWineInit(void (*sighandler)(int, siginfo_t*, void*));
-int WineAdoptThread ();
+int WineAdoptThread(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

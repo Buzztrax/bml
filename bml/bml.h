@@ -5,6 +5,10 @@
 #include <signal.h>
 #include <pthread.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * Display BML error message.
  *
@@ -23,32 +27,11 @@ extern void (*bml_error_callback)(const char *msg);
  */
 void bml_set_error_function (void (*func)(const char *));
 
-//@todo include buzz stuff here
-
-typedef struct {
-	int Type;                                             // MT_GENERATOR or MT_EFFECT,
-	int Version;                                          // MI_VERSION
-	// v1.2: high word = internal machine version
-	// higher version wins if two copies of machine found
-	int Flags;
-	int minTracks;                                        // [0..256] must be >= 1 if numTrackParameters > 0
-	int maxTracks;                                        // [minTracks..256]
-	int numGlobalParameters;
-	int numTrackParameters;
-	void /*CMachineParameter*/ const **Parameters;
-	int numAttributes;
-	void /*CMachineAttribute*/ const **Attributes;
-	char const *Name;                                     // "Jeskola Reverb"
-	char const *ShortName;                                // "Reverb"
-	char const *Author;                                   // "Oskari Tammelin"
-	char const *Commands;                                 // "Command1\nCommand2\nCommand3..."
-	void /*CLibInterface*/ *pLI;                                   // ignored if MIF_USES_LIB_INTERFACE is not set
-} CMachineInfo;
-
-typedef CMachineInfo* (*GetInfoFunctionType)();
-
 #ifdef __cplusplus
 }
 #endif
+
+extern int bml_init(void (*sighandler)(int,siginfo_t*,void*));
+extern void bml_test1(const char *dllpath);
 
 #endif /* __bml_bml_h__ */

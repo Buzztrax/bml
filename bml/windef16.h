@@ -29,6 +29,10 @@
 #include <windef.h>
 #include <winbase.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Standard data types */
 
 typedef unsigned short  BOOL16;
@@ -159,5 +163,10 @@ typedef BOOL16  (CALLBACK *PROPENUMPROC16)(HWND16,SEGPTR,HANDLE16);
 typedef VOID    (CALLBACK *TIMERPROC16)(HWND16,UINT16,UINT16,DWORD);
 typedef LRESULT (CALLBACK *WNDENUMPROC16)(HWND16,LPARAM);
 typedef LRESULT (CALLBACK *WNDPROC16)(HWND16,UINT16,WPARAM16,LPARAM);
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif /* __WINE_WINDEF16_H */

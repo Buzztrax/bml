@@ -28,6 +28,10 @@
 #include <winternl.h>
 #include <server_protocol.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* client communication functions */
 
 struct __server_iovec
@@ -109,5 +113,8 @@ inline static void wine_server_set_reply( void *req_ptr, void *ptr, unsigned int
         while(0); \
     } while(0)
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif  /* __WINE_WINE_SERVER_H */

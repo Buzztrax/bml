@@ -21,6 +21,10 @@
 #ifndef __WINE_WINE_PTHREAD_H
 #define __WINE_WINE_PTHREAD_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct wine_pthread_functions;
 
 #ifdef HAVE_PTHREAD_H
@@ -104,5 +108,9 @@ extern void wine_pthread_init_current_teb( struct wine_pthread_thread_info *info
 extern void *wine_pthread_get_current_teb(void);
 extern void DECLSPEC_NORETURN wine_pthread_exit_thread( struct wine_pthread_thread_info *info );
 extern void DECLSPEC_NORETURN wine_pthread_abort_thread( int status );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  /* __WINE_WINE_PTHREAD_H */
