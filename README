@@ -1,37 +1,5 @@
 libbml is a library that loads buzz machines from the windows music
 composer buzz, so that linux apps can use them.
 This lib is shamelessly based on libfst (C) by Pauls Davis.
-
----
-
-libfst is a small C library that permits native Linux applications to
-load win32/x86 VST plugins. It uses libwine to make this possible, but
-doesn't require that the host application be a "wine application".
-
-In case you wonder, "fst" stands for FreeST. Imagine saying "VST" with
-an odd lisp.
-
-The library is very small. You will need a recent version of Wine. The
-configure step (which uses stuff built by Wine) takes much longer than
-the compilation. 
-
-To build the library from source, you will need the Steinberg SDK
-header files AEffect.h and aeffectx.h. These cannot be redistributed
-by us or anyone else. The configure script will tell you where to get
-them. The registration process with Steinberg points you to an FTP URL
-that does not have the VST SDK on it. Use this instead:
-
-    ftp://ext2asio:sdk1ext@ftp.pinnaclesys.com/SDK
-
-VST is a trademark of Steinberg Media Technologies GmbH
-
-Notes
------
-This work differs from Kjetil Mattheusen's VSTserver because the
-plugin is loaded into the address space of the program using the
-library, not into a server. As a result, it is a more appropriate
-solution for audio applications that might support many VST plugins,
-where the context switches required in the VSTserver case do not scale
-well. The downside, of course, is that a misbehaving plugin will crash
-the host application, which VSTserver avoids.
+See original README in README.libfst.
 

@@ -1,0 +1,6 @@
+problems
+
+* map buzz api to gstreamer api
+  * master info -> struct + gobject porperties
+  * callbackinterface (wavetable access)
+

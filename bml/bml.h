@@ -32,6 +32,8 @@ void bml_set_error_function (void (*func)(const char *));
 #endif
 
 extern int bml_init(void (*sighandler)(int,siginfo_t*,void*));
+extern int bml_done(void);
+
 extern void bml_test1(const char *dllpath);
 
 #endif /* __bml_bml_h__ */
