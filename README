@@ -1,4 +1,4 @@
-$Id: README,v 1.4 2004-09-03 07:57:02 ensonic Exp $
+$Id: README,v 1.5 2004-09-03 09:57:23 ensonic Exp $
 
 libbml is a library that loads buzz machines from the windows music
 composer buzz, so that linux apps can use them.
@@ -15,6 +15,15 @@ does not work. We also tried to put the machines into
   ~/.wine/fake_windows/Program\ Files/Jekola\ Buzz/Gear/
 and then trying
   ./bml/bmltest 'C:\Program Files\Jeskola Buzz\Gear\elak_svf.dll'
+  ./bml/bmltest "C:\\Program Files\\Jeskola Buzz\\Gear\\elak_svf.dll"
 but that failed as well. On the other hand, doing
   ./bml/bmltest 'C:\elak_svf.dll'
-works!
+works! Even doing 
+  ./bml/bmltest 'C:\Programme\Buzz\Gear\elak_svf.dll'
+works! So how the hell escape the spaces.
+
+We now have a method to convert pathnames, this should map
+  $HOME to Y:\
+  /     to Z:\
+but it always map to Z:
+manually using Z: works. The problem with the spaces persists.
