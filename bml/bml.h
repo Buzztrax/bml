@@ -1,4 +1,4 @@
-/* $Id: bml.h,v 1.11 2005-02-16 07:47:46 ensonic Exp $
+/* $Id: bml.h,v 1.12 2005-02-16 19:11:24 ensonic Exp $
  */
 
 #ifndef BML_H
@@ -58,7 +58,7 @@ typedef void (*BMSetAttributeValue)(BuzzMachine *bm,int index,int value);
 
 typedef void (*BMTick)(BuzzMachine *bm);
 typedef int  (*BMWork)(BuzzMachine *bm,float *psamples, int numsamples, int const mode);
-typedef int (*BMWorkM2S)(BuzzMachine *bm,float *pin, float *pout, int numsamples, int const mode);
+typedef int  (*BMWorkM2S)(BuzzMachine *bm,float *pin, float *pout, int numsamples, int const mode);
 typedef void (*BMStop)(BuzzMachine *bm);
 
 typedef void (*BMSetNumTracks)(BuzzMachine *bm, int num);
@@ -93,4 +93,3 @@ extern BMSetNumTracks bm_set_num_tracks;
 //#endif
 
 #endif // BML_H
-
