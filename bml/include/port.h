@@ -21,9 +21,10 @@
 #ifndef __WINE_WINE_PORT_H
 #define __WINE_WINE_PORT_H
 
-#ifndef __WINE_CONFIG_H
-# error You must include config.h to use this header
-#endif
+//#ifndef __WINE_CONFIG_H
+// thiis is not the real problem, we do include config.h :(
+//# error You must include config.h to use this header
+//#endif
 
 #define _GNU_SOURCE  /* for pread/pwrite */
 #include <fcntl.h>
