@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: autogen.sh,v 1.2 2005-01-16 13:18:14 ensonic Exp $
+# $Id: autogen.sh,v 1.3 2005-01-16 14:13:01 ensonic Exp $
 # Run this to generate all the initial makefiles, etc.
 
 DIE=0
@@ -314,8 +314,8 @@ echo -n "+ check for build tools"
 if test ! -z "$NOCHECK"; then echo ": skipped version checks"; else  echo; fi
 version_check "autoconf" "$AUTOCONF autoconf autoconf-2.54 autoconf-2.53 autoconf-2.52" \
               "ftp://ftp.gnu.org/pub/gnu/autoconf/" 2 52 || DIE=1
-#version_check "automake" "$AUTOMAKE automake automake-1.7 automake17 automake-1.6" \
-#              "ftp://ftp.gnu.org/pub/gnu/automake/" 1 6 || DIE=1
+version_check "automake" "$AUTOMAKE automake automake-1.7 automake17 automake-1.6" \
+              "ftp://ftp.gnu.org/pub/gnu/automake/" 1 6 || DIE=1
 #version_check "autopoint" "autopoint" \
 #              "ftp://ftp.gnu.org/pub/gnu/gettext/" 0 12 1 || DIE=1
 version_check "libtoolize" "libtoolize" \
@@ -379,4 +379,3 @@ echo ./configure $CONFIGURE_DEF_OPT $CONFIGURE_EXT_OPT
 }
 
 echo "Now type 'make' to compile $package."
-
