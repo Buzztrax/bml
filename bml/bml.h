@@ -1,4 +1,4 @@
-/* $Id: bml.h,v 1.9 2004-09-14 12:17:53 ensonic Exp $
+/* $Id: bml.h,v 1.10 2005-02-12 19:57:42 ensonic Exp $
  */
 
 #ifndef BML_H
@@ -47,8 +47,8 @@ typedef int (*BMGetGlobalParameterInfo)(BuzzMachine *bm,int index,BuzzMachinePar
 typedef int (*BMGetTrackParameterInfo)(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value);
 typedef int (*BMGetAttributeInfo)(BuzzMachine *bm,int index,BuzzMachineAttribute key,void *value);
 
-typedef int  (*BMGetTrackParameterValue)(BuzzMachine *bm,int index);
-typedef void (*BMSetTrackParameterValue)(BuzzMachine *bm,int index,int value);
+typedef int  (*BMGetTrackParameterValue)(BuzzMachine *bm,int track,int index);
+typedef void (*BMSetTrackParameterValue)(BuzzMachine *bm,int track,int index,int value);
 typedef int  (*BMGetGlobalParameterValue)(BuzzMachine *bm,int index);
 typedef void (*BMSetGlobalParameterValue)(BuzzMachine *bm,int index,int value);
 typedef int  (*BMGetAttributeValue)(BuzzMachine *bm,int index);
