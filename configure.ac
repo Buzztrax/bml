@@ -875,18 +875,18 @@ then
 fi
 
 dnl
-dnl these enable #include <vst/foo.h> as well as <foo.h> to work
+dnl these enable #include <buzz/foo.h> as well as <foo.h> to work
 dnl
 
-CFLAGS="$CFLAGS -I .. -I./vst"
-CXXFLAGS="$CFLAGS -I .. -I./vst"
-CPPFLAGS="$CFLAGS -I .. -I./vst"
+dnl CFLAGS="$CFLAGS -I../buzz"
+dnl CXXFLAGS="$CFLAGS -I../buzz"
+dnl CPPFLAGS="$CFLAGS -I../buzz"
 
 dnl if test ! -d ./buzz ; then
 dnl   mkdir buzz
 dnl fi
 
-dnl if test ! \( -f ./buzz/AEffect.h -a -f ./vst/aeffectx.h \);
+dnl if test ! \( -f ./buzz/BuzzMachineLoader.h \);
 dnl then
 dnl       AC_MSG_ERROR([You do not have the VST header files installed in ./vst.
 dnl Please visit 
@@ -900,7 +900,7 @@ dnl    (1) copy the files AEffect.h, and aeffectx.h to the ./vst directory.
 dnl    (2) cd to that directory
 dnl    (3) run "../fixheaders"
 dnl ])
-dnl       fi
+dnl fi
 dnl
 
 AC_LANG_C()
