@@ -56,11 +56,11 @@ extern int bm_get_global_parameter_info(BuzzMachine *bm,int index,BuzzMachinePar
 extern int bm_get_track_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value);
 extern int bm_get_attribute_info(BuzzMachine *bm,int index,BuzzMachineAttribute key,void *value);
 
-extern byte bm_get_track_parameter_value(BuzzMachine *bm,int index);
-extern void bm_set_track_parameter_value(BuzzMachine *bm,int index,byte value);
-extern byte bm_get_global_parameter_value(BuzzMachine *bm,int index);
-extern void bm_set_global_parameter_value(BuzzMachine *bm,int index,byte value);
-extern int bm_get_attribute_value(BuzzMachine *bm,int index);
+extern int  bm_get_track_parameter_value(BuzzMachine *bm,int index);
+extern void bm_set_track_parameter_value(BuzzMachine *bm,int index,int value);
+extern int  bm_get_global_parameter_value(BuzzMachine *bm,int index);
+extern void bm_set_global_parameter_value(BuzzMachine *bm,int index,int value);
+extern int  bm_get_attribute_value(BuzzMachine *bm,int index);
 extern void bm_set_attribute_value(BuzzMachine *bm,int index,int value);
 
 extern void bm_tick(BuzzMachine *bm);
