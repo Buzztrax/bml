@@ -1,4 +1,4 @@
-/* $Id: bml.h,v 1.6 2004-09-03 09:57:25 ensonic Exp $
+/* $Id: bml.h,v 1.7 2004-09-09 16:54:48 ensonic Exp $
  */
 
 #ifndef BML_H
@@ -41,12 +41,29 @@ extern char *bml_convertpath(char *inpath);
 typedef void (*BMSetMasterInfoPtr)(long bpm, long tpb, long srat);
 typedef BuzzMachine *(*BMInitPtr)(char *bm_file_name);
 typedef void (*BMFreePtr)(BuzzMachine *bm);
+
 typedef int (*BMGetPropertyPtr)(BuzzMachine *bm, BuzzMachineProperty key, void *value);
+typedef int (*BMGetGlobalParameter)(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value);
+typedef int (*BMGetTrackParameter)(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value);
+typedef int (*BMGetAttribute)(BuzzMachine *bm,int index,BuzzMachineAttribute key,void *value);
+
+typedef void (*BMTick)(BuzzMachine *bm);
+typedef int (*BMWork)(BuzzMachine *bm,float *psamples, int numsamples, int const mode);
+typedef void (*BMStop)(BuzzMachine *bm);
+
 // dll passthrough API method pointers
 extern BMSetMasterInfoPtr bm_set_master_info;
 extern BMInitPtr bm_init;
 extern BMFreePtr bm_free;
+
 extern BMGetPropertyPtr bm_get_property;
+extern BMGetGlobalParameter bm_get_global_parameter;
+extern BMGetTrackParameter bm_get_track_parameter;
+extern BMGetAttribute bm_get_attribute;
+
+extern BMTick bm_tick;
+extern BMWork bm_work;
+extern BMStop bm_stop;
 
 //#ifdef __cplusplus
 //}
