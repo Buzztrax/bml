@@ -1,7 +1,7 @@
-$Id: README,v 1.6 2004-11-29 16:48:53 ensonic Exp $
+$Id: README,v 1.7 2005-01-16 10:05:44 ensonic Exp $
 
 * Intro
-libbml is a library that loads buzz machines from the windows music
+The libbml is a library that loads buzz machines from the windows music
 composer buzz, so that linux apps can use them.
 This lib is shamelessly based on libfst (C) by Pauls Davis.
 See original README in README.libfst.
