@@ -1,0 +1,21 @@
+2004-03-24 Torben Hohn <torbenh@informatik.uni-bremen.de>
+   * configure.ac:
+   * Makefile.in:  removed the comctl subdir
+
+2004-03-16 Peter Bartok <pbartok@novell.com>
+   * configure.ac: Fixed AC_INIT arguments
+   * Makefile.in: Added 'dist' and 'distcheck' rules (distcheck still needs work)
+
+2004-03-12 Peter Bartok <pbartok@novell.com>
+   * configure.ac: Removed wine_uuid check
+   * Make.rule.in: Removed wine_uuid reference
+
+
+2004-03-11  Peter Bartok  <pbartok@novell.com>
+
+   * ChangeLog: Created
+   * configure.ac: Created
+   * Makefile.in: Changed to have rules for building subdirs
+   * Make.rules.in: Created
+   * aclocal.m4: Partially copied from wine
+   * autogen.sh: Copied from mono and stripped down
