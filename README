@@ -1,14 +1,20 @@
-$Id: README,v 1.5 2004-09-03 09:57:23 ensonic Exp $
+$Id: README,v 1.6 2004-11-29 16:48:53 ensonic Exp $
 
+* Intro
 libbml is a library that loads buzz machines from the windows music
 composer buzz, so that linux apps can use them.
 This lib is shamelessly based on libfst (C) by Pauls Davis.
 See original README in README.libfst.
 
+* Usage
 For testing, create a folder 'machines' and put some original buzz machines
 in there. After building invoke :
-  ./bml/bmltest ./machines/mymachine.dll
+  env LD_LIBRARY_PATH="./bml" ./bml/bmltest_info ./machines/mymachine.dll
+or alternatively run the testmachine.sh script to probe a whole directory with
+machines.
 
+* Problems
+** Windows path names
 We currently have a problem with long/absolute path. E.g.
   ./bml/bmltest /usr/share/machines/mymachine.dll
 does not work. We also tried to put the machines into
@@ -20,7 +26,7 @@ but that failed as well. On the other hand, doing
   ./bml/bmltest 'C:\elak_svf.dll'
 works! Even doing 
   ./bml/bmltest 'C:\Programme\Buzz\Gear\elak_svf.dll'
-works! So how the hell escape the spaces.
+works! So how the shell escape the spaces.
 
 We now have a method to convert pathnames, this should map
   $HOME to Y:\
