@@ -1,4 +1,4 @@
-/* $Id: bml.h,v 1.12 2005-02-16 19:11:24 ensonic Exp $
+/* $Id: bml.h,v 1.13 2005-02-17 08:14:47 ensonic Exp $
  */
 
 #ifndef BML_H
@@ -48,10 +48,15 @@ typedef int (*BMGetGlobalParameterInfo)(BuzzMachine *bm,int index,BuzzMachinePar
 typedef int (*BMGetTrackParameterInfo)(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value);
 typedef int (*BMGetAttributeInfo)(BuzzMachine *bm,int index,BuzzMachineAttribute key,void *value);
 
+typedef void * (*BMGetTrackParameterLocation)(BuzzMachine *bm,int track,int index);
 typedef int  (*BMGetTrackParameterValue)(BuzzMachine *bm,int track,int index);
 typedef void (*BMSetTrackParameterValue)(BuzzMachine *bm,int track,int index,int value);
+
+typedef void * (*BMGetGlobalParameterLocation)(BuzzMachine *bm,int index);
 typedef int  (*BMGetGlobalParameterValue)(BuzzMachine *bm,int index);
 typedef void (*BMSetGlobalParameterValue)(BuzzMachine *bm,int index,int value);
+
+typedef void * (*BMGetAttributeLocation)(BuzzMachine *bm,int index);
 typedef int  (*BMGetAttributeValue)(BuzzMachine *bm,int index);
 typedef void (*BMSetAttributeValue)(BuzzMachine *bm,int index,int value);
 
@@ -74,10 +79,15 @@ extern BMGetGlobalParameterInfo bm_get_global_parameter_info;
 extern BMGetTrackParameterInfo bm_get_track_parameter_info;
 extern BMGetAttributeInfo bm_get_attribute_info;
 
+extern BMGetTrackParameterLocation bm_get_track_parameter_location;
 extern BMGetTrackParameterValue bm_get_track_parameter_value;
 extern BMSetTrackParameterValue bm_set_track_parameter_value;
+
+extern BMGetGlobalParameterLocation bm_get_global_parameter_location;
 extern BMGetGlobalParameterValue bm_get_global_parameter_value;
 extern BMSetGlobalParameterValue bm_set_global_parameter_value;
+
+extern BMGetAttributeLocation bm_get_attribute_location;
 extern BMGetAttributeValue bm_get_attribute_value;
 extern BMSetAttributeValue bm_set_attribute_value;
 
