@@ -4,3 +4,6 @@ problems
   * master info -> struct + gobject porperties
   * callbackinterface (wavetable access)
 
+* with wine2005 it works in bt-cmd and crashes in bt-edit when calling bm_tick/bm_work
+  * differences between bt_cmd/bt_edit
+  * differences between wine version
