@@ -1,4 +1,4 @@
-/* $Id: bml.h,v 1.13 2005-02-17 08:14:47 ensonic Exp $
+/* $Id: bml.h,v 1.14 2005-04-30 11:17:51 ensonic Exp $
  */
 
 #ifndef BML_H
@@ -14,6 +14,12 @@
 //#ifdef __cplusplus
 //extern "C" {
 //#endif
+
+#if defined (__GNUC__) && (__GNUC__ < 3)
+#define DBG(str) printf("%s:%d:%s: %s\n",__FILE__,__LINE__,__FUNCTION__,str)
+#else
+#define DBG(str) printf("%s:%d:%s: %s\n",__FILE__,__LINE__,__func__,str)
+#endif
 
 /**
  * Display BML error message.
