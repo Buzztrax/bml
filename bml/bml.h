@@ -1,4 +1,4 @@
-/* $Id: bml.h,v 1.14 2005-04-30 11:17:51 ensonic Exp $
+/* $Id: bml.h,v 1.15 2005-05-03 21:51:53 ensonic Exp $
  */
 
 #ifndef BML_H
@@ -41,7 +41,7 @@ void bml_set_error_function (void (*func)(const char *));
 
 extern int bml_init(void (*sighandler)(int,siginfo_t*,void*));
 extern void bml_done(void);
-extern char *bml_convertpath(char *inpath);
+extern char *bml_convertpath(const char *inpath);
 
 // dll passthrough API method pointer types
 typedef void (*BMSetMasterInfo)(long bpm, long tpb, long srat);
