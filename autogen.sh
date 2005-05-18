@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: autogen.sh,v 1.3 2005-01-16 14:13:01 ensonic Exp $
+# $Id: autogen.sh,v 1.4 2005-05-18 12:47:16 ensonic Exp $
 # Run this to generate all the initial makefiles, etc.
 
 DIE=0
@@ -359,7 +359,7 @@ echo timestamp > stamp-h.in 2> /dev/null
 
 tool_run "$autoconf"
 #debug "automake: $automake"
-#tool_run "$automake" "--add-missing --copy --gnu"
+tool_run "$automake" "--add-missing --copy --gnu"
 
 test -n "$NOCONFIGURE" && {
   echo "skipping configure stage for package $package, as requested."
