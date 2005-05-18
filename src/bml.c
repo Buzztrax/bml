@@ -1,4 +1,4 @@
-/* $Id: bml.c,v 1.3 2005-05-18 19:55:52 ensonic Exp $
+/* $Id: bml.c,v 1.4 2005-05-18 22:31:00 ensonic Exp $
  */
 
 #include "config.h"
@@ -24,38 +24,38 @@ static ldt_fs_t *ldt_fs;
 static void *h=NULL;
 #endif
 
-//#define BMLX(a) _ ## a
-#define BMLX(a) a
+#define BMLX(a) fptr_ ## a
+//#define BMLX(a) a
 
 // API method pointers
-BMSetMasterInfo BMLX(bm_set_master_info);
-BMNew BMLX(bm_new);
-BMInit BMLX(bm_init);
-BMFree BMLX(bm_free);
+BMSetMasterInfo BMLX(bml_set_master_info);
+BMNew BMLX(bml_new);
+BMInit BMLX(bml_init);
+BMFree BMLX(bml_free);
 
-BMGetMachineInfo BMLX(bm_get_machine_info);
-BMGetGlobalParameterInfo BMLX(bm_get_global_parameter_info);
-BMGetTrackParameterInfo BMLX(bm_get_track_parameter_info);
-BMGetAttributeInfo BMLX(bm_get_attribute_info);
+BMGetMachineInfo BMLX(bml_get_machine_info);
+BMGetGlobalParameterInfo BMLX(bml_get_global_parameter_info);
+BMGetTrackParameterInfo BMLX(bml_get_track_parameter_info);
+BMGetAttributeInfo BMLX(bml_get_attribute_info);
 
-BMGetTrackParameterLocation BMLX(bm_get_track_parameter_location);
-BMGetTrackParameterValue BMLX(bm_get_track_parameter_value);
-BMSetTrackParameterValue BMLX(bm_set_track_parameter_value);
+BMGetTrackParameterLocation BMLX(bml_get_track_parameter_location);
+BMGetTrackParameterValue BMLX(bml_get_track_parameter_value);
+BMSetTrackParameterValue BMLX(bml_set_track_parameter_value);
 
-BMGetGlobalParameterLocation BMLX(bm_get_global_parameter_location);
-BMGetGlobalParameterValue BMLX(bm_get_global_parameter_value);
-BMSetGlobalParameterValue BMLX(bm_set_global_parameter_value);
+BMGetGlobalParameterLocation BMLX(bml_get_global_parameter_location);
+BMGetGlobalParameterValue BMLX(bml_get_global_parameter_value);
+BMSetGlobalParameterValue BMLX(bml_set_global_parameter_value);
 
-BMGetAttributeLocation BMLX(bm_get_attribute_location);
-BMGetAttributeValue BMLX(bm_get_attribute_value);
-BMSetAttributeValue BMLX(bm_set_attribute_value);
+BMGetAttributeLocation BMLX(bml_get_attribute_location);
+BMGetAttributeValue BMLX(bml_get_attribute_value);
+BMSetAttributeValue BMLX(bml_set_attribute_value);
 
-BMTick BMLX(bm_tick);
-BMWork BMLX(bm_work);
-BMWorkM2S BMLX(bm_work_m2s);
-BMStop BMLX(bm_stop);
+BMTick BMLX(bml_tick);
+BMWork BMLX(bml_work);
+BMWorkM2S BMLX(bml_work_m2s);
+BMStop BMLX(bml_stop);
 
-BMSetNumTracks BMLX(bm_set_num_tracks);
+BMSetNumTracks BMLX(bml_set_num_tracks);
 
 // setup API wrapper
 
@@ -70,131 +70,130 @@ BMSetNumTracks BMLX(bm_set_num_tracks);
 #define FreeDLL(dll) WineFreeLibrary(dll)
 #endif
 
-/*
-void bm_set_master_info(long bpm, long tpb, long srat) {
+void bml_set_master_info(long bpm, long tpb, long srat) {
 	Check_FS_Segment();
-	BMLX(bm_set_master_info(bpm,tpb,srat));
+	BMLX(bml_set_master_info(bpm,tpb,srat));
 }
 
-BuzzMachine *bm_new(char *bm_file_name) {
+BuzzMachine *bml_new(char *bm_file_name) {
 	Check_FS_Segment();
-	return(BMLX(bm_new(bm_file_name)));
+	return(BMLX(bml_new(bm_file_name)));
 }
 
-void bm_init(BuzzMachine *bm) {
+void bml_init(BuzzMachine *bm) {
 	Check_FS_Segment();
-	BMLX(bm_init(bm));
+	BMLX(bml_init(bm));
 }
 
-void bm_free(BuzzMachine *bm) {
+void bml_free(BuzzMachine *bm) {
 	Check_FS_Segment();
-	BMLX(bm_free(bm));
-}
-
-
-int bm_get_machine_info(BuzzMachine *bm, BuzzMachineProperty key, void *value) {
-	Check_FS_Segment();
-	return(BMLX(bm_get_machine_info(bm,key,value)));
-}
-
-int bm_get_global_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value) {
-	Check_FS_Segment();
-	return(BMLX(bm_get_global_parameter_info(bm,index,key,value)));
-}
-
-int bm_get_track_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value) {
-	Check_FS_Segment();
-	return(BMLX(bm_get_track_parameter_info(bm,index,key,value)));
-}
-
-int bm_get_attribute_info(BuzzMachine *bm,int index,BuzzMachineAttribute key,void *value) {
-	Check_FS_Segment();
-	return(BMLX(bm_get_attribute_info(bm,index,key,value)));
+	BMLX(bml_free(bm));
 }
 
 
-void *bm_get_track_parameter_location(BuzzMachine *bm,int track,int index) {
+int bml_get_machine_info(BuzzMachine *bm, BuzzMachineProperty key, void *value) {
 	Check_FS_Segment();
-	return(BMLX(bm_get_track_parameter_location(bm,track,index)));
+	return(BMLX(bml_get_machine_info(bm,key,value)));
 }
 
-int bm_get_track_parameter_value(BuzzMachine *bm,int track,int index) {
+int bml_get_global_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value) {
 	Check_FS_Segment();
-	return(BMLX(bm_get_track_parameter_value(bm,track,index)));
+	return(BMLX(bml_get_global_parameter_info(bm,index,key,value)));
 }
 
-void bm_set_track_parameter_value(BuzzMachine *bm,int track,int index,int value) {
+int bml_get_track_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value) {
 	Check_FS_Segment();
-	return(BMLX(bm_set_track_parameter_value(bm,track,index,value)));
+	return(BMLX(bml_get_track_parameter_info(bm,index,key,value)));
 }
 
-
-void *bm_get_global_parameter_location(BuzzMachine *bm,int index) {
+int bml_get_attribute_info(BuzzMachine *bm,int index,BuzzMachineAttribute key,void *value) {
 	Check_FS_Segment();
-	return(BMLX(bm_get_global_parameter_location(bm,index)));
-}
-
-int bm_get_global_parameter_value(BuzzMachine *bm,int index) {
-	Check_FS_Segment();
-	return(BMLX(bm_get_global_parameter_value(bm,index)));
-}
-
-void bm_set_global_parameter_value(BuzzMachine *bm,int index,int value) {
-	Check_FS_Segment();
-	return(BMLX(bm_set_global_parameter_value(bm,index,value)));
+	return(BMLX(bml_get_attribute_info(bm,index,key,value)));
 }
 
 
-void *bm_get_attribute_location(BuzzMachine *bm,int index) {
+void *bml_get_track_parameter_location(BuzzMachine *bm,int track,int index) {
 	Check_FS_Segment();
-	return(BMLX(bm_get_attribute_location(bm,index)));
+	return(BMLX(bml_get_track_parameter_location(bm,track,index)));
 }
 
-int bm_get_attribute_value(BuzzMachine *bm,int index) {
+int bml_get_track_parameter_value(BuzzMachine *bm,int track,int index) {
 	Check_FS_Segment();
-	return(BMLX(bm_get_attribute_value(bm,index)));
+	return(BMLX(bml_get_track_parameter_value(bm,track,index)));
 }
 
-void bm_set_attribute_value(BuzzMachine *bm,int index,int value) {
+void bml_set_track_parameter_value(BuzzMachine *bm,int track,int index,int value) {
 	Check_FS_Segment();
-	return(BMLX(bm_set_attribute_value(bm,index,value)));
-}
-
-
-void bm_tick(BuzzMachine *bm) {
-	Check_FS_Segment();
-	BMLX(bm_tick(bm));
-}
-
-int bm_work(BuzzMachine *bm,float *psamples, int numsamples, int const mode) {
-	Check_FS_Segment();
-	return(BMLX(bm_work(bm,psamples,numsamples,mode)));
-}
-
-int bm_work_m2s(BuzzMachine *bm,float *pin, float *pout, int numsamples, int const mode) {
-	Check_FS_Segment();
-	return(BMLX(bm_work_m2s(bm,pin,pout,numsamples,mode)));
-}
-
-void bm_stop(BuzzMachine *bm) {
-	Check_FS_Segment();
-	BMLX(bm_stop(bm));
+	return(BMLX(bml_set_track_parameter_value(bm,track,index,value)));
 }
 
 
-void bm_set_num_tracks(BuzzMachine *bm, int num) {
+void *bml_get_global_parameter_location(BuzzMachine *bm,int index) {
 	Check_FS_Segment();
-	BMLX_bm_set_num_tracks(bm,num);
+	return(BMLX(bml_get_global_parameter_location(bm,index)));
 }
-*/
 
-int bml_init(void (*sighandler)(int,siginfo_t*,void*)) {
+int bml_get_global_parameter_value(BuzzMachine *bm,int index) {
+	Check_FS_Segment();
+	return(BMLX(bml_get_global_parameter_value(bm,index)));
+}
+
+void bml_set_global_parameter_value(BuzzMachine *bm,int index,int value) {
+	Check_FS_Segment();
+	return(BMLX(bml_set_global_parameter_value(bm,index,value)));
+}
+
+
+void *bml_get_attribute_location(BuzzMachine *bm,int index) {
+	Check_FS_Segment();
+	return(BMLX(bml_get_attribute_location(bm,index)));
+}
+
+int bml_get_attribute_value(BuzzMachine *bm,int index) {
+	Check_FS_Segment();
+	return(BMLX(bml_get_attribute_value(bm,index)));
+}
+
+void bml_set_attribute_value(BuzzMachine *bm,int index,int value) {
+	Check_FS_Segment();
+	return(BMLX(bml_set_attribute_value(bm,index,value)));
+}
+
+
+void bml_tick(BuzzMachine *bm) {
+	Check_FS_Segment();
+	BMLX(bml_tick(bm));
+}
+
+int bml_work(BuzzMachine *bm,float *psamples, int numsamples, int const mode) {
+	Check_FS_Segment();
+	return(BMLX(bml_work(bm,psamples,numsamples,mode)));
+}
+
+int bml_work_m2s(BuzzMachine *bm,float *pin, float *pout, int numsamples, int const mode) {
+	Check_FS_Segment();
+	return(BMLX(bml_work_m2s(bm,pin,pout,numsamples,mode)));
+}
+
+void bml_stop(BuzzMachine *bm) {
+	Check_FS_Segment();
+	BMLX(bml_stop(bm));
+}
+
+
+void bml_set_num_tracks(BuzzMachine *bm, int num) {
+	Check_FS_Segment();
+	BMLX(bml_set_num_tracks(bm,num));
+}
+
+
+int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
   printf("%s: bml_init\n",__FUNCTION__);
   
 #ifdef USE_DLLWRAPPER1
   ldt_fs=Setup_LDT_Keeper();
   printf("%s:   wrapper initialized: 0x%p\n",__FUNCTION__,ldt_fs);
-  Check_FS_Segment();
+  //Check_FS_Segment();
 #endif
 #ifdef USE_DLLWRAPPER2
   SharedWineInit(sighandler);
@@ -206,34 +205,34 @@ int bml_init(void (*sighandler)(int,siginfo_t*,void*)) {
   }
   printf("%s:   bml loaded: 0x%p\n",__FUNCTION__,h);
 
-  if(!(BMLX(bm_set_master_info)=(BMSetMasterInfo)GetSymbol(h,"bm_set_master_info"))) { puts("bm_set_master_info is missing");return(FALSE);}
-  if(!(BMLX(bm_new)=(BMNew)GetSymbol(h,"bm_new"))) { puts("bm_new is missing");return(FALSE);}
-  if(!(BMLX(bm_init)=(BMInit)GetSymbol(h,"bm_init"))) { puts("bm_init is missing");return(FALSE);}
-  if(!(BMLX(bm_free)=(BMFree)GetSymbol(h,"bm_free"))) { puts("bm_free is missing");return(FALSE);}
+  if(!(BMLX(bml_set_master_info)=(BMSetMasterInfo)GetSymbol(h,"bm_set_master_info"))) { puts("bm_set_master_info is missing");return(FALSE);}
+  if(!(BMLX(bml_new)=(BMNew)GetSymbol(h,"bm_new"))) { puts("bm_new is missing");return(FALSE);}
+  if(!(BMLX(bml_init)=(BMInit)GetSymbol(h,"bm_init"))) { puts("bm_init is missing");return(FALSE);}
+  if(!(BMLX(bml_free)=(BMFree)GetSymbol(h,"bm_free"))) { puts("bm_free is missing");return(FALSE);}
 
-  if(!(BMLX(bm_get_machine_info)=(BMGetMachineInfo)GetSymbol(h,"bm_get_machine_info"))) { puts("bm_get_machine_info is missing");return(FALSE);}
-  if(!(BMLX(bm_get_global_parameter_info)=(BMGetGlobalParameterInfo)GetSymbol(h,"bm_get_global_parameter_info"))) { puts("bm_get_global_parameter_info is missing");return(FALSE);}
-  if(!(BMLX(bm_get_track_parameter_info)=(BMGetTrackParameterInfo)GetSymbol(h,"bm_get_track_parameter_info"))) { puts("bm_get_track_parameter_info is missing");return(FALSE);}
-  if(!(BMLX(bm_get_attribute_info)=(BMGetAttributeInfo)GetSymbol(h,"bm_get_attribute_info"))) { puts("bm_get_attribute_info is missing");return(FALSE);}
+  if(!(BMLX(bml_get_machine_info)=(BMGetMachineInfo)GetSymbol(h,"bm_get_machine_info"))) { puts("bm_get_machine_info is missing");return(FALSE);}
+  if(!(BMLX(bml_get_global_parameter_info)=(BMGetGlobalParameterInfo)GetSymbol(h,"bm_get_global_parameter_info"))) { puts("bm_get_global_parameter_info is missing");return(FALSE);}
+  if(!(BMLX(bml_get_track_parameter_info)=(BMGetTrackParameterInfo)GetSymbol(h,"bm_get_track_parameter_info"))) { puts("bm_get_track_parameter_info is missing");return(FALSE);}
+  if(!(BMLX(bml_get_attribute_info)=(BMGetAttributeInfo)GetSymbol(h,"bm_get_attribute_info"))) { puts("bm_get_attribute_info is missing");return(FALSE);}
 
-  if(!(BMLX(bm_get_track_parameter_location)=(BMGetTrackParameterLocation)GetSymbol(h,"bm_get_track_parameter_location"))) { puts("bm_get_track_parameter_location is missing");return(FALSE);}
-  if(!(BMLX(bm_get_track_parameter_value)=(BMGetTrackParameterValue)GetSymbol(h,"bm_get_track_parameter_value"))) { puts("bm_get_track_parameter_value is missing");return(FALSE);}
-  if(!(BMLX(bm_set_track_parameter_value)=(BMSetTrackParameterValue)GetSymbol(h,"bm_set_track_parameter_value"))) { puts("bm_set_track_parameter_value is missing");return(FALSE);}
+  if(!(BMLX(bml_get_track_parameter_location)=(BMGetTrackParameterLocation)GetSymbol(h,"bm_get_track_parameter_location"))) { puts("bm_get_track_parameter_location is missing");return(FALSE);}
+  if(!(BMLX(bml_get_track_parameter_value)=(BMGetTrackParameterValue)GetSymbol(h,"bm_get_track_parameter_value"))) { puts("bm_get_track_parameter_value is missing");return(FALSE);}
+  if(!(BMLX(bml_set_track_parameter_value)=(BMSetTrackParameterValue)GetSymbol(h,"bm_set_track_parameter_value"))) { puts("bm_set_track_parameter_value is missing");return(FALSE);}
 
-  if(!(BMLX(bm_get_global_parameter_location)=(BMGetGlobalParameterLocation)GetSymbol(h,"bm_get_global_parameter_location"))) { puts("bm_get_global_parameter_location is missing");return(FALSE);}
-  if(!(BMLX(bm_get_global_parameter_value)=(BMGetGlobalParameterValue)GetSymbol(h,"bm_get_global_parameter_value"))) { puts("bm_get_global_parameter_value is missing");return(FALSE);}
-  if(!(BMLX(bm_set_global_parameter_value)=(BMSetGlobalParameterValue)GetSymbol(h,"bm_set_global_parameter_value"))) { puts("bm_set_global_parameter_value is missing");return(FALSE);}
+  if(!(BMLX(bml_get_global_parameter_location)=(BMGetGlobalParameterLocation)GetSymbol(h,"bm_get_global_parameter_location"))) { puts("bm_get_global_parameter_location is missing");return(FALSE);}
+  if(!(BMLX(bml_get_global_parameter_value)=(BMGetGlobalParameterValue)GetSymbol(h,"bm_get_global_parameter_value"))) { puts("bm_get_global_parameter_value is missing");return(FALSE);}
+  if(!(BMLX(bml_set_global_parameter_value)=(BMSetGlobalParameterValue)GetSymbol(h,"bm_set_global_parameter_value"))) { puts("bm_set_global_parameter_value is missing");return(FALSE);}
 
-  if(!(BMLX(bm_get_attribute_location)=(BMGetAttributeLocation)GetSymbol(h,"bm_get_attribute_location"))) { puts("bm_get_attribute_location is missing");return(FALSE);}
-  if(!(BMLX(bm_get_attribute_value)=(BMGetAttributeValue)GetSymbol(h,"bm_get_attribute_value"))) { puts("bm_get_attribute_value is missing");return(FALSE);}
-  if(!(BMLX(bm_set_attribute_value)=(BMSetAttributeValue)GetSymbol(h,"bm_set_attribute_value"))) { puts("bm_set_attribute_value is missing");return(FALSE);}
+  if(!(BMLX(bml_get_attribute_location)=(BMGetAttributeLocation)GetSymbol(h,"bm_get_attribute_location"))) { puts("bm_get_attribute_location is missing");return(FALSE);}
+  if(!(BMLX(bml_get_attribute_value)=(BMGetAttributeValue)GetSymbol(h,"bm_get_attribute_value"))) { puts("bm_get_attribute_value is missing");return(FALSE);}
+  if(!(BMLX(bml_set_attribute_value)=(BMSetAttributeValue)GetSymbol(h,"bm_set_attribute_value"))) { puts("bm_set_attribute_value is missing");return(FALSE);}
 
-  if(!(BMLX(bm_tick)=(BMTick)GetSymbol(h,"bm_tick"))) { puts("bm_tick is missing");return(FALSE);}
-  if(!(BMLX(bm_work)=(BMWork)GetSymbol(h,"bm_work"))) { puts("bm_work is missing");return(FALSE);}
-  if(!(BMLX(bm_work_m2s)=(BMWorkM2S)GetSymbol(h,"bm_work_m2s"))) { puts("bm_work_m2s is missing");return(FALSE);}
-  if(!(BMLX(bm_stop)=(BMStop)GetSymbol(h,"bm_stop"))) { puts("bm_stop is missing");return(FALSE);}
+  if(!(BMLX(bml_tick)=(BMTick)GetSymbol(h,"bm_tick"))) { puts("bm_tick is missing");return(FALSE);}
+  if(!(BMLX(bml_work)=(BMWork)GetSymbol(h,"bm_work"))) { puts("bm_work is missing");return(FALSE);}
+  if(!(BMLX(bml_work_m2s)=(BMWorkM2S)GetSymbol(h,"bm_work_m2s"))) { puts("bm_work_m2s is missing");return(FALSE);}
+  if(!(BMLX(bml_stop)=(BMStop)GetSymbol(h,"bm_stop"))) { puts("bm_stop is missing");return(FALSE);}
 
-  if(!(BMLX(bm_set_num_tracks)=(BMSetNumTracks)GetSymbol(h,"bm_set_num_tracks"))) { puts("bm_set_num_tracks is missing");return(FALSE);}
+  if(!(BMLX(bml_set_num_tracks)=(BMSetNumTracks)GetSymbol(h,"bm_set_num_tracks"))) { puts("bm_set_num_tracks is missing");return(FALSE);}
 
   // @todo more API entries
   printf("%s:   symbols connected\n",__FUNCTION__);
@@ -241,7 +240,7 @@ int bml_init(void (*sighandler)(int,siginfo_t*,void*)) {
   return(TRUE);
 }
 
-void bml_done(void) {
+void bml_finalize(void) {
   FreeDLL(h);
 #ifdef USE_DLLWRAPPER1
   Restore_LDT_Keeper(ldt_fs);

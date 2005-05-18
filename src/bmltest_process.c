@@ -1,4 +1,4 @@
-/* $Id: bmltest_process.c,v 1.1 2005-05-18 12:47:25 ensonic Exp $
+/* $Id: bmltest_process.c,v 1.2 2005-05-18 22:31:00 ensonic Exp $
  * invoke it e.g. as
  *   env LD_LIBRARY_PATH="." ./bmltest_process ../machines/elak_svf.dll input.raw output.raw
  *
@@ -28,15 +28,15 @@ void test_process(const char *dllpath,const char *infilename,const char *outfile
 
   printf("\n"__FUNCTION__"(\"%s\" -> \"%s\")\n",dllpath,fulldllpath);
   
-  if(bm=bm_new(fulldllpath)) {
+  if(bm=bml_new(fulldllpath)) {
     FILE *infile,*outfile;
     int s_size=BUFFER_SIZE,i_size;
     short int buffer_w[BUFFER_SIZE];
     float buffer_f[BUFFER_SIZE];
     int i,ival=0,oval,vs=10;
     
-		puts("  machine created");
-		bm_init(bm);
+	puts("  machine created");
+	bml_init(bm);
     puts("  machine initialized");
 
     // open raw files
@@ -53,10 +53,10 @@ void test_process(const char *dllpath,const char *infilename,const char *outfile
         
         printf(".");
         // set GlobalVals, TrackVals
-        bm_tick(bm);
+        bml_tick(bm);
         i_size=fread(buffer_w,2,s_size,infile);
         for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i]/32768.0;
-        bm_work(bm,buffer_f,i_size,3/*WM_READWRITE*/);
+        bml_work(bm,buffer_f,i_size,3/*WM_READWRITE*/);
         for(i=0;i<i_size;i++) buffer_w[i]=(short int)(buffer_f[i]*32768.0);
         fwrite(buffer_w,2,i_size,outfile);
       }
@@ -66,7 +66,7 @@ void test_process(const char *dllpath,const char *infilename,const char *outfile
     if(infile) fclose(infile);
     if(outfile) fclose(outfile);
     puts("  done");
-    bm_free(bm);
+    bml_free(bm);
   }
 }
 
@@ -75,19 +75,18 @@ int main( int argc, char **argv ) {
   
   puts("main beg");
 
-  if(bml_init(0)) {
+  if(bml_setup(0)) {
 
-    bm_set_master_info(120,4,44100);
+    bml_set_master_info(120,4,44100);
     puts("  master info initialized");
 
     if(argc>2) {
       test_process(argv[1],argv[2],argv[3]);
     }
     else puts("    not enough args!");
-    bml_done();
+    bml_finalize();
   }
 
   puts("main end");
   return 0;
 }
-
