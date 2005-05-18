@@ -72,6 +72,7 @@ noinst_HEADERS = \
 # as it's broken in glibc 2.1.2 (bad header) and 2.1.3 (bad code)
 INCLUDES = \
 	-D__WINE__ \
-	-DWIN32_PATH=\"$(libdir)/win32\" \
+	-DWIN32_PATH=\"/usr/lib/win32\" \
+	-DWIN32_LIB_PATH=\"$(libdir)\" \
 	-fno-omit-frame-pointer \
 	-mno-omit-leaf-frame-pointer
