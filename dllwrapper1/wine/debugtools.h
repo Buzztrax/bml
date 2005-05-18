@@ -16,7 +16,7 @@ struct _GUID;
 
 #ifndef TRACE
 #ifdef LOG
-#  define TRACE __vprintf
+#  define TRACE printf
 #else
 #  define TRACE(...)
 #endif
@@ -24,7 +24,7 @@ struct _GUID;
 
 #ifndef dbg_printf
 #ifdef LOG
-#  define dbg_printf __vprintf
+#  define dbg_printf printf
 #else
 #  define dbg_printf(...)
 #endif

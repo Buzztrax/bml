@@ -1,4 +1,4 @@
-# $Id: configure.ac,v 1.3 2005-05-18 12:47:16 ensonic Exp $
+# $Id: configure.ac,v 1.4 2005-05-18 17:24:39 ensonic Exp $
 
 # Initialise the autoconf/automake tool
 AC_INIT([bml], [0.0.1], [buzztard-devel@lists.sourceforge.net])
@@ -17,6 +17,21 @@ AC_PROG_LN_S
 AC_ISC_POSIX
 AC_PROG_LIBTOOL
 AM_PROG_CC_STDC
+
+# enable runtime debugging code
+AC_MSG_CHECKING(whether to enable runtime debugging code)
+AC_ARG_ENABLE(
+  debug,
+  AC_HELP_STRING([--enable-debug],[enable runtime debugging code (default=no)]),
+  ,
+  [enable_debug="no"])
+AC_MSG_RESULT($enable_debug)
+if test "$enable_debug" = "yes"; then
+  AC_DEFINE(LOG, [1], [enable runtime debugging code])
+  DEBUG_CFLAGS="-O0 -Werror -g"
+else
+  DEBUG_CFLAGS=""
+fi
 
 # enable coverage analysis
 AC_MSG_CHECKING(whether to enable coverage analysis)
@@ -43,6 +58,9 @@ AM_CONDITIONAL(USE_DLLWRAPPER1, true)
 
 #AC_DEFINE(USE_DLLWRAPPER2, [1], [use the libfst dll wrapper])
 AM_CONDITIONAL(USE_DLLWRAPPER2, false)
+
+BML_CFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS"
+AC_SUBST(BML_CFLAGS)
 
 AC_CONFIG_FILES( \
   Makefile \

@@ -1,4 +1,4 @@
-$Id: README,v 1.8 2005-04-13 09:33:09 ensonic Exp $
+$Id: README,v 1.9 2005-05-18 17:24:39 ensonic Exp $
 
 = quick info =
 Please turn you browser to http://www.buzztard.org to learn what this project
@@ -7,8 +7,8 @@ is about. Buzztard is free software and distributed under the LGPL.
 = intro =
 The libbml is a library that loads buzz machines from the windows music
 composer buzz, so that Linux apps can use them.
-This lib is shamelessly based on libfst (C) by Pauls Davis.
-See original README in README.libfst.
+This lib is either using the libavifile wrapper or the libfst one.
+See original README in README.libfst for the latter.
 
 = usage =
 For testing, create a folder 'machines' and put some original buzz machines
@@ -18,6 +18,11 @@ or alternatively run the testmachine.sh script to probe a whole directory with
 machines.
 
 = problems =
+== multithreading ==
+
+before calling lib code in multithreaded environments we should call:
+Check_FS_Segment();
+
 == windows path names ==
 We currently have a problem with long/absolute path. E.g.
   ./bml/bmltest /usr/share/machines/mymachine.dll

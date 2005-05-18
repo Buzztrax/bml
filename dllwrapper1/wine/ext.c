@@ -469,7 +469,7 @@ LPVOID WINAPI VirtualAlloc(LPVOID address, DWORD size, DWORD type,  DWORD protec
 
     if (type&MEM_RESERVE && (unsigned)address&0xffff) {
        size += (unsigned)address&0xffff;
-       (unsigned)address &= ~0xffff;
+       address = (LPVOID)((unsigned)address&~0xffff);
     }
     pgsz = sysconf(_SC_PAGESIZE);
     if (type&MEM_COMMIT && (unsigned)address%pgsz) {
@@ -498,7 +498,7 @@ LPVOID WINAPI VirtualAlloc(LPVOID address, DWORD size, DWORD type,  DWORD protec
 	    }
 	    if(str->state==0)
 	    {
-#warning FIXME
+//#warning FIXME
                if(   ((unsigned)address >= (unsigned)str->address)
                   && ((unsigned)address+size<=(unsigned)str->address+str->mapping_size)
 		   && (type & MEM_COMMIT))

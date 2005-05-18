@@ -222,7 +222,7 @@ static WIN_BOOL MODULE_DllProcessAttach( WINE_MODREF *wm, LPVOID lpReserved )
          || ( wm->flags & WINE_MODREF_PROCESS_ATTACHED ) )
         return retv;
 
-    TRACE("(%s,%p) - START\n", wm->modname, lpReserved );
+    TRACE("DllProcessAttach for (%s,%p) - START\n", wm->modname, lpReserved );
 
     /* Tag current MODREF to prevent recursive loop */
     wm->flags |= WINE_MODREF_MARKER;
@@ -260,7 +260,7 @@ static WIN_BOOL MODULE_DllProcessAttach( WINE_MODREF *wm, LPVOID lpReserved )
     }
 
 
-    TRACE("(%s,%p) - END\n", wm->modname, lpReserved );
+    TRACE("DllProcessAttach for  (%s,%p) - END\n", wm->modname, lpReserved );
 
     return retv;
 }
@@ -305,13 +305,13 @@ static WINE_MODREF *MODULE_LoadLibraryExA( LPCSTR libname, HFILE hfile, DWORD fl
 	/* int i; -- not used */
 //	module_loadorder_t *plo;
 
-        SetLastError( ERROR_FILE_NOT_FOUND );
+	SetLastError( ERROR_FILE_NOT_FOUND );
 	TRACE("Trying native dll '%s'\n", libname);
 	pwm = PE_LoadLibraryExA(libname, flags);
 #ifdef HAVE_LIBDL
 	if(!pwm)
 	{
-    	    TRACE("Trying ELF dll '%s'\n", libname);
+	    TRACE("Trying ELF dll '%s'\n", libname);
 	    pwm=(WINE_MODREF*)ELFDLL_LoadLibraryExA(libname, flags);
 	}
 #endif
@@ -325,12 +325,12 @@ static WINE_MODREF *MODULE_LoadLibraryExA( LPCSTR libname, HFILE hfile, DWORD fl
 		/* decrement the dependencies through the MODULE_FreeLibrary call. */
 		pwm->refCount++;
 
-                SetLastError( err );  /* restore last error */
+		SetLastError( err );  /* restore last error */
 		return pwm;
 	}
 
 
-	WARN("Failed to load module '%s'; error=0x%08lx, \n", libname, GetLastError());
+	printf("Failed to load module '%s'; error=0x%08lx, \n", libname, GetLastError());
 	return NULL;
 }
 
@@ -362,12 +362,12 @@ static WIN_BOOL MODULE_FreeLibrary( WINE_MODREF *wm )
 HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 {
 	WINE_MODREF *wm = 0;
-	char* listpath[] = { "", "", "/usr/lib/win32", "/usr/local/lib/win32", 0 };
+	char* listpath[] = { "", "", WIN32_PATH, "/usr/lib/win32", "/usr/local/lib/win32", 0 };
 	char path[512];
 	char checked[2000];
-        int i = -1;
+	int i = -1;
 
-        checked[0] = 0;
+	checked[0] = 0;
 	if(!libname)
 	{
 		SetLastError(ERROR_INVALID_PARAMETER);
@@ -379,6 +379,8 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 
 //	if(fs_installed==0)
 //	    install_fs();
+	
+	TRACE("found module '%s'\n", libname);
 
 	while (wm == 0 && listpath[++i])
 	{
@@ -405,6 +407,8 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 		strncat(path, libname, 100);
 	    }
 	    path[511] = 0;
+		
+		TRACE("trying to load module '%s'\n", path);
 	    wm = MODULE_LoadLibraryExA( path, hfile, flags );
 
 	    if (!wm)
@@ -418,6 +422,8 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 	}
 	if ( wm )
 	{
+		TRACE("loaded module '%s'\n", libname);
+
 		if ( !MODULE_DllProcessAttach( wm, NULL ) )
 		{
 			WARN_(module)("Attach failed for module '%s', \n", libname);

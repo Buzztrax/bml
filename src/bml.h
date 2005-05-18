@@ -1,4 +1,4 @@
-/* $Id: bml.h,v 1.1 2005-05-18 12:47:25 ensonic Exp $
+/* $Id: bml.h,v 1.2 2005-05-18 17:24:39 ensonic Exp $
  */
 
 #ifndef BML_H
@@ -55,7 +55,6 @@ typedef void * (*BMGetAttributeLocation)(BuzzMachine *bm,int index);
 typedef int  (*BMGetAttributeValue)(BuzzMachine *bm,int index);
 typedef void (*BMSetAttributeValue)(BuzzMachine *bm,int index,int value);
 
-
 typedef void (*BMTick)(BuzzMachine *bm);
 typedef int  (*BMWork)(BuzzMachine *bm,float *psamples, int numsamples, int const mode);
 typedef int  (*BMWorkM2S)(BuzzMachine *bm,float *pin, float *pout, int numsamples, int const mode);
@@ -64,6 +63,7 @@ typedef void (*BMStop)(BuzzMachine *bm);
 typedef void (*BMSetNumTracks)(BuzzMachine *bm, int num);
 
 // dll passthrough API method pointers
+/*
 extern BMSetMasterInfo bm_set_master_info;
 extern BMNew bm_new;
 extern BMInit bm_init;
@@ -92,6 +92,37 @@ extern BMWorkM2S bm_work_m2s;
 extern BMStop bm_stop;
 
 extern BMSetNumTracks bm_set_num_tracks;
+*/
+
+extern void bm_set_master_info(long bpm, long tpb, long srat);
+extern BuzzMachine *bm_new(char *bm_file_name);
+extern void bm_init(BuzzMachine *bm);
+extern void bm_free(BuzzMachine *bm);
+
+extern int bm_get_machine_info(BuzzMachine *bm, BuzzMachineProperty key, void *value);
+extern int bm_get_global_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value);
+extern int bm_get_track_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value);
+extern int bm_get_attribute_info(BuzzMachine *bm,int index,BuzzMachineAttribute key,void *value);
+
+extern void *bm_get_track_parameter_location(BuzzMachine *bm,int track,int index);
+extern int bm_get_track_parameter_value(BuzzMachine *bm,int track,int index);
+extern void bm_set_track_parameter_value(BuzzMachine *bm,int track,int index,int value);
+
+extern void *bm_get_global_parameter_location(BuzzMachine *bm,int index);
+extern int bm_get_global_parameter_value(BuzzMachine *bm,int index);
+extern void bm_set_global_parameter_value(BuzzMachine *bm,int index,int value);
+
+extern void *bm_get_attribute_location(BuzzMachine *bm,int index);
+extern int bm_get_attribute_value(BuzzMachine *bm,int index);
+extern void bm_set_attribute_value(BuzzMachine *bm,int index,int value);
+
+extern void bm_tick(BuzzMachine *bm);
+extern int bm_work(BuzzMachine *bm,float *psamples, int numsamples, int const mode);
+extern int bm_work_m2s(BuzzMachine *bm,float *pin, float *pout, int numsamples, int const mode);
+extern void bm_stop(BuzzMachine *bm);
+
+extern void bm_set_num_tracks(BuzzMachine *bm, int num);
+
 
 //#ifdef __cplusplus
 //}
