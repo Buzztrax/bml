@@ -4641,6 +4641,22 @@ static double exp_CIsin(void)
     return sin(x);
 }
 
+static double exp_CIcosh(void)
+{
+    FPU_DOUBLE(x);
+
+    dbgprintf("_CIcosh(%lf)\n", x);
+    return cosh(x);
+}
+
+static double exp_CIsinh(void)
+{
+    FPU_DOUBLE(x);
+
+    dbgprintf("_CIsinh(%lf)\n", x);
+    return sinh(x);
+}
+
 struct exports
 {
     char name[64];
@@ -4847,6 +4863,8 @@ struct exports exp_msvcrt[]={
     FF(_CIpow,-1)
     FF(_CIcos,-1)
     FF(_CIsin,-1)
+		FF(_CIsinh,-1)
+		FF(_CIcosh,-1)
     FF(ldexp,-1)
     FF(frexp,-1)
     FF(sprintf,-1)
