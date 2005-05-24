@@ -1,4 +1,4 @@
-$Id: README,v 1.9 2005-05-18 17:24:39 ensonic Exp $
+$Id: README,v 1.10 2005-05-24 15:26:26 ensonic Exp $
 
 = quick info =
 Please turn you browser to http://www.buzztard.org to learn what this project
@@ -18,8 +18,10 @@ or alternatively run the testmachine.sh script to probe a whole directory with
 machines.
 
 = problems =
-== multithreading ==
+== /dev/zero needs to be executable ==
+make sure your /dev/zero is executable (needed for mmap() )
 
+== multithreading ==
 before calling lib code in multithreaded environments we should call:
 Check_FS_Segment();
 
