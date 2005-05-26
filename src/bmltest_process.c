@@ -1,4 +1,4 @@
-/* $Id: bmltest_process.c,v 1.2 2005-05-18 22:31:00 ensonic Exp $
+/* $Id: bmltest_process.c,v 1.3 2005-05-26 16:25:55 ensonic Exp $
  * invoke it e.g. as
  *   env LD_LIBRARY_PATH="." ./bmltest_process ../machines/elak_svf.dll input.raw output.raw
  *
@@ -24,9 +24,9 @@ void test_process(const char *dllpath,const char *infilename,const char *outfile
   char *str;
   char *fulldllpath;
  
-  fulldllpath=bml_convertpath(dllpath);
+  fulldllpath=bml_convertpath((char *)dllpath);
 
-  printf("\n"__FUNCTION__"(\"%s\" -> \"%s\")\n",dllpath,fulldllpath);
+  printf("%s(\"%s\" -> \"%s\")\n",__FUNCTION__,dllpath,fulldllpath);
   
   if(bm=bml_new(fulldllpath)) {
     FILE *infile,*outfile;

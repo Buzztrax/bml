@@ -1,11 +1,12 @@
-## $Id: Makefile.am,v 1.3 2005-05-18 19:55:52 ensonic Exp $
+## $Id: Makefile.am,v 1.4 2005-05-26 16:25:55 ensonic Exp $
 
 lib_LTLIBRARIES = libbml.la
 
 INCLUDES = \
 	-I$(top_srcdir)/dllwrapper1/wine \
 	-I$(top_srcdir)/buzz \
-	-I$(top_srcdir)/src
+	-I$(top_srcdir)/src \
+	$(BML_CFLAGS)
 
 libbml_la_SOURCES = bml.c
 

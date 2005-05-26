@@ -1,4 +1,4 @@
-/* $Id: bmltest_info.c,v 1.2 2005-05-18 22:31:00 ensonic Exp $
+/* $Id: bmltest_info.c,v 1.3 2005-05-26 16:25:55 ensonic Exp $
  * invoke it e.g. as
  *   env LD_LIBRARY_PATH="." ./bmltest_info ../machines/elak_svf.dll
  *
@@ -23,9 +23,9 @@ void test_info(const char *dllpath) {
   char *str;
   int val,i,num,maval,mival,noval;
  
-  fulldllpath=bml_convertpath(dllpath);
+  fulldllpath=bml_convertpath((char *)dllpath);
 
-  printf("\n"__FUNCTION__"(\"%s\" -> \"%s\")\n",dllpath,fulldllpath);
+  printf("%s(\"%s\" -> \"%s\")\n",__FUNCTION__,dllpath,fulldllpath);
   
   if(bm=bml_new(fulldllpath)) {
     char *machine_types[]={"MT_MASTER","MT_GENERATOR","MT_EFFECT" };
