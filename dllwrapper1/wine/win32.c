@@ -545,6 +545,7 @@ static HMODULE WINAPI expGetModuleHandleA(const char* name)
 #endif
     else
     {
+        TRACE("calling FindModule(%s)\n",name);
 	wm=MODULE_FindModule(name);
 	if(wm==0)result=0;
 	else
@@ -2623,7 +2624,7 @@ static int WINAPI expGetWindowThreadProcessId(HWND win, int *pid_data)
     dbgprintf("GetWindowThreadProcessId(0x%x, 0x%x) => %d\n",
 	win, pid_data, tid);
     if (pid_data)
-	(int)*pid_data = tid;
+	*pid_data = tid;
     return tid;
 }
 

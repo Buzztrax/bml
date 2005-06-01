@@ -1,4 +1,4 @@
-/* $Id: bml.c,v 1.4 2005-05-18 22:31:00 ensonic Exp $
+/* $Id: bml.c,v 1.5 2005-06-01 14:17:38 ensonic Exp $
  */
 
 #include "config.h"
@@ -26,6 +26,8 @@ static void *h=NULL;
 
 #define BMLX(a) fptr_ ## a
 //#define BMLX(a) a
+
+pthread_mutex_t ldt_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 // API method pointers
 BMSetMasterInfo BMLX(bml_set_master_info);
@@ -71,119 +73,202 @@ BMSetNumTracks BMLX(bml_set_num_tracks);
 #endif
 
 void bml_set_master_info(long bpm, long tpb, long srat) {
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
 	BMLX(bml_set_master_info(bpm,tpb,srat));
+	pthread_mutex_unlock(&ldt_mutex);
 }
 
 BuzzMachine *bml_new(char *bm_file_name) {
+	BuzzMachine *bm;
+
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
-	return(BMLX(bml_new(bm_file_name)));
+	bm=BMLX(bml_new(bm_file_name));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(bm);
 }
 
 void bml_init(BuzzMachine *bm) {
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
 	BMLX(bml_init(bm));
+	pthread_mutex_unlock(&ldt_mutex);
 }
 
 void bml_free(BuzzMachine *bm) {
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
 	BMLX(bml_free(bm));
+	pthread_mutex_unlock(&ldt_mutex);
 }
 
 
 int bml_get_machine_info(BuzzMachine *bm, BuzzMachineProperty key, void *value) {
+	int ret;
+
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
-	return(BMLX(bml_get_machine_info(bm,key,value)));
+	ret=BMLX(bml_get_machine_info(bm,key,value));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
 }
 
 int bml_get_global_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value) {
+	int ret;
+
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
-	return(BMLX(bml_get_global_parameter_info(bm,index,key,value)));
+	ret=BMLX(bml_get_global_parameter_info(bm,index,key,value));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
 }
 
 int bml_get_track_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value) {
+	int ret;
+
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
-	return(BMLX(bml_get_track_parameter_info(bm,index,key,value)));
+	ret=BMLX(bml_get_track_parameter_info(bm,index,key,value));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
 }
 
 int bml_get_attribute_info(BuzzMachine *bm,int index,BuzzMachineAttribute key,void *value) {
+	int ret;
+
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
-	return(BMLX(bml_get_attribute_info(bm,index,key,value)));
+	ret=BMLX(bml_get_attribute_info(bm,index,key,value));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
 }
 
 
 void *bml_get_track_parameter_location(BuzzMachine *bm,int track,int index) {
+	void *ret;
+
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
-	return(BMLX(bml_get_track_parameter_location(bm,track,index)));
+	ret=BMLX(bml_get_track_parameter_location(bm,track,index));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
 }
 
 int bml_get_track_parameter_value(BuzzMachine *bm,int track,int index) {
+	int ret;
+
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
-	return(BMLX(bml_get_track_parameter_value(bm,track,index)));
+	ret=BMLX(bml_get_track_parameter_value(bm,track,index));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
 }
 
 void bml_set_track_parameter_value(BuzzMachine *bm,int track,int index,int value) {
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
-	return(BMLX(bml_set_track_parameter_value(bm,track,index,value)));
+	BMLX(bml_set_track_parameter_value(bm,track,index,value));
+	pthread_mutex_unlock(&ldt_mutex);
 }
 
 
 void *bml_get_global_parameter_location(BuzzMachine *bm,int index) {
+	void *ret;
+
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
-	return(BMLX(bml_get_global_parameter_location(bm,index)));
+	ret=BMLX(bml_get_global_parameter_location(bm,index));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
 }
 
 int bml_get_global_parameter_value(BuzzMachine *bm,int index) {
+	int ret;
+
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
-	return(BMLX(bml_get_global_parameter_value(bm,index)));
+	ret=BMLX(bml_get_global_parameter_value(bm,index));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
 }
 
 void bml_set_global_parameter_value(BuzzMachine *bm,int index,int value) {
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
-	return(BMLX(bml_set_global_parameter_value(bm,index,value)));
+	BMLX(bml_set_global_parameter_value(bm,index,value));
+	pthread_mutex_unlock(&ldt_mutex);
 }
 
 
 void *bml_get_attribute_location(BuzzMachine *bm,int index) {
+	void *ret;
+
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
-	return(BMLX(bml_get_attribute_location(bm,index)));
+	ret=BMLX(bml_get_attribute_location(bm,index));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
 }
 
 int bml_get_attribute_value(BuzzMachine *bm,int index) {
+	int ret;
+
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
-	return(BMLX(bml_get_attribute_value(bm,index)));
+	ret=BMLX(bml_get_attribute_value(bm,index));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
 }
 
 void bml_set_attribute_value(BuzzMachine *bm,int index,int value) {
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
-	return(BMLX(bml_set_attribute_value(bm,index,value)));
+	BMLX(bml_set_attribute_value(bm,index,value));
+	pthread_mutex_unlock(&ldt_mutex);
 }
 
 
 void bml_tick(BuzzMachine *bm) {
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
 	BMLX(bml_tick(bm));
+	pthread_mutex_unlock(&ldt_mutex);
 }
 
 int bml_work(BuzzMachine *bm,float *psamples, int numsamples, int const mode) {
+	int ret;
+
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
-	return(BMLX(bml_work(bm,psamples,numsamples,mode)));
+	ret=BMLX(bml_work(bm,psamples,numsamples,mode));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
 }
 
 int bml_work_m2s(BuzzMachine *bm,float *pin, float *pout, int numsamples, int const mode) {
+	int ret;
+	
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
-	return(BMLX(bml_work_m2s(bm,pin,pout,numsamples,mode)));
+	ret=BMLX(bml_work_m2s(bm,pin,pout,numsamples,mode));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
 }
 
 void bml_stop(BuzzMachine *bm) {
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
 	BMLX(bml_stop(bm));
+	pthread_mutex_unlock(&ldt_mutex);
 }
 
 
 void bml_set_num_tracks(BuzzMachine *bm, int num) {
+	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
 	BMLX(bml_set_num_tracks(bm,num));
+	pthread_mutex_unlock(&ldt_mutex);
 }
 
 

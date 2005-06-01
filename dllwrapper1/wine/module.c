@@ -373,6 +373,7 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 		SetLastError(ERROR_INVALID_PARAMETER);
 		return 0;
 	}
+        TRACE("calling FindModule(%s)\n",libname);
 
 	wm=MODULE_FindModule(libname);
 	if(wm) return wm->module;

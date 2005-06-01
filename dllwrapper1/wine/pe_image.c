@@ -210,9 +210,8 @@ FARPROC PE_FindExportedFunction(
             if (snoop)
             {
                 if (!ename) ename = "@";
-//                proc = SNOOP_GetProcAddress(wm->module,ename,ordinal,proc);
-		TRACE("SNOOP_GetProcAddress n/a\n");
-		
+                //proc = SNOOP_GetProcAddress(wm->module,ename,ordinal,proc);
+		TRACE("SNOOP_GetProcAddress n/a\n");		
             }
             return proc;
         }
@@ -221,12 +220,19 @@ FARPROC PE_FindExportedFunction(
                 WINE_MODREF *wm;
                 char *forward = RVA(addr);
 		char module[256];
-		char *end = strchr(forward, '.');
+		char *end /*= strchr(forward, '.')*/;
 
+                TRACE("getting next module name from '%s'\n",forward);
+
+                end = strchr(forward, '.');
 		if (!end) return NULL;
-                if (end - forward >= sizeof(module)) return NULL;
+                if (end - forward >= sizeof(module)) {
+                        WARN("need to enlarge buffer from %s to %s\n",sizeof(module),(long)(end - forward));
+                        return NULL;
+                }
                 memcpy( module, forward, end - forward );
 		module[end-forward] = 0;
+                TRACE("calling FindModule(%s)\n",module);
                 if (!(wm = MODULE_FindModule( module )))
                 {
                     ERR("module not found for forward '%s'\n", forward );

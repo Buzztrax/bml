@@ -1,4 +1,4 @@
-/* $Id: bml.h,v 1.4 2005-05-18 22:31:00 ensonic Exp $
+/* $Id: bml.h,v 1.5 2005-06-01 14:17:38 ensonic Exp $
  */
 
 #ifndef BML_H
@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <pthread.h>
 #include <signal.h>
 #include <stddef.h>
 #include <stdio.h>
