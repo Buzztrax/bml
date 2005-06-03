@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.4 2005-05-26 16:25:55 ensonic Exp $
+## $Id: Makefile.am,v 1.5 2005-06-03 16:01:04 ensonic Exp $
 
 lib_LTLIBRARIES = libbml.la
 
@@ -8,7 +8,9 @@ INCLUDES = \
 	-I$(top_srcdir)/src \
 	$(BML_CFLAGS)
 
+libbmldir = $(includedir)/libbml
 libbml_la_SOURCES = bml.c
+libbml_HEADERS = bml.h ../buzz/BuzzMachineLoader.h
 
 if USE_DLLWRAPPER1
 libbml_la_LIBADD =$(BASE_DEPS_LIBS) \
