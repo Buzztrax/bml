@@ -1,4 +1,4 @@
-# $Id: configure.ac,v 1.4 2005-05-18 17:24:39 ensonic Exp $
+# $Id: configure.ac,v 1.5 2005-06-14 07:20:10 ensonic Exp $
 
 # Initialise the autoconf/automake tool
 AC_INIT([bml], [0.0.1], [buzztard-devel@lists.sourceforge.net])
@@ -28,7 +28,7 @@ AC_ARG_ENABLE(
 AC_MSG_RESULT($enable_debug)
 if test "$enable_debug" = "yes"; then
   AC_DEFINE(LOG, [1], [enable runtime debugging code])
-  DEBUG_CFLAGS="-O0 -Werror -g"
+  DEBUG_CFLAGS="-O0 -Wall -Werror -g"
 else
   DEBUG_CFLAGS=""
 fi
