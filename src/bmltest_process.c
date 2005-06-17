@@ -1,4 +1,4 @@
-/* $Id: bmltest_process.c,v 1.3 2005-05-26 16:25:55 ensonic Exp $
+/* $Id: bmltest_process.c,v 1.4 2005-06-17 10:05:23 ensonic Exp $
  * invoke it e.g. as
  *   env LD_LIBRARY_PATH="." ./bmltest_process ../machines/elak_svf.dll input.raw output.raw
  *
@@ -21,22 +21,22 @@
 void test_process(const char *dllpath,const char *infilename,const char *outfilename) {
   // buzz machine handle
   void *bm;
-  char *str;
   char *fulldllpath;
  
   fulldllpath=bml_convertpath((char *)dllpath);
 
   printf("%s(\"%s\" -> \"%s\")\n",__FUNCTION__,dllpath,fulldllpath);
   
-  if(bm=bml_new(fulldllpath)) {
+  if((bm=bml_new(fulldllpath))) {
     FILE *infile,*outfile;
     int s_size=BUFFER_SIZE,i_size;
     short int buffer_w[BUFFER_SIZE];
     float buffer_f[BUFFER_SIZE];
-    int i,ival=0,oval,vs=10;
+    int i;
+    //int ival=0,oval,vs=10;
     
-	puts("  machine created");
-	bml_init(bm);
+    puts("  machine created");
+    bml_init(bm);
     puts("  machine initialized");
 
     // open raw files
@@ -71,8 +71,7 @@ void test_process(const char *dllpath,const char *infilename,const char *outfile
 }
 
 int main( int argc, char **argv ) {
-  int i;
-  
+
   puts("main beg");
 
   if(bml_setup(0)) {

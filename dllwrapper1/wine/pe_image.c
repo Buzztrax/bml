@@ -227,7 +227,7 @@ FARPROC PE_FindExportedFunction(
                 end = strchr(forward, '.');
 		if (!end) return NULL;
                 if (end - forward >= sizeof(module)) {
-                        WARN("need to enlarge buffer from %s to %s\n",sizeof(module),(long)(end - forward));
+                        WARN("need to enlarge buffer from %d to %ld\n",sizeof(module),(long)(end - forward));
                         return NULL;
                 }
                 memcpy( module, forward, end - forward );
