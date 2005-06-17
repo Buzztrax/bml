@@ -1,4 +1,4 @@
-/* $Id: bml.h,v 1.6 2005-06-17 10:05:23 ensonic Exp $
+/* $Id: bml.h,v 1.7 2005-06-17 15:30:06 ensonic Exp $
  */
 
 #ifndef BML_H
@@ -127,7 +127,7 @@ extern void bml_stop(BuzzMachine *bm);
 
 extern void bml_set_num_tracks(BuzzMachine *bm, int num);
 
-extern const char *(*bm_describe_value)(BuzzMachine *bm, int const param,int const value);
+extern const char *bml_describe_value(BuzzMachine *bm, int const param,int const value);
 
 //#ifdef __cplusplus
 //}

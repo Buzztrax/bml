@@ -1,4 +1,4 @@
-/* $Id: bmltest_info.c,v 1.4 2005-06-17 10:05:23 ensonic Exp $
+/* $Id: bmltest_info.c,v 1.5 2005-06-17 15:30:06 ensonic Exp $
  * invoke it e.g. as
  *   env LD_LIBRARY_PATH="." ./bmltest_info ../machines/elak_svf.dll
  *
@@ -58,16 +58,18 @@ void test_info(const char *dllpath) {
         if(bml_get_global_parameter_info(bm,i,BM_PARA_NAME,(void *)&str))         printf("        Name: \"%s\"\n",str);
         if(bml_get_global_parameter_info(bm,i,BM_PARA_DESCRIPTION,(void *)&str))  printf("        Description: \"%s\"\n",str);
         if(bml_get_global_parameter_info(bm,i,BM_PARA_FLAGS,(void *)&val)) {      printf("        Flags: 0x%x\n",val);
-					if(val&(1<<0)) puts("          MPF_WAVE");
-					if(val&(1<<1)) puts("          MPF_STATE");
-					if(val&(1<<2)) puts("          MPF_TICK_ON_EDIT");
+          if(val&(1<<0)) puts("          MPF_WAVE");
+          if(val&(1<<1)) puts("          MPF_STATE");
+          if(val&(1<<2)) puts("          MPF_TICK_ON_EDIT");
           //if(val&) puts("      ");
         }
         if(bml_get_global_parameter_info(bm,i,BM_PARA_MIN_VALUE,(void *)&mival) &&
            bml_get_global_parameter_info(bm,i,BM_PARA_MAX_VALUE,(void *)&maval) &&
            bml_get_global_parameter_info(bm,i,BM_PARA_NO_VALUE,(void *)&noval) &&
            bml_get_global_parameter_info(bm,i,BM_PARA_DEF_VALUE,(void *)&val))    printf("        Value: %d .. %d .. %d [%d]\n",mival,val,maval,noval);
-        val=bml_get_global_parameter_value(bm,i);printf("        RealValue: %d\n",val);
+        val=bml_get_global_parameter_value(bm,i);
+	str=(char *)bml_describe_value(bm,i,val);
+	printf("        RealValue: %d %s\n",val,str);
       }
     }
     if(bml_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,(void *)&val)) {   printf("    NumTrackParams: %i\n",val);
@@ -78,15 +80,17 @@ void test_info(const char *dllpath) {
         if(bml_get_track_parameter_info(bm,i,BM_PARA_NAME,(void *)&str))         printf("        Name: \"%s\"\n",str);
         if(bml_get_track_parameter_info(bm,i,BM_PARA_DESCRIPTION,(void *)&str))  printf("        Description: \"%s\"\n",str);
         if(bml_get_track_parameter_info(bm,i,BM_PARA_FLAGS,(void *)&val)) {      printf("        Flags: 0x%x\n",val);
-          /*
+          if(val&(1<<0)) puts("          MPF_WAVE");
+          if(val&(1<<1)) puts("          MPF_STATE");
+          if(val&(1<<2)) puts("          MPF_TICK_ON_EDIT");
           //if(val&) puts("      ");
-          */
         }
         if(bml_get_track_parameter_info(bm,i,BM_PARA_MIN_VALUE,(void *)&mival) &&
            bml_get_track_parameter_info(bm,i,BM_PARA_MAX_VALUE,(void *)&maval) &&
            bml_get_track_parameter_info(bm,i,BM_PARA_NO_VALUE,(void *)&noval) &&
            bml_get_track_parameter_info(bm,i,BM_PARA_DEF_VALUE,(void *)&val))    printf("        Value: %d .. %d .. %d [%d]\n",mival,val,maval,noval);
-        val=bml_get_track_parameter_value(bm,0,i);printf("        RealValue: %d\n",val);
+        val=bml_get_track_parameter_value(bm,0,i);
+	printf("        RealValue: %d\n",val);
       }
     }
     if(bml_get_machine_info(bm,BM_PROP_NUM_ATTRIBUTES,(void *)&val)) {     printf("    NumAttributes: %i\n",val);
