@@ -1,4 +1,4 @@
-/* $Id: bml.h,v 1.7 2005-06-17 15:30:06 ensonic Exp $
+/* $Id: bml.h,v 1.8 2005-06-18 07:32:58 ensonic Exp $
  */
 
 #ifndef BML_H
@@ -63,7 +63,8 @@ typedef void (*BMStop)(BuzzMachine *bm);
 
 typedef void (*BMSetNumTracks)(BuzzMachine *bm, int num);
 
-typedef const char *(*BMDescribeValue)(BuzzMachine *bm, int const param,int const value);
+typedef const char *(*BMDescribeGlobalValue)(BuzzMachine *bm, int const param,int const value);
+typedef const char *(*BMDescribeTrackValue)(BuzzMachine *bm, int const param,int const value);
 
 // dll passthrough API method pointers
 /*
@@ -127,7 +128,8 @@ extern void bml_stop(BuzzMachine *bm);
 
 extern void bml_set_num_tracks(BuzzMachine *bm, int num);
 
-extern const char *bml_describe_value(BuzzMachine *bm, int const param,int const value);
+extern const char *bml_describe_global_value(BuzzMachine *bm, int const param,int const value);
+extern const char *bml_describe_track_value(BuzzMachine *bm, int const param,int const value);
 
 //#ifdef __cplusplus
 //}

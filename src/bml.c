@@ -1,4 +1,4 @@
-/* $Id: bml.c,v 1.6 2005-06-17 10:05:23 ensonic Exp $
+/* $Id: bml.c,v 1.7 2005-06-18 07:32:58 ensonic Exp $
  */
 
 #include "config.h"
@@ -59,7 +59,8 @@ BMStop BMLX(bml_stop);
 
 BMSetNumTracks BMLX(bml_set_num_tracks);
 
-BMDescribeValue BMLX(bml_describe_value);
+BMDescribeGlobalValue BMLX(bml_describe_global_value);
+BMDescribeTrackValue BMLX(bml_describe_track_value);
 
 // setup API wrapper
 
@@ -274,12 +275,22 @@ void bml_set_num_tracks(BuzzMachine *bm, int num) {
 }
 
 
-const char *bml_describe_value(BuzzMachine *bm, int const param,int const value) {
+const char *bml_describe_global_value(BuzzMachine *bm, int const param,int const value) {
 	const char *ret;
 	
 	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment();
-	ret=BMLX(bml_describe_value(bm,param,value));
+	ret=BMLX(bml_describe_global_value(bm,param,value));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
+}
+
+const char *bml_describe_track_value(BuzzMachine *bm, int const param,int const value) {
+	const char *ret;
+	
+	pthread_mutex_lock(&ldt_mutex);
+	Check_FS_Segment();
+	ret=BMLX(bml_describe_track_value(bm,param,value));
 	pthread_mutex_unlock(&ldt_mutex);
 	return(ret);
 }
@@ -331,7 +342,8 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
 
   if(!(BMLX(bml_set_num_tracks)=(BMSetNumTracks)GetSymbol(h,"bm_set_num_tracks"))) { puts("bm_set_num_tracks is missing");return(FALSE);}
 
-  if(!(BMLX(bml_describe_value)=(BMDescribeValue)GetSymbol(h,"bm_describe_value"))) { puts("bm_describe_value is missing");return(FALSE);}
+  if(!(BMLX(bml_describe_global_value)=(BMDescribeGlobalValue)GetSymbol(h,"bm_describe_global_value"))) { puts("bm_describe_global_value is missing");return(FALSE);}
+  if(!(BMLX(bml_describe_track_value)=(BMDescribeTrackValue)GetSymbol(h,"bm_describe_track_value"))) { puts("bm_describe_track_value is missing");return(FALSE);}
 
   // @todo more API entries
   printf("%s:   symbols connected\n",__FUNCTION__);
