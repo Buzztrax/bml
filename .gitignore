@@ -10,3 +10,5 @@ aclocal.m4
 stamp-h.in
 Makefile
 Make.rules
+testmachine
+testmachine.{log,failtmp,fails}
