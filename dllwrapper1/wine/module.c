@@ -102,7 +102,7 @@ static void MODULE_RemoveFromList(WINE_MODREF *mod)
 WINE_MODREF *MODULE32_LookupHMODULE(HMODULE m)
 {
     modref_list* list=local_wm;
-    TRACE("LookupHMODULE: Module %X request\n", m);
+    //TRACE("LookupHMODULE: Module %X request\n", m);
     if(list==NULL)
     {
 	TRACE("LookupHMODULE failed\n");
@@ -119,7 +119,7 @@ WINE_MODREF *MODULE32_LookupHMODULE(HMODULE m)
 	    return NULL;
 	}
     }
-    TRACE("LookupHMODULE hit %p\n", list->wm);
+    //TRACE("LookupHMODULE hit %p\n", list->wm);
     return list->wm;
 }
 
