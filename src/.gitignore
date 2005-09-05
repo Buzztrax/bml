@@ -4,4 +4,5 @@ Makefile.in
 Makefile
 .libs
 .deps
-bmltest_{info,process}
+bmltest_info
+bmltest_process
