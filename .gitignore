@@ -14,3 +14,12 @@ testmachine
 testmachine.log
 testmachine.failtmp
 testmachine.fails
+stamp*
+*.prj
+*.pws
+compile
+config.h
+config.h.in
+depcomp
+libtool
+ltmain.sh
