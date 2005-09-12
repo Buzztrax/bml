@@ -1,4 +1,4 @@
-$Id: README,v 1.10 2005-05-24 15:26:26 ensonic Exp $
+$Id: README,v 1.11 2005-09-12 18:26:00 ensonic Exp $
 
 = quick info =
 Please turn you browser to http://www.buzztard.org to learn what this project
@@ -9,6 +9,21 @@ The libbml is a library that loads buzz machines from the windows music
 composer buzz, so that Linux apps can use them.
 This lib is either using the libavifile wrapper or the libfst one.
 See original README in README.libfst for the latter.
+
+= installing =
+You need to copy the all *.dll libraries from a windows buzz installation to
+your LD_LIBARY_PATH. We recommend to copy them to buzztard-prefix/lib.
+Now you need to fix up some library names.
+  ln -s Dsplib.dll dsplib.dll
+  ln -s Nblib.dll nblib.dll
+  ln -s Ninereeds Dsplib.dll Ninereeds DSPLIB.dll
+
+Next copy the machines. You can e.g. just copy the whole Gear folder to
+buzztard-prefix/lib as well.
+Then export this path, e.g.:
+  export BML_PATH=/home/ensonic/buzztard/lib/Gear/Effects:/home/ensonic/buzztard/lib/Gear/Generators
+You might need to fix some machine names (e.g. names with '?' in them).
+
 
 = usage =
 For testing, create a folder 'machines' and put some original buzz machines
@@ -24,23 +39,3 @@ make sure your /dev/zero is executable (needed for mmap() )
 == multithreading ==
 before calling lib code in multithreaded environments we should call:
 Check_FS_Segment();
-
-== windows path names ==
-We currently have a problem with long/absolute path. E.g.
-  ./bml/bmltest /usr/share/machines/mymachine.dll
-does not work. We also tried to put the machines into
-  ~/.wine/fake_windows/Program\ Files/Jeskola\ Buzz/Gear/
-and then trying
-  ./bml/bmltest 'C:\Program Files\Jeskola Buzz\Gear\elak_svf.dll'
-  ./bml/bmltest "C:\\Program Files\\Jeskola Buzz\\Gear\\elak_svf.dll"
-but that failed as well. On the other hand, doing
-  ./bml/bmltest 'C:\elak_svf.dll'
-works! Even doing 
-  ./bml/bmltest 'C:\Programme\Buzz\Gear\elak_svf.dll'
-works! So how the shell escape the spaces.
-
-We now have a method to convert path names, this should map
-  $HOME to Y:\
-  /     to Z:\
-but it always map to Z:
-manually using Z: works. The problem with the spaces persists.

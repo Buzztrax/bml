@@ -20,6 +20,7 @@ for DLL to know too much about its environment.
 #define PSEUDO_SCREEN_HEIGHT	/*480*/600
 #endif
 
+#define LOADLIB_TRY_NATIVE
 
 #include "winbase.h"
 #include "winreg.h"
@@ -188,10 +189,10 @@ static inline void dbgprintf(char* fmt, ...)
 #ifdef DETAILED_OUT
     if(LOADER_DEBUG)
     {
-	FILE* f;
+	FILE* f=NULL;
 	va_list va;
 	va_start(va, fmt);
-	f=fopen("./log", "a");
+	//f=fopen("./log", "a");
 	vprintf(fmt, va);
 	fflush(stdout);
 	if(f)
@@ -4475,6 +4476,11 @@ static INT WINAPI expMessageBoxA(HWND hWnd, LPCSTR text, LPCSTR title, UINT type
     return IDOK;
 }
 
+static WIN_BOOL expTerminateProcess(HANDLE hProcess, DWORD uExitCode) {
+	printf("TERMINATE - pid %u, code %lu\n",hProcess,uExitCode);
+	return TRUE;
+}
+
 /* these are needed for mss1 */
 
 /* defined in stubs.s */
@@ -4658,46 +4664,6 @@ static double exp_CIsinh(void)
     return sinh(x);
 }
 
-/* Buzz dsp lib */
-
-typedef void __fastcall (*void_func_ptr)(void);
-static HMODULE mod_dsplib_dll=0L;
-
-/* does fastcall put stuff in registers ?
- * if so, how can we preserve them ?
- */
-
-//static void __fastcall expDSP_Init(int const samplerate) {
-static void expDSP_Init(void) {
-    static void_func_ptr func=NULL;
-
-    dbgprintf("### DSP_Init()\n");
-    printf("*** DSP_Init()\n");
-
-    if(!mod_dsplib_dll) mod_dsplib_dll=expLoadLibraryA("Dsplib.dll");
-    if(!func) func=(void_func_ptr)GetProcAddress(mod_dsplib_dll,"?DSP_Init@@YIXH@Z");
-    if(func) {
-        func();
-        printf("*** done\n");
-    }
-    else printf("*** failed to get symbol\n");
-}
-
-static void expDSP_BW_Reset(void) {
-    static void_func_ptr func=NULL;
-
-    dbgprintf("### DSP_BW_Reset()\n");
-    printf("*** DSP_BW_Reset()\n");
-
-    if(!func) func=(void_func_ptr)GetProcAddress(mod_dsplib_dll,"?DSP_BW_Reset@@YIXAAVCBWState@@@Z");
-    if(func) {
-        func();
-        printf("*** done\n");
-    }
-    else printf("*** failed to get symbol\n");
-}
-
-
 struct exports
 {
     char name[64];
@@ -4865,6 +4831,7 @@ struct exports exp_kernel32[]=
     FF(ExitProcess,-1)
     {"LoadLibraryExA", -1, (void*)&LoadLibraryExA},
     FF(SetThreadIdealProcessor,-1)
+	FF(TerminateProcess, -1)
 };
 
 struct exports exp_msvcrt[]={
@@ -5082,12 +5049,6 @@ struct exports exp_ddraw[]={
 };
 #endif
 
-struct exports exp_Dsplib[]={
-    {"?DSP_Init@@YIXH@Z", -1, (void*)&expDSP_Init},
-    {"?DSP_BW_Reset@@YIXAAVCBWState@@@Z", -1, (void*)&expDSP_BW_Reset},
-};
-
-
 #define LL(X) \
     {#X".dll", sizeof(exp_##X)/sizeof(struct exports), exp_##X},
 
@@ -5111,7 +5072,7 @@ struct libs libraries[]={
 #ifdef QTX
     LL(ddraw)
 #endif
-    LL(Dsplib)
+//    LL(Dsplib)
 };
 #if defined(__CYGWIN__) || defined(__OS2__) || defined (__OpenBSD__)
 #define MANGLE(a) "_" #a
@@ -5217,34 +5178,10 @@ static void* add_stub(void)
     return (void*)answ;
 }
 
-void* LookupExternal(const char* library, int ordinal)
+static void* LookupExternalNative(const char* library, LPCSTR name)
 {
-    int i,j;
-    if(library==0)
-    {
-	printf("ERROR: library=0\n");
-	return (void*)ext_unknown;
-    }
-    //    printf("%x %x\n", &unk_exp1, &unk_exp2);
-
-    printf("External func %s:%d\n", library, ordinal);
-
-    for(i=0; i<sizeof(libraries)/sizeof(struct libs); i++)
-    {
-	if(strcasecmp(library, libraries[i].name))
-	    continue;
-	for(j=0; j<libraries[i].length; j++)
-	{
-	    if(ordinal!=libraries[i].exps[j].id)
-		continue;
-	    //printf("Hit: 0x%p\n", libraries[i].exps[j].func);
-	    return libraries[i].exps[j].func;
-	}
-    }
-
 #ifdef LOADLIB_TRY_NATIVE
     /* ok, this is a hack, and a big memory leak. should be fixed. - alex */
-    {
 	int hand;
 	WINE_MODREF *wm;
 	void *func;
@@ -5258,7 +5195,7 @@ void* LookupExternal(const char* library, int ordinal)
 	    FreeLibrary(hand);
 	    goto no_dll;
 	}
-	func = PE_FindExportedFunction(wm, (LPCSTR) ordinal, 0);
+	func = PE_FindExportedFunction(wm, name, 0);
 	if (!func)
 	{
 	    printf("No such ordinal in external dll\n");
@@ -5269,10 +5206,42 @@ void* LookupExternal(const char* library, int ordinal)
 	printf("External dll loaded (offset: 0x%x, func: %p)\n",
 	       hand, func);
 	return func;
-    }
 
 no_dll:
 #endif
+	return NULL;
+}
+
+void* LookupExternal(const char* library, int ordinal)
+{
+    int i,j;
+	void *func;
+
+    if(library==0)
+    {
+		printf("ERROR: library=0\n");
+		return (void*)ext_unknown;
+    }
+    //    printf("%x %x\n", &unk_exp1, &unk_exp2);
+
+    printf("External func %s:%d\n", library, ordinal);
+
+    for(i=0; i<sizeof(libraries)/sizeof(struct libs); i++)
+    {
+		if(strcasecmp(library, libraries[i].name))
+			continue;
+		for(j=0; j<libraries[i].length; j++)
+		{
+			if(ordinal!=libraries[i].exps[j].id)
+			continue;
+			//printf("Hit: 0x%p\n", libraries[i].exps[j].func);
+			return libraries[i].exps[j].func;
+		}
+    }
+	if((func=LookupExternalNative(library,(LPCSTR) ordinal))) {
+		return func;
+	}
+	
 /* xine: pos is now tested inside add_stub()
     if(pos>150)return 0;
 */
@@ -5282,32 +5251,35 @@ no_dll:
 
 void* LookupExternalByName(const char* library, const char* name)
 {
-    /* char* answ; -- unused */
     int i,j;
-    //   return (void*)ext_unknown;
+	void *func;
+
     if(library==0)
     {
-	printf("ERROR: library=0\n");
-	return (void*)ext_unknown;
+		printf("ERROR: library=0\n");
+		return (void*)ext_unknown;
     }
     if(name==0)
     {
-	printf("ERROR: name=0\n");
-	return (void*)ext_unknown;
+		printf("ERROR: name=0\n");
+		return (void*)ext_unknown;
     }
     dbgprintf("External func %s:%s\n", library, name);
     for(i=0; i<sizeof(libraries)/sizeof(struct libs); i++)
     {
-	if(strcasecmp(library, libraries[i].name))
-	    continue;
-	for(j=0; j<libraries[i].length; j++)
-	{
-	    if(strcmp(name, libraries[i].exps[j].name))
-		continue;
-	    //	    printf("Hit: 0x%08X\n", libraries[i].exps[j].func);
-	    return libraries[i].exps[j].func;
-	}
+		if(strcasecmp(library, libraries[i].name))
+			continue;
+		for(j=0; j<libraries[i].length; j++)
+		{
+			if(strcmp(name, libraries[i].exps[j].name))
+			continue;
+			//	    printf("Hit: 0x%08X\n", libraries[i].exps[j].func);
+			return libraries[i].exps[j].func;
+		}
     }
+	if((func=LookupExternalNative(library,(LPCSTR) name))) {
+		return func;
+	}
 /* xine: pos is now tested inside add_stub()
     if(pos>150)return 0;// to many symbols
 */
