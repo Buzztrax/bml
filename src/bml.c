@@ -1,4 +1,4 @@
-/* $Id: bml.c,v 1.7 2005-06-18 07:32:58 ensonic Exp $
+/* $Id: bml.c,v 1.8 2005-09-12 16:35:00 ensonic Exp $
  */
 
 #include "config.h"
@@ -296,7 +296,7 @@ const char *bml_describe_track_value(BuzzMachine *bm, int const param,int const 
 }
 
 int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
-  printf("%s: bml_init\n",__FUNCTION__);
+  printf("%s\n",__FUNCTION__);
   
 #ifdef USE_DLLWRAPPER1
   ldt_fs=Setup_LDT_Keeper();
@@ -306,6 +306,8 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
 #ifdef USE_DLLWRAPPER2
   SharedWineInit(sighandler);
 #endif
+
+  printf("%s:   dsplib loaded: %d\n",__FUNCTION__,h);
 
   if(!(h=LoadDLL("BuzzMachineLoader.dll"))) {
 	printf("%s:   failed to load bml\n",__FUNCTION__);

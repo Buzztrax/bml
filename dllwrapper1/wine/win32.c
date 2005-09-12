@@ -2639,7 +2639,7 @@ static HWND WINAPI expCreateWindowExA(int exstyle, const char *classname,
     dbgprintf("CreateWindowEx(%d, 0x%x = %s, 0x%x = %s, %d, %d, %d, %d, %d, 0x%x, 0x%x, 0x%x, 0x%x) => 1\n",
 	exstyle, classname, classname, winname, winname, style, x, y, w, h,
 	parent, menu, inst, param);
-    printf("CreateWindowEx() called okey\n");
+    printf("CreateWindowEx() called okay\n");
     return 1;
 }
 
@@ -4658,6 +4658,46 @@ static double exp_CIsinh(void)
     return sinh(x);
 }
 
+/* Buzz dsp lib */
+
+typedef void __fastcall (*void_func_ptr)(void);
+static HMODULE mod_dsplib_dll=0L;
+
+/* does fastcall put stuff in registers ?
+ * if so, how can we preserve them ?
+ */
+
+//static void __fastcall expDSP_Init(int const samplerate) {
+static void expDSP_Init(void) {
+    static void_func_ptr func=NULL;
+
+    dbgprintf("### DSP_Init()\n");
+    printf("*** DSP_Init()\n");
+
+    if(!mod_dsplib_dll) mod_dsplib_dll=expLoadLibraryA("Dsplib.dll");
+    if(!func) func=(void_func_ptr)GetProcAddress(mod_dsplib_dll,"?DSP_Init@@YIXH@Z");
+    if(func) {
+        func();
+        printf("*** done\n");
+    }
+    else printf("*** failed to get symbol\n");
+}
+
+static void expDSP_BW_Reset(void) {
+    static void_func_ptr func=NULL;
+
+    dbgprintf("### DSP_BW_Reset()\n");
+    printf("*** DSP_BW_Reset()\n");
+
+    if(!func) func=(void_func_ptr)GetProcAddress(mod_dsplib_dll,"?DSP_BW_Reset@@YIXAAVCBWState@@@Z");
+    if(func) {
+        func();
+        printf("*** done\n");
+    }
+    else printf("*** failed to get symbol\n");
+}
+
+
 struct exports
 {
     char name[64];
@@ -5042,6 +5082,12 @@ struct exports exp_ddraw[]={
 };
 #endif
 
+struct exports exp_Dsplib[]={
+    {"?DSP_Init@@YIXH@Z", -1, (void*)&expDSP_Init},
+    {"?DSP_BW_Reset@@YIXAAVCBWState@@@Z", -1, (void*)&expDSP_BW_Reset},
+};
+
+
 #define LL(X) \
     {#X".dll", sizeof(exp_##X)/sizeof(struct exports), exp_##X},
 
@@ -5065,6 +5111,7 @@ struct libs libraries[]={
 #ifdef QTX
     LL(ddraw)
 #endif
+    LL(Dsplib)
 };
 #if defined(__CYGWIN__) || defined(__OS2__) || defined (__OpenBSD__)
 #define MANGLE(a) "_" #a
@@ -5138,11 +5185,11 @@ static void* add_stub(void)
     /* xine: side effect of the stub fix. we must not
      * allocate a stub for this function otherwise QT dll
      * will try to call it.
-     */      
     if( strcmp(export_names[pos], "AllocateAndInitializeSid") == 0 )
     {
       return 0;
     }
+     */      
       
 #if 0
     memcpy(answ, &unk_exp1, 0x64);

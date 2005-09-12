@@ -819,9 +819,6 @@ WINE_MODREF *PE_CreateModule( HMODULE hModule,
         /* remove entry from modref chain */
          return NULL;
     }
-
-    return wm;
-
     return wm;
 }
 
