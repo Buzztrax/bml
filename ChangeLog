@@ -1,21 +1,425 @@
-2004-03-24 Torben Hohn <torbenh@informatik.uni-bremen.de>
-   * configure.ac:
-   * Makefile.in:  removed the comctl subdir
+2005-09-26 23:46  Stefan Kost <ensonic@users.sf.net>
 
-2004-03-16 Peter Bartok <pbartok@novell.com>
-   * configure.ac: Fixed AC_INIT arguments
-   * Makefile.in: Added 'dist' and 'distcheck' rules (distcheck still needs work)
+	* .cvsignore, src/BuzzMachineLoader.dll:
+	new dll wrapper (fixes auxbus machines)
 
-2004-03-12 Peter Bartok <pbartok@novell.com>
-   * configure.ac: Removed wine_uuid check
-   * Make.rule.in: Removed wine_uuid reference
+2005-09-12 20:26  Stefan Kost <ensonic@users.sf.net>
 
+	* README, dllwrapper1/wine/win32.c, src/BuzzMachineLoader.dll:
+	calling other dlls works more info in the README
 
-2004-03-11  Peter Bartok  <pbartok@novell.com>
+2005-09-12 18:34  Stefan Kost <ensonic@users.sf.net>
 
-   * ChangeLog: Created
-   * configure.ac: Created
-   * Makefile.in: Changed to have rules for building subdirs
-   * Make.rules.in: Created
-   * aclocal.m4: Partially copied from wine
-   * autogen.sh: Copied from mono and stripped down
+	* dllwrapper1/wine/pe_image.c, dllwrapper1/wine/win32.c, src/bml.c:
+	experiments with dsplib
+
+2005-09-09 14:02  Stefan Kost <ensonic@users.sf.net>
+
+	* .cvsignore, testmachine.sh, buzz/.cvsignore:
+	little cleanup and some notes
+
+2005-09-06 00:40  Stefan Kost <ensonic@users.sf.net>
+
+	* .cvsignore, src/.cvsignore:
+	more cvs maintainance
+
+2005-09-06 00:38  Stefan Kost <ensonic@users.sf.net>
+
+	* .cvsignore, dllwrapper1/.cvsignore, dllwrapper1/wine/.cvsignore,
+	src/.cvsignore:
+	cvs maintainance
+
+2005-09-06 00:31  Stefan Kost <ensonic@users.sf.net>
+
+	* testmachine.sh, dllwrapper1/wine/module.c,
+	dllwrapper1/wine/win32.c, src/BuzzMachineLoader.dll,
+	src/bmltest_info.c:
+	updated test-machine script new version of
+	wrapper dll
+
+2005-06-30 17:51  Stefan Kost <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader.dll:
+	def values are now correctly initialized
+
+2005-06-23 23:16  Stefan Kost <ensonic@users.sf.net>
+
+	* NEWS:
+	little distcheck fix (still problems)
+
+2005-06-18 09:32  Stefan Kost <ensonic@users.sf.net>
+
+	* src/: BuzzMachineLoader.dll, bml.c, bml.h, bmltest_info.c:
+	added another wrapper method bmltest_info used
+	describe_value methods
+
+2005-06-17 17:30  Stefan Kost <ensonic@users.sf.net>
+
+	* src/: bml.h, bmltest_info.c:
+	use describe value in test tool
+
+2005-06-17 12:05  Stefan Kost <ensonic@users.sf.net>
+
+	* dllwrapper1/wine/driver.c, dllwrapper1/wine/pe_image.c,
+	src/BuzzMachineLoader.dll, src/bml.c, src/bml.h,
+	src/bmltest_info.c, src/bmltest_process.c:
+	fixed more warnings added another symbol
+
+2005-06-14 09:20  Stefan Kost <ensonic@users.sf.net>
+
+	* configure.ac:
+	added -Wall to cflags
+
+2005-06-03 18:00  Stefan Kost <ensonic@users.sf.net>
+
+	* libbml.pc.in, src/Makefile.am:
+	fixed Makefile.am in which we forgot to install some headers
+
+2005-06-02 19:58  Stefan Kost <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader.dll:
+	fix parameter value access in dll
+
+2005-06-01 16:17  Stefan Kost <ensonic@users.sf.net>
+
+	* dllwrapper1/wine/module.c, dllwrapper1/wine/pe_image.c,
+	dllwrapper1/wine/win32.c, src/bml.c, src/bml.h:
+	added mutex locking around lib calls
+
+2005-05-26 18:25  Stefan Kost <ensonic@users.sf.net>
+
+	* src/: Makefile.am, bmltest_info.c, bmltest_process.c:
+	forgot to actually *use* pedantic gcc flags fixed
+	warnings and deprecated __FUNCTION__ usage
+
+2005-05-24 17:26  Stefan Kost <ensonic@users.sf.net>
+
+	* README:
+	hints about /dev/zero in README
+
+2005-05-20 15:22  Stefan Kost <ensonic@users.sf.net>
+
+	* dllwrapper1/wine/win32.c:
+	added sinh, cosh to make more machines happy
+
+2005-05-19 00:30  Stefan Kost <ensonic@users.sf.net>
+
+	* libbml.pc.in, src/bml.c, src/bml.h, src/bmltest_info.c,
+	src/bmltest_process.c:
+	all wrapped elements live in a separate namespace
+
+2005-05-18 21:55  Stefan Kost <ensonic@users.sf.net>
+
+	* dllwrapper1/wine/Makefile.am, dllwrapper1/wine/module.c,
+	src/BuzzMachineLoader.dll, src/Makefile.am, src/bml.c, src/bml.h:
+	added lots of debug output
+
+2005-05-18 19:24  Stefan Kost <ensonic@users.sf.net>
+
+	* Makefile.in, README, configure.ac, dllwrapper1/wine/Makefile.am,
+	dllwrapper1/wine/debugtools.h, dllwrapper1/wine/ext.c,
+	dllwrapper1/wine/module.c, dllwrapper1/wine/pe_image.c,
+	src/BuzzMachineLoader.dll, src/Makefile.am, src/bml.c, src/bml.h:
+	some more debug output
+
+2005-05-18 14:58  Stefan Kost <ensonic@users.sf.net>
+
+	* dllwrapper1/wine/stubs.s:
+	added missing file
+
+2005-05-18 14:53  Stefan Kost <ensonic@users.sf.net>
+
+	* Makefile.am:
+	added missing file
+
+2005-05-18 14:47  Stefan Kost <ensonic@users.sf.net>
+
+	* AUTHORS, Makefile.in, NEWS, autogen.sh, configure.ac,
+	bml/BuzzMachineLoader.dll, bml/ChangeLog, bml/Makefile.in,
+	bml/bmlapi.c, bml/bmltest_info.c, bml/bmltest_process.c,
+	bml/vstwin.c, dllwrapper1/Makefile.am, dllwrapper1/libwin32.h,
+	dllwrapper1/wine/Makefile.am, dllwrapper1/wine/afl.c,
+	dllwrapper1/wine/avifmt.h, dllwrapper1/wine/basetsd.h,
+	dllwrapper1/wine/com.h, dllwrapper1/wine/debugtools.h,
+	dllwrapper1/wine/driver.c, dllwrapper1/wine/driver.h,
+	dllwrapper1/wine/elfdll.c, dllwrapper1/wine/elfdll.h,
+	dllwrapper1/wine/ext.c, dllwrapper1/wine/ext.h,
+	dllwrapper1/wine/heap.h, dllwrapper1/wine/ldt.h,
+	dllwrapper1/wine/ldt_keeper.c, dllwrapper1/wine/ldt_keeper.h,
+	dllwrapper1/wine/loader.h, dllwrapper1/wine/mmreg.h,
+	dllwrapper1/wine/module.c, dllwrapper1/wine/module.h,
+	dllwrapper1/wine/msacm.h, dllwrapper1/wine/msacmdrv.h,
+	dllwrapper1/wine/ntdef.h, dllwrapper1/wine/pe_image.c,
+	dllwrapper1/wine/pe_image.h, dllwrapper1/wine/pe_resource.c,
+	dllwrapper1/wine/poppack.h, dllwrapper1/wine/pshpack1.h,
+	dllwrapper1/wine/pshpack2.h, dllwrapper1/wine/pshpack4.h,
+	dllwrapper1/wine/pshpack8.h, dllwrapper1/wine/registry.c,
+	dllwrapper1/wine/registry.h, dllwrapper1/wine/resource.c,
+	dllwrapper1/wine/resource.h, dllwrapper1/wine/vfl.c,
+	dllwrapper1/wine/vfw.h, dllwrapper1/wine/win32.c,
+	dllwrapper1/wine/win32.h, dllwrapper1/wine/winbase.h,
+	dllwrapper1/wine/windef.h, dllwrapper1/wine/windows.h,
+	dllwrapper1/wine/wineacm.h, dllwrapper1/wine/winerror.h,
+	dllwrapper1/wine/winestring.h, dllwrapper1/wine/winnt.h,
+	dllwrapper1/wine/winreg.h, dllwrapper1/wine/winuser.h,
+	dllwrapper1/wine/wrapper.S, dllwrapper1/wine/wrapper.h,
+	dllwrapper2/Makefile.in, dllwrapper2/gettid.c,
+	dllwrapper2/interlocked.c, dllwrapper2/lib.c, dllwrapper2/lib.h,
+	dllwrapper2/libbml.spec.c, dllwrapper2/libwinelib.c,
+	dllwrapper2/libwinelib.h, dllwrapper2/port.h,
+	dllwrapper2/pthreademu.c, dllwrapper2/pthreademu.h,
+	dllwrapper2/server.h, dllwrapper2/server_protocol.h,
+	dllwrapper2/thread.h, dllwrapper2/windef16.h,
+	src/BuzzMachineLoader.dll, src/Makefile.am, src/bml.c, src/bml.h,
+	src/bmltest_info.c, src/bmltest_process.c:
+	switched to dll wrapper by libavifile
+
+2005-05-03 23:51  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/: bml.h, bmlapi.c, bmltest_info.c, bmltest_process.c:
+	fixed a few more warnings
+
+2005-04-30 13:17  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/: bml.h, bmlapi.c:
+	better debug logging
+
+2005-04-29 12:17  Stefan Kost <ensonic@users.sf.net>
+
+	* TODO, bml/BuzzMachineLoader.dll, bml/bmlapi.c:
+	fixed a type, thanks to Alex
+
+2005-04-13 11:33  Stefan Kost <ensonic@users.sf.net>
+
+	* README:
+	spell checking the README
+
+2005-02-17 14:47  Stefan Kost <ensonic@users.sf.net>
+
+	* buzz/BuzzMachineLoader.h:
+	new api
+
+2005-02-17 09:14  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/: BuzzMachineLoader.dll, bml.h, bmlapi.c, bmltest_info.c,
+	bmltest_process.c:
+	[features] new api entries for param locations
+
+2005-02-16 20:11  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/: bml.h, bmlapi.c, bmltest_info.c:
+	api fix
+
+2005-02-16 08:47  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/BuzzMachineLoader.dll, bml/bml.h, bml/bmlapi.c,
+	buzz/BuzzMachineLoader.h:
+	now oscillator table should work we now
+	initialize attributes and global params
+
+2005-02-12 21:00  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/bmltest_info.c:
+	use new api for getting track param values
+
+2005-02-12 20:57  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/: BuzzMachineLoader.dll, bml.h:
+	api entries to get/set track params
+
+2005-01-24 12:20  Stefan Kost <ensonic@users.sf.net>
+
+	* .cvsignore, bml/include/.cvsignore:
+	added/updated cvsignore files
+
+2005-01-20 20:06  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/bmlapi.c:
+	missing newline at eof
+
+2005-01-20 17:21  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/include/config.h:
+	removed obsolete file from cvs
+
+2005-01-20 17:19  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/include/config.h:
+	[no log message]
+
+2005-01-20 09:08  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/include/: config.h, port.h:
+	commented out wrong include check
+
+2005-01-16 15:13  Stefan Kost <ensonic@users.sf.net>
+
+	* autogen.sh, bml/include/config.h:
+	we need to check for automake to locate aclocale, even we do
+	not use automake here
+
+2005-01-16 14:18  Stefan Kost <ensonic@users.sf.net>
+
+	* autogen.sh, bml/BuzzMachineLoader.dll, bml/include/config.h.in:
+	added a real autogen.sh script
+
+2005-01-16 11:05  Stefan Kost <ensonic@users.sf.net>
+
+	* README:
+	README
+
+2004-11-29 17:48  Stefan Kost <ensonic@users.sf.net>
+
+	* README, testmachine.sh, bml/BuzzMachineLoader.dll:
+	simplified calculations (thanks to kleiner)
+
+2004-09-25 18:08  Stefan Kost <ensonic@users.sf.net>
+
+	* .cvsignore, bml/.cvsignore:
+	tuned the ignore rules
+
+2004-09-25 18:03  Stefan Kost <ensonic@users.sf.net>
+
+	* .cvsignore, AUTHORS, bml/BuzzMachineLoader.dll:
+	initial cvsignore file
+
+2004-09-14 14:17  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/BuzzMachineLoader.dll, bml/bml.h, bml/bmltest_info.c,
+	bml/bmltest_process.c, buzz/BuzzMachineLoader.h:
+	we can change parameter in buzz machines
+
+2004-09-13 17:08  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/BuzzMachineLoader.dll, bml/bml.h, bml/bmlapi.c,
+	bml/bmltest_info.c, buzz/BuzzMachineLoader.h:
+	new api for set/get parameters/attributes C: renamed API to make
+	space for new methods
+
+2004-09-09 18:54  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/BuzzMachineLoader.dll, bml/Makefile.in, bml/bml.h,
+	bml/bmlapi.c, bml/bmltest.c, bml/bmltest_info.c,
+	bml/bmltest_process.c, buzz/BuzzMachineLoader.h:
+	a new test, that runs a buzz effect A: new API entries
+
+2004-09-03 16:50  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/: bmlapi.c, bmltest.c:
+	extended test to load multiple machines
+
+2004-09-03 11:57  Stefan Kost <ensonic@users.sf.net>
+
+	* README, bml/bml.h, bml/bmlapi.c, bml/bmltest.c:
+	path name resolving
+
+2004-09-03 09:57  Stefan Kost <ensonic@users.sf.net>
+
+	* README:
+	more in readme
+
+2004-09-03 09:35  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/: BuzzMachineLoader.dll, bmltest.c:
+	fixed crashes, when windows dll could not be loaded
+
+2004-09-03 09:18  Stefan Kost <ensonic@users.sf.net>
+
+	* README, bml/BuzzMachineLoader.dll:
+	more infos in README
+
+2004-09-03 09:05  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/bmlapi.c:
+	fixed return codes
+
+2004-09-03 09:00  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/BuzzMachineLoader.dll, bml/Makefile.in,
+	buzz/BuzzMachineLoader.h:
+	windows support files
+
+2004-09-02 17:20  Stefan Kost <ensonic@users.sf.net>
+
+	* Makefile.in, configure.ac, bml/Makefile.in, bml/bmltest.c:
+	build system fixes
+
+2004-09-02 09:53  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/bmltest.c:
+	query info from the linux side
+
+2004-09-02 09:49  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/: Makefile.in, bml.h, bmlapi.c, bmltest.c:
+	set master info
+
+2004-08-31 17:42  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/Makefile.in:
+	build system fixes
+
+2004-08-31 14:30  Stefan Kost <ensonic@users.sf.net>
+
+	* Makefile.in, bml/bml.h, bml/bmlapi.c, bml/bmltest.c:
+	more API restructuring
+
+2004-08-30 17:02  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/bmlapi.c:
+	outlined the next steps
+
+2004-08-26 15:10  Stefan Kost <ensonic@users.sf.net>
+
+	* README, README.libfst, TODO, bml/Makefile.in, bml/bml.h,
+	bml/bmlapi.c, bml/bmlapi.cpp, bml/bmltest.c, bml/bmltest.cpp:
+	: design, now using two wraper stages
+
+2004-08-10 16:35  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/: bmlapi.cpp, bmltest.cpp:
+	more info about the problems
+
+2004-08-10 15:55  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/: bmltest.c, bmltest.cpp:
+	*now* bmltest is a cpp app
+
+2004-08-10 15:54  Stefan Kost <ensonic@users.sf.net>
+
+	* bml/: Makefile.in, bml.c, bml.h, bmlapi.cpp, libwinelib.c,
+	libwinelib.h, pthreademu.h, server.h, server_protocol.h, thread.h,
+	windef16.h:
+	now bmltest is a cpp app
+
+2004-08-09 18:22  Stefan Kost <ensonic@users.sf.net>
+
+	* aclocal.m4, configure, libbml.pc, bml/bmltest:
+	R: obsolete files
+
+2004-08-09 18:02  Stefan Kost <ensonic@users.sf.net>
+
+	* README, aclocal.m4, fixheaders, AUTHORS, ChangeLog,
+	Make.rules.in, Makefile.in, README.local, autogen.sh, configure,
+	configure.ac, libbml.pc.in, mkinstalldirs, COPYING, libbml.pc,
+	bml/ChangeLog, bml/Makefile.in, bml/bml.c, bml/bml.h, bml/bmltest,
+	bml/bmltest.c, bml/gettid.c, bml/interlocked.c, bml/libwinelib.c,
+	bml/libwinelib.h, bml/pthreademu.c, bml/pthreademu.h, bml/server.h,
+	bml/server_protocol.h, bml/thread.h, bml/vstwin.c, bml/windef16.h,
+	bml/include/ChangeLog, bml/include/config.h,
+	bml/include/config.h.in, bml/include/port.h:
+	initial source of the buzz machine loader
+
+2004-08-09 18:02  Stefan Kost <ensonic@users.sf.net>
+
+	* README, aclocal.m4, fixheaders, AUTHORS, ChangeLog,
+	Make.rules.in, Makefile.in, README.local, autogen.sh, configure,
+	configure.ac, libbml.pc.in, mkinstalldirs, COPYING, libbml.pc,
+	bml/ChangeLog, bml/Makefile.in, bml/bml.c, bml/bml.h, bml/bmltest,
+	bml/bmltest.c, bml/gettid.c, bml/interlocked.c, bml/libwinelib.c,
+	bml/libwinelib.h, bml/pthreademu.c, bml/pthreademu.h, bml/server.h,
+	bml/server_protocol.h, bml/thread.h, bml/vstwin.c, bml/windef16.h,
+	bml/include/ChangeLog, bml/include/config.h,
+	bml/include/config.h.in, bml/include/port.h:
+	Initial revision
+
