@@ -1,3 +1,11 @@
+2006-03-20  Stefan Kost  <ensonic@users.sf.net>
+
+	* Makefile.in:
+	* buzz/BuzzMachineLoader.h:
+	* src/BuzzMachineLoader.dll:
+	* src/bmltest_info.c: (test_info):
+	  more infos, added dll-name property
+
 2005-09-26 23:46  Stefan Kost <ensonic@users.sf.net>
 
 	* .cvsignore, src/BuzzMachineLoader.dll:

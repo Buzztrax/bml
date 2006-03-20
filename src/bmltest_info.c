@@ -1,4 +1,4 @@
-/* $Id: bmltest_info.c,v 1.7 2005-09-05 22:31:19 ensonic Exp $
+/* $Id: bmltest_info.c,v 1.8 2006-03-20 20:11:21 ensonic Exp $
  * invoke it e.g. as
  *   env LD_LIBRARY_PATH="." ./bmltest_info ../machines/elak_svf.dll
  *
@@ -30,12 +30,14 @@ void test_info(const char *dllpath) {
   if((bm=bml_new(fulldllpath))) {
     char *machine_types[]={"MT_MASTER","MT_GENERATOR","MT_EFFECT" };
     char *parameter_types[]={"PT_NOTE","PT_SWITCH","PT_BYTE","PT_WORD" };
-	void *addr;
+    void *addr;
 
-	puts("  machine created");
-	bml_init(bm);
+    puts("  machine created");
+    bml_init(bm);
     puts("  machine initialized");
 
+    if(bml_get_machine_info(bm,BM_PROP_SHORT_NAME,(void *)&str))           printf("    Short Name: \"%s\"\n",str);
+    if(bml_get_machine_info(bm,BM_PROP_NAME,(void *)&str))                 printf("    Name: \"%s\"\n",str);
     if(bml_get_machine_info(bm,BM_PROP_TYPE,(void *)&val))                 printf("    Type: %i -> \"%s\"\n",val,((val<3)?machine_types[val]:"unknown"));
     if(bml_get_machine_info(bm,BM_PROP_VERSION,(void *)&val))              printf("    Version: %3.1f\n",(float)val/10.0);
     if(bml_get_machine_info(bm,BM_PROP_FLAGS,(void *)&val)) {              printf("    Flags: 0x%x\n",val);

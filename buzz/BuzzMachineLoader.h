@@ -17,6 +17,7 @@ class BuzzMachine {
 public:
 	// library handle
 	HMODULE h;
+	char *DllName;
 	// callback instance
 	BuzzMachineCallbacks *callbacks;
 	// classes
@@ -41,7 +42,8 @@ typedef enum {
 	BM_PROP_NAME,
 	BM_PROP_SHORT_NAME,
 	BM_PROP_AUTHOR,
-	BM_PROP_COMMANDS
+	BM_PROP_COMMANDS,
+	BM_PROP_DLL_NAME
 } BuzzMachineProperty;
 
 typedef enum {
