@@ -202,7 +202,7 @@ LPWSTR HEAP_strdupAtoW(HANDLE heap, DWORD flags, LPCSTR string)
     answer=malloc(2 * (size + 1));
     for(i=0; i<=size; i++)
 	answer[i]=(short)string[i];
-    return answer;
+    return (LPWSTR)answer;
 }
 LPSTR HEAP_strdupWtoA(HANDLE heap, DWORD flags, LPCWSTR string)
 {

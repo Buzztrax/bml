@@ -1734,10 +1734,10 @@ static void wch_print(const short* str)
 static long WINAPI expWideCharToMultiByte(long v1, long v2, short* s1, long siz1,
 					  char* s2, int siz2, char* c3, int* siz3)
 {
-    int result;
+    long result;
     dbgprintf("WideCharToMultiByte(codepage %d, flags 0x%x, src 0x%x, src size %d, "
 	      "dest 0x%x, dest size %d, defch 0x%x, used_defch 0x%x)", v1, v2, s1, siz1, s2, siz2, c3, siz3);
-    result=WideCharToMultiByte(v1, v2, s1, siz1, s2, siz2, c3, siz3);
+    result=WideCharToMultiByte(v1, v2, (LPCWSTR)s1, siz1, s2, siz2, c3, siz3);
     dbgprintf("=> %d\n", result);
     //if(s1)wch_print(s1);
     if(s2)dbgprintf("  dest: %s\n", s2);

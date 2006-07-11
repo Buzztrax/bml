@@ -161,7 +161,7 @@ FARPROC PE_FindExportedFunction(
             {
                 int res, pos = (min + max) / 2;
                 ename = RVA(name[pos]);
-                if (!(res = strcmp( ename, funcName )))
+                if (!(res = strcmp((char *)ename, funcName )))
                 {
                     ordinal = ordinals[pos];
                     goto found;
@@ -173,7 +173,7 @@ FARPROC PE_FindExportedFunction(
             for (i = 0; i < exports->NumberOfNames; i++)
             {
                 ename = RVA(name[i]);
-                if (!strcmp( ename, funcName ))
+                if (!strcmp((char *)ename, funcName ))
                 {
 		    ERR( "%s.%s required a linear search\n", wm->modname, funcName );
                     ordinal = ordinals[i];
@@ -209,7 +209,7 @@ FARPROC PE_FindExportedFunction(
             FARPROC proc = RVA(addr);
             if (snoop)
             {
-                if (!ename) ename = "@";
+                if (!ename) ename = (u_char *)"@";
                 //proc = SNOOP_GetProcAddress(wm->module,ename,ordinal,proc);
 		TRACE("SNOOP_GetProcAddress n/a\n");		
             }
@@ -312,7 +312,7 @@ static DWORD fixup_imports( WINE_MODREF *wm )
 		} else {		
 		    pe_name = (PIMAGE_IMPORT_BY_NAME)RVA(import_list->u1.AddressOfData);
 //		    TRACE("--- %s %s.%d\n", pe_name->Name, name, pe_name->Hint);
-		    thunk_list->u1.Function=LookupExternalByName(name, pe_name->Name);
+		    thunk_list->u1.Function=LookupExternalByName(name, (const char*)pe_name->Name);
 		}
 		import_list++;
 		thunk_list++;
@@ -326,14 +326,11 @@ static DWORD fixup_imports( WINE_MODREF *wm )
 		    int ordinal = IMAGE_ORDINAL(thunk_list->u1.Ordinal);
 
 		    TRACE("--- Ordinal %s.%d\n",name,ordinal);
-		    thunk_list->u1.Function=LookupExternal(
-		      name, ordinal);
+		    thunk_list->u1.Function=LookupExternal(name, ordinal);
 		} else {
 		    pe_name=(PIMAGE_IMPORT_BY_NAME) RVA(thunk_list->u1.AddressOfData);
-		    TRACE("--- %s %s.%d\n",
-		   		  pe_name->Name,name,pe_name->Hint);
-		    thunk_list->u1.Function=LookupExternalByName(
-		      name, pe_name->Name);
+		    TRACE("--- %s %s.%d\n", pe_name->Name,name,pe_name->Hint);
+		    thunk_list->u1.Function=LookupExternalByName(name, (const char*)pe_name->Name);
 		}
 		thunk_list++;
 	    }

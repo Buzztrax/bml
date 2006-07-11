@@ -1,3 +1,13 @@
+2006-07-11  Stefan Kost  <ensonic@users.sf.net>
+
+	* dllwrapper1/wine/ext.c: (HEAP_strdupAtoW):
+	* dllwrapper1/wine/pe_image.c: (PE_FindExportedFunction),
+	(fixup_imports):
+	* dllwrapper1/wine/pe_image.h:
+	* dllwrapper1/wine/win32.c: (expWideCharToMultiByte):
+	* dllwrapper1/wine/winbase.h:
+          fixes for gcc-4.1.0
+
 2006-03-20  Stefan Kost  <ensonic@users.sf.net>
 
 	* Makefile.in:
