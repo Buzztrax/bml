@@ -253,7 +253,7 @@ PE_EnumResourceNamesA(
     else
 	typeW = (LPWSTR)type;
     resdir = GetResDirEntryW(resdir,typeW,(DWORD)pem->pe_resource,FALSE);
-    if (HIWORD(typeW))
+    if (HIWORD(type))
     	HeapFree(heap,0,typeW);
     if (!resdir)
     	return FALSE;
@@ -343,7 +343,7 @@ PE_EnumResourceLanguagesA(
     else
 	typeW = (LPWSTR)type;
     resdir = GetResDirEntryW(resdir,typeW,(DWORD)pem->pe_resource,FALSE);
-    if (HIWORD(typeW))
+    if (HIWORD(type))
     	HeapFree(heap,0,typeW);
     if (!resdir)
     	return FALSE;

@@ -1,3 +1,93 @@
+2006-08-05  Stefan Kost  <ensonic@users.sf.net>
+
+	* Makefile.in:
+	* configure.ac:
+	* dllwrapper1/wine/ext.c: (VirtualAlloc):
+	* dllwrapper1/wine/ext.h:
+	* dllwrapper1/wine/ldt_keeper.c: (Setup_FS_Segment),
+	(Check_FS_Segment), (_modify_ldt), (Setup_LDT_Keeper),
+	(Restore_LDT_Keeper):
+	* dllwrapper1/wine/ldt_keeper.h:
+	* dllwrapper1/wine/loader.h:
+	* dllwrapper1/wine/module.c: (MODULE32_LookupHMODULE),
+	(LoadLibraryExA):
+	* dllwrapper1/wine/pe_image.c: (PE_FindExportedFunction):
+	* dllwrapper1/wine/pe_resource.c: (PE_EnumResourceNamesA),
+	(PE_EnumResourceLanguagesA):
+	* dllwrapper1/wine/resource.c:
+	* dllwrapper1/wine/win32.c: (dbgprintf), (expIsBadWritePtr),
+	(expIsBadReadPtr), (expGetDriverModuleHandle), (expCreateThread),
+	(expCreateEventA), (expSetEvent), (expResetEvent),
+	(expWaitForSingleObject), (expWaitForMultipleObjects),
+	(expCreateMutexA), (DumpSystemInfo),
+	(expIsProcessorFeaturePresent), (expHeapCreate), (expHeapAlloc),
+	(expHeapDestroy), (expHeapFree), (expHeapSize), (expVirtualAlloc),
+	(expVirtualFree), (expInitializeCriticalSection),
+	(expEnterCriticalSection), (expLeaveCriticalSection),
+	(expDeleteCriticalSection), (expGetCurrentThreadId),
+	(expTlsSetValue), (expTlsGetValue), (expTlsFree), (expLocalAlloc),
+	(expLocalReAlloc), (expLocalLock), (expGlobalAlloc),
+	(expGlobalLock), (expGlobalSize), (expLoadStringA),
+	(expMultiByteToWideChar), (expWideCharToMultiByte),
+	(expGetVersionExA), (expCreateSemaphoreA), (expReleaseSemaphore),
+	(expRegOpenKeyExA), (expRegCloseKey), (expRegQueryValueExA),
+	(expRegCreateKeyExA), (expRegSetValueExA), (expRegOpenKeyA),
+	(expQueryPerformanceCounter), (expQueryPerformanceFrequency),
+	(exptimeGetTime), (expLocalHandle), (expGlobalHandle),
+	(expGlobalUnlock), (expGlobalFree), (expGlobalReAlloc),
+	(expLocalUnlock), (expLocalFree), (expFindResourceA),
+	(expLockResource), (expFreeResource), (expCloseHandle),
+	(expGetEnvironmentStringsW), (expRtlZeroMemory),
+	(expRtlMoveMemory), (expRtlFillMemory),
+	(expFreeEnvironmentStringsW), (expFreeEnvironmentStringsA),
+	(expGetEnvironmentStrings), (expGetStartupInfoA),
+	(expGetStdHandle), (expGetModuleFileNameA),
+	(expSetUnhandledExceptionFilter), (expLoadLibraryA),
+	(expGetProcAddress), (expCreateFileMappingA),
+	(expOpenFileMappingA), (expMapViewOfFile), (expUnmapViewOfFile),
+	(expGetWindowRect), (expMonitorFromRect), (expMonitorFromPoint),
+	(expEnumDisplayMonitors), (expGetMonitorInfoA),
+	(expEnumDisplayDevicesA), (expGetClassNameA), (expGetClassInfoA),
+	(expGetObjectA), (expEnumWindows), (expGetWindowThreadProcessId),
+	(expCreateWindowExA), (expDrawTextA),
+	(expGetPrivateProfileStringA), (expStringFromGUID2),
+	(expGetFileVersionInfoSizeA), (expIsBadStringPtrW),
+	(expInterlockedIncrement), (expInterlockedDecrement),
+	(expOutputDebugStringA), (expLoadCursorA), (expSetCursor),
+	(expGetCursorPos), (expGetSystemPaletteEntries),
+	(expGetTimeZoneInformation), (expGetLocalTime), (expGetSystemTime),
+	(expGetSystemTimeAsFileTime), (expGetEnvironmentVariableA),
+	(expGetTempPathA), (expFindNextFileA), (expFindFirstFileA),
+	(expGetWindowsDirectoryA), (expGetCurrentDirectoryA),
+	(expSetCurrentDirectoryA), (expCreateDirectoryA), (expDeleteFileA),
+	(expFileTimeToLocalFileTime), (expGetTempFileNameA),
+	(expCreateFileA), (expGetSystemDirectoryA), (expGetFullPathNameA),
+	(expGetShortPathNameA), (expReadFile), (expWriteFile),
+	(expSetFilePointer), (expOpenDriverA), (expOpenDriver),
+	(expGetProcessAffinityMask), (explstrcmpiA), (explstrlenA),
+	(explstrcpyA), (explstrcpynA), (explstrcatA), (expDuplicateHandle),
+	(expmalloc), (exp_initterm), (expwsprintfA), (expsprintf),
+	(expsscanf), (expfprintf), (expprintf), (expstrrchr), (expstrchr),
+	(expstrlen), (expstrcpy), (expstrcmp), (expstrncmp), (expstrcat),
+	(exp_strdup), (expmemmove), (expmemcmp), (expmemcpy), (expmemset),
+	(exptime), (exp_CIpow), (expSetThreadPriority),
+	(expUnregisterClassA), (expCreatePalette), (expGetClientRect),
+	(expClientToScreen), (expDialogBoxParamA), (exprealloc),
+	(add_stub):
+	* dllwrapper2/Makefile.in:
+	* src/bml.c: (bml_set_master_info), (bml_new), (bml_init),
+	(bml_free), (bml_get_machine_info),
+	(bml_get_global_parameter_info), (bml_get_track_parameter_info),
+	(bml_get_attribute_info), (bml_get_track_parameter_location),
+	(bml_get_track_parameter_value), (bml_set_track_parameter_value),
+	(bml_get_global_parameter_location),
+	(bml_get_global_parameter_value), (bml_set_global_parameter_value),
+	(bml_get_attribute_location), (bml_get_attribute_value),
+	(bml_set_attribute_value), (bml_tick), (bml_work), (bml_work_m2s),
+	(bml_stop), (bml_set_num_tracks), (bml_describe_global_value),
+	(bml_describe_track_value), (bml_setup):
+           merge Changes from upstream CVS
+
 2006-07-11  Stefan Kost  <ensonic@users.sf.net>
 
 	* dllwrapper1/wine/ext.c: (HEAP_strdupAtoW):

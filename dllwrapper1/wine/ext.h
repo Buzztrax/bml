@@ -9,6 +9,6 @@ extern LPVOID FILE_dommap( int unix_handle, LPVOID start,
 			   int prot, int flags );
 extern int FILE_munmap( LPVOID start, DWORD size_high, DWORD size_low );
 extern int wcsnicmp(const unsigned short* s1, const unsigned short* s2, int n);
-extern int __vprintf( const char *format, ... );
+extern int __attribute__ ((format (printf, 1, 2))) __vprintf( const char *format, ... );
 
 #endif

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 the xine project
+ * Copyright (C) 2000-2006 the xine project
  * 
  * This file is part of xine, a free video player.
  * 
@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id: ldt_keeper.c,v 1.1 2005-05-18 12:47:24 ensonic Exp $
+ * $Id: ldt_keeper.c,v 1.2 2006-08-04 21:49:18 ensonic Exp $
  *
  *
  * contents:
@@ -138,41 +138,37 @@ struct modify_ldt_ldt_s {
 #define       TEB_SEL_IDX     1024
 #endif
 
-static unsigned int teb_sel = LDT_SEL(TEB_SEL_IDX);
-
 static ldt_fs_t global_ldt_fs;
 static int      global_usage_count = 0;
 
 #ifdef __cplusplus
 extern "C"
 #endif
-void Setup_FS_Segment(void)
+void Setup_FS_Segment(ldt_fs_t *ldt_fs)
 {
     __asm__ __volatile__(
-	"movl %0,%%eax; movw %%ax, %%fs" : : "r" (teb_sel) : "%eax"
+	"movl %0,%%eax; movw %%ax, %%fs" : : "r" (ldt_fs->teb_sel) : "%eax"
     );
 }
 
-void Check_FS_Segment(void)
+void Check_FS_Segment(ldt_fs_t *ldt_fs)
 {
+#if defined(__FreeBSD__) && defined(LDT_AUTO_ALLOC)
     int fs;
      __asm__ __volatile__(
 	"movw %%fs,%%ax; mov %%eax,%0" : "=r" (fs) :: "%eax"
     );
     fs = fs & 0xffff;
     
-    if( fs != teb_sel ) {
-#if 1
-      /* this happens if the FS setup was done in another thread.
-       * It is OK to call this again. */
-      Setup_FS_Segment ();
-#else
+    if( fs != ldt_fs->teb_sel ) {
       printf("ldt_keeper: FS segment is not set or has being lost!\n");
       printf("            Please report this error to xine-devel@lists.sourceforge.net\n");
       printf("            Aborting....\n");
       abort();
-#endif
     }
+#else
+  Setup_FS_Segment(ldt_fs);
+#endif
 }
 
 #if defined(__NetBSD__) || defined(__FreeBSD__) || defined(__OpenBSD__)
@@ -191,9 +187,11 @@ static void LDT_EntryToBytes( unsigned long *buffer, const struct modify_ldt_ldt
 }
 #endif
 
-static int _modify_ldt(struct modify_ldt_ldt_s array)
+static int _modify_ldt(ldt_fs_t *ldt_fs, struct modify_ldt_ldt_s array)
 {
     int ret;
+
+    ldt_fs->teb_sel = LDT_SEL(TEB_SEL_IDX);
 
 #ifdef __linux__
     ret=modify_ldt(0x1, &array, sizeof(struct modify_ldt_ldt_s));
@@ -212,7 +210,7 @@ static int _modify_ldt(struct modify_ldt_ldt_s array)
 #if defined(__FreeBSD__) && defined(LDT_AUTO_ALLOC)
         ret = i386_set_ldt(LDT_AUTO_ALLOC, (union descriptor *)d, 1);
         array.entry_number = ret;
-        teb_sel = LDT_SEL(ret);
+        ldt_fs->teb_sel = LDT_SEL(ret);
 #else
         ret = i386_set_ldt(array.entry_number, (union descriptor *)d, 1);
 #endif
@@ -229,7 +227,7 @@ static int _modify_ldt(struct modify_ldt_ldt_s array)
 #if defined(__svr4__)
     {
 	struct ssd ssd;
-	ssd.sel = teb_sel;
+	ssd.sel = ldt_fs->teb_sel;
 	ssd.bo = array.base_addr;
 	ssd.ls = array.limit;
 	ssd.acc1 = ((array.read_exec_only == 0) << 1) |
@@ -299,6 +297,7 @@ ldt_fs_t* Setup_LDT_Keeper(void)
         ldt_fs->fd = open("/dev/zero", O_RDWR);
         if(ldt_fs->fd<0){
             perror( "Cannot open /dev/zero for READ+WRITE. Check permissions! error: ");
+	    free(ldt_fs);
 	    return NULL;
         }
     
@@ -322,7 +321,7 @@ ldt_fs_t* Setup_LDT_Keeper(void)
         array.contents=MODIFY_LDT_CONTENTS_DATA;
         array.limit_in_pages=0;
     
-        ret = _modify_ldt(array);
+        ret = _modify_ldt(ldt_fs, array);
         
         ldt_fs->prev_struct = (char*)malloc(sizeof(char) * 8);
         *(void**)array.base_addr = ldt_fs->prev_struct;
@@ -336,7 +335,7 @@ ldt_fs_t* Setup_LDT_Keeper(void)
         memcpy( ldt_fs, &global_ldt_fs, sizeof(ldt_fs_t) );
     }
     
-    Setup_FS_Segment();
+    Setup_FS_Segment(ldt_fs);
     
     return ldt_fs;
 }
@@ -367,7 +366,7 @@ void Restore_LDT_Keeper(ldt_fs_t* ldt_fs)
         /* mark LDT entry as free again */
         memset(&array, 0, sizeof(struct modify_ldt_ldt_s));
         array.entry_number=TEB_SEL_IDX;
-        _modify_ldt(array);
+        _modify_ldt(ldt_fs, array);
     }
     free(ldt_fs);
 }

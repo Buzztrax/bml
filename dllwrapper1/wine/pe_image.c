@@ -211,20 +211,19 @@ FARPROC PE_FindExportedFunction(
             {
                 if (!ename) ename = (u_char *)"@";
                 //proc = SNOOP_GetProcAddress(wm->module,ename,ordinal,proc);
-		TRACE("SNOOP_GetProcAddress n/a\n");		
+		        TRACE("SNOOP_GetProcAddress n/a\n");		
             }
             return proc;
         }
         else  
         {
-                WINE_MODREF *wm;
-                char *forward = RVA(addr);
-		char module[256];
-		char *end /*= strchr(forward, '.')*/;
+            WINE_MODREF *wm;
+            char *forward = RVA(addr);
+		    char module[256];
+		    char *end = strchr(forward, '.');
 
                 TRACE("getting next module name from '%s'\n",forward);
 
-                end = strchr(forward, '.');
 		if (!end) return NULL;
                 if (end - forward >= sizeof(module)) {
                         WARN("need to enlarge buffer from %d to %ld\n",sizeof(module),(long)(end - forward));

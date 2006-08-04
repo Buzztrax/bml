@@ -1,4 +1,4 @@
-/* $Id: bml.c,v 1.8 2005-09-12 16:35:00 ensonic Exp $
+/* $Id: bml.c,v 1.9 2006-08-04 21:49:18 ensonic Exp $
  */
 
 #include "config.h"
@@ -77,7 +77,7 @@ BMDescribeTrackValue BMLX(bml_describe_track_value);
 
 void bml_set_master_info(long bpm, long tpb, long srat) {
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	BMLX(bml_set_master_info(bpm,tpb,srat));
 	pthread_mutex_unlock(&ldt_mutex);
 }
@@ -86,7 +86,7 @@ BuzzMachine *bml_new(char *bm_file_name) {
 	BuzzMachine *bm;
 
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	bm=BMLX(bml_new(bm_file_name));
 	pthread_mutex_unlock(&ldt_mutex);
 	return(bm);
@@ -94,14 +94,14 @@ BuzzMachine *bml_new(char *bm_file_name) {
 
 void bml_init(BuzzMachine *bm) {
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	BMLX(bml_init(bm));
 	pthread_mutex_unlock(&ldt_mutex);
 }
 
 void bml_free(BuzzMachine *bm) {
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	BMLX(bml_free(bm));
 	pthread_mutex_unlock(&ldt_mutex);
 }
@@ -111,7 +111,7 @@ int bml_get_machine_info(BuzzMachine *bm, BuzzMachineProperty key, void *value) 
 	int ret;
 
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	ret=BMLX(bml_get_machine_info(bm,key,value));
 	pthread_mutex_unlock(&ldt_mutex);
 	return(ret);
@@ -121,7 +121,7 @@ int bml_get_global_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter
 	int ret;
 
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	ret=BMLX(bml_get_global_parameter_info(bm,index,key,value));
 	pthread_mutex_unlock(&ldt_mutex);
 	return(ret);
@@ -131,7 +131,7 @@ int bml_get_track_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter 
 	int ret;
 
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	ret=BMLX(bml_get_track_parameter_info(bm,index,key,value));
 	pthread_mutex_unlock(&ldt_mutex);
 	return(ret);
@@ -141,7 +141,7 @@ int bml_get_attribute_info(BuzzMachine *bm,int index,BuzzMachineAttribute key,vo
 	int ret;
 
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	ret=BMLX(bml_get_attribute_info(bm,index,key,value));
 	pthread_mutex_unlock(&ldt_mutex);
 	return(ret);
@@ -152,7 +152,7 @@ void *bml_get_track_parameter_location(BuzzMachine *bm,int track,int index) {
 	void *ret;
 
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	ret=BMLX(bml_get_track_parameter_location(bm,track,index));
 	pthread_mutex_unlock(&ldt_mutex);
 	return(ret);
@@ -162,7 +162,7 @@ int bml_get_track_parameter_value(BuzzMachine *bm,int track,int index) {
 	int ret;
 
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	ret=BMLX(bml_get_track_parameter_value(bm,track,index));
 	pthread_mutex_unlock(&ldt_mutex);
 	return(ret);
@@ -170,7 +170,7 @@ int bml_get_track_parameter_value(BuzzMachine *bm,int track,int index) {
 
 void bml_set_track_parameter_value(BuzzMachine *bm,int track,int index,int value) {
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	BMLX(bml_set_track_parameter_value(bm,track,index,value));
 	pthread_mutex_unlock(&ldt_mutex);
 }
@@ -180,7 +180,7 @@ void *bml_get_global_parameter_location(BuzzMachine *bm,int index) {
 	void *ret;
 
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	ret=BMLX(bml_get_global_parameter_location(bm,index));
 	pthread_mutex_unlock(&ldt_mutex);
 	return(ret);
@@ -190,7 +190,7 @@ int bml_get_global_parameter_value(BuzzMachine *bm,int index) {
 	int ret;
 
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	ret=BMLX(bml_get_global_parameter_value(bm,index));
 	pthread_mutex_unlock(&ldt_mutex);
 	return(ret);
@@ -198,7 +198,7 @@ int bml_get_global_parameter_value(BuzzMachine *bm,int index) {
 
 void bml_set_global_parameter_value(BuzzMachine *bm,int index,int value) {
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	BMLX(bml_set_global_parameter_value(bm,index,value));
 	pthread_mutex_unlock(&ldt_mutex);
 }
@@ -208,7 +208,7 @@ void *bml_get_attribute_location(BuzzMachine *bm,int index) {
 	void *ret;
 
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	ret=BMLX(bml_get_attribute_location(bm,index));
 	pthread_mutex_unlock(&ldt_mutex);
 	return(ret);
@@ -218,7 +218,7 @@ int bml_get_attribute_value(BuzzMachine *bm,int index) {
 	int ret;
 
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	ret=BMLX(bml_get_attribute_value(bm,index));
 	pthread_mutex_unlock(&ldt_mutex);
 	return(ret);
@@ -226,7 +226,7 @@ int bml_get_attribute_value(BuzzMachine *bm,int index) {
 
 void bml_set_attribute_value(BuzzMachine *bm,int index,int value) {
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	BMLX(bml_set_attribute_value(bm,index,value));
 	pthread_mutex_unlock(&ldt_mutex);
 }
@@ -234,7 +234,7 @@ void bml_set_attribute_value(BuzzMachine *bm,int index,int value) {
 
 void bml_tick(BuzzMachine *bm) {
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	BMLX(bml_tick(bm));
 	pthread_mutex_unlock(&ldt_mutex);
 }
@@ -243,7 +243,7 @@ int bml_work(BuzzMachine *bm,float *psamples, int numsamples, int const mode) {
 	int ret;
 
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	ret=BMLX(bml_work(bm,psamples,numsamples,mode));
 	pthread_mutex_unlock(&ldt_mutex);
 	return(ret);
@@ -253,7 +253,7 @@ int bml_work_m2s(BuzzMachine *bm,float *pin, float *pout, int numsamples, int co
 	int ret;
 	
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	ret=BMLX(bml_work_m2s(bm,pin,pout,numsamples,mode));
 	pthread_mutex_unlock(&ldt_mutex);
 	return(ret);
@@ -261,7 +261,7 @@ int bml_work_m2s(BuzzMachine *bm,float *pin, float *pout, int numsamples, int co
 
 void bml_stop(BuzzMachine *bm) {
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	BMLX(bml_stop(bm));
 	pthread_mutex_unlock(&ldt_mutex);
 }
@@ -269,7 +269,7 @@ void bml_stop(BuzzMachine *bm) {
 
 void bml_set_num_tracks(BuzzMachine *bm, int num) {
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	BMLX(bml_set_num_tracks(bm,num));
 	pthread_mutex_unlock(&ldt_mutex);
 }
@@ -279,7 +279,7 @@ const char *bml_describe_global_value(BuzzMachine *bm, int const param,int const
 	const char *ret;
 	
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	ret=BMLX(bml_describe_global_value(bm,param,value));
 	pthread_mutex_unlock(&ldt_mutex);
 	return(ret);
@@ -289,7 +289,7 @@ const char *bml_describe_track_value(BuzzMachine *bm, int const param,int const 
 	const char *ret;
 	
 	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment();
+	Check_FS_Segment(ldt_fs);
 	ret=BMLX(bml_describe_track_value(bm,param,value));
 	pthread_mutex_unlock(&ldt_mutex);
 	return(ret);
@@ -301,7 +301,7 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
 #ifdef USE_DLLWRAPPER1
   ldt_fs=Setup_LDT_Keeper();
   printf("%s:   wrapper initialized: 0x%p\n",__FUNCTION__,ldt_fs);
-  //Check_FS_Segment();
+  //Check_FS_Segment(ldt_fs);
 #endif
 #ifdef USE_DLLWRAPPER2
   SharedWineInit(sighandler);

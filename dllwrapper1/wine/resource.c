@@ -22,6 +22,7 @@
 #include "debugtools.h"
 #include "winerror.h"
 #include "loader.h"
+#include "ext.h"
 
 #define CP_ACP					0
 

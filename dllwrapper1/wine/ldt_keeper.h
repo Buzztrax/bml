@@ -10,11 +10,12 @@ typedef struct {
   void* fs_seg;
   char* prev_struct;
   int fd;
+  unsigned int teb_sel;
 } ldt_fs_t;
 
-void Setup_FS_Segment(void);
+void Setup_FS_Segment(ldt_fs_t *ldt_fs);
 ldt_fs_t* Setup_LDT_Keeper(void);
-void Check_FS_Segment(void);
+void Check_FS_Segment(ldt_fs_t *ldt_fs);
 void Restore_LDT_Keeper(ldt_fs_t* ldt_fs);
 #ifdef __cplusplus
 }

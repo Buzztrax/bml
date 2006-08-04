@@ -76,7 +76,7 @@ SPEC_SRCS             = $(bml_exe_SPEC_SRCS)
 
 all: $(DLLS:%=%.so) $(EXES:%=%.so) bmltest_info bmltest_process
 
-@MAKE_RULES@
+##@MAKE_RULES@
 
 install::
 	_list="$(EXES:%=%.so) $(DLLS:%=%.so)"; for i in $$_list; do $(INSTALL_PROGRAM) $$i $(libdir); done

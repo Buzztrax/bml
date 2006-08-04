@@ -467,14 +467,14 @@ LPVOID WINAPI VirtualAlloc(LPVOID address, DWORD size, DWORD type,  DWORD protec
 	return NULL;
     }
 
-    if (type&MEM_RESERVE && (unsigned)address&0xffff) {
-       size += (unsigned)address&0xffff;
-       address = (LPVOID)((unsigned)address&~0xffff);
+    if (type&MEM_RESERVE && (void*)((unsigned long)address&0xffff)) {
+       size += (unsigned long)address&0xffff;
+       address = (LPVOID)((unsigned long)address & ~0xffff);
     }
     pgsz = sysconf(_SC_PAGESIZE);
-    if (type&MEM_COMMIT && (unsigned)address%pgsz) {
-       size += (unsigned)address%pgsz;
-       address -= (unsigned)address%pgsz;
+    if (type&MEM_COMMIT && (void*)((unsigned long)address%pgsz)) {
+       size += (unsigned long)address%pgsz;
+       address -= (unsigned long)address%pgsz;
     }
 
     if (type&MEM_RESERVE && size<0x10000) size = 0x10000;
@@ -486,12 +486,12 @@ LPVOID WINAPI VirtualAlloc(LPVOID address, DWORD size, DWORD type,  DWORD protec
         virt_alloc* str=vm;
         while(str)
         {
-	    if((unsigned)address>=(unsigned)str->address+str->mapping_size)
+	    if((void*)((unsigned long)address)>=(void*)((unsigned long)str->address+str->mapping_size))
 	    {
 		str=str->prev;
 		continue;
 	    }
-	    if((unsigned)address+size<=(unsigned)str->address)
+	    if((void*)((unsigned long)address+size)<=(void*)((unsigned long)str->address))
 	    {
 		str=str->prev;
 		continue;
@@ -499,8 +499,8 @@ LPVOID WINAPI VirtualAlloc(LPVOID address, DWORD size, DWORD type,  DWORD protec
 	    if(str->state==0)
 	    {
 //#warning FIXME
-               if(   ((unsigned)address >= (unsigned)str->address)
-                  && ((unsigned)address+size<=(unsigned)str->address+str->mapping_size)
+               if(   (address >= (void*)(unsigned long)str->address)
+                  && ((void*)((unsigned long)address+size)<=(void*)((unsigned long)str->address+str->mapping_size))
 		   && (type & MEM_COMMIT))
 		{
 		    close(fd);

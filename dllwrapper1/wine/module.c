@@ -35,6 +35,7 @@
 #endif
 #include "win32.h"
 #include "driver.h"
+#include "ext.h"
 
 #ifdef EMU_QTX_API
 #include "wrapper.h"
@@ -102,7 +103,7 @@ static void MODULE_RemoveFromList(WINE_MODREF *mod)
 WINE_MODREF *MODULE32_LookupHMODULE(HMODULE m)
 {
     modref_list* list=local_wm;
-    //TRACE("LookupHMODULE: Module %X request\n", m);
+    TRACE("LookupHMODULE: Module %X request\n", m);
     if(list==NULL)
     {
 	TRACE("LookupHMODULE failed\n");
@@ -119,7 +120,7 @@ WINE_MODREF *MODULE32_LookupHMODULE(HMODULE m)
 	    return NULL;
 	}
     }
-    //TRACE("LookupHMODULE hit %p\n", list->wm);
+    TRACE("LookupHMODULE hit %p\n", list->wm);
     return list->wm;
 }
 
@@ -391,21 +392,21 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 	    {
 		if (i == 0)
 		    /* check just original file name */
-		    strncpy(path, libname, 511);
+		    strncpy(path, libname, sizeof(path) - 1);
                 else
 		    /* check default user path */
-		    strncpy(path, win32_def_path, 300);
+		    strncpy(path, win32_def_path, sizeof(path) - 2);
 	    }
 	    else if (strcmp(win32_def_path, listpath[i]))
-                /* path from the list */
-		strncpy(path, listpath[i], 300);
+            /* path from the list */
+		    strncpy(path, listpath[i], 300);
 	    else
-		continue;
+		    continue;
 
 	    if (i > 0)
 	    {
-		strcat(path, "/");
-		strncat(path, libname, 100);
+		    strcat(path, "/");
+		    strncat(path, libname, 100);
 	    }
 	    path[511] = 0;
 		

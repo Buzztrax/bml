@@ -1,4 +1,4 @@
-# $Id: configure.ac,v 1.5 2005-06-14 07:20:10 ensonic Exp $
+# $Id: configure.ac,v 1.6 2006-08-04 21:49:18 ensonic Exp $
 
 # Initialise the autoconf/automake tool
 AC_INIT([bml], [0.0.1], [buzztard-devel@lists.sourceforge.net])
@@ -56,7 +56,7 @@ AC_CHECK_HEADERS(sys/mman.h)
 AC_DEFINE(USE_DLLWRAPPER1, [1], [use the avifile dll wrapper])
 AM_CONDITIONAL(USE_DLLWRAPPER1, true)
 
-#AC_DEFINE(USE_DLLWRAPPER2, [1], [use the libfst dll wrapper])
+#AC_DEFINE(USE_DLLWRAPPER2, [0], [use the libfst dll wrapper])
 AM_CONDITIONAL(USE_DLLWRAPPER2, false)
 
 BML_CFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS"
@@ -68,5 +68,6 @@ AC_CONFIG_FILES( \
   src/Makefile \
   dllwrapper1/Makefile \
   dllwrapper1/wine/Makefile \
+  dllwrapper2/Makefile \
 )
 AC_OUTPUT
