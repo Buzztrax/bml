@@ -15,7 +15,7 @@ class BuzzMachineCallbacks;
 // @idea what about deriving this from CMICallbacks
 class BuzzMachine {
 public:
-	// library handle
+	// library data
 	HMODULE h;
 	char *DllName;
 	// callback instance
@@ -26,8 +26,6 @@ public:
 	//callbacks->machine_ex;
 	//CMachineInterfaceEx *machine_ex;
 };
-#else
-typedef void BuzzMachine;
 #endif
 
 typedef enum {
@@ -67,7 +65,7 @@ typedef enum {
 #ifndef BUZZ_MACHINE_LOADER_CPP
 /*
 extern void   bm_set_master_info(long bpm, long tpb, long srat);
-extern BuzzMachine *bm_new(char *bm_file_name);
+extern void * bm_new(char *bm_file_name);
 extern void   bm_free(BuzzMachine *bm);
 extern void   bm_init(BuzzMachine *bm);
 

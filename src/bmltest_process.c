@@ -1,4 +1,26 @@
-/* $Id: bmltest_process.c,v 1.4 2005-06-17 10:05:23 ensonic Exp $
+/* $Id: bmltest_process.c,v 1.5 2006-08-24 19:24:22 ensonic Exp $
+ *
+ * Buzz Machine Loader
+ * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+/**
+ * process data with a buzz machine
+ *
  * invoke it e.g. as
  *   env LD_LIBRARY_PATH="." ./bmltest_process ../machines/elak_svf.dll input.raw output.raw
  *

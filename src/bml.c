@@ -1,8 +1,25 @@
-/* $Id: bml.c,v 1.9 2006-08-04 21:49:18 ensonic Exp $
+/* $Id: bml.c,v 1.10 2006-08-24 19:24:22 ensonic Exp $
+ *
+ * Buzz Machine Loader
+ * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 #include "config.h"
-#include "bml.h"
 
 #ifdef USE_DLLWRAPPER1
 #include "win32.h"
@@ -15,9 +32,17 @@
 #include <winnt.h>
 #endif
 
+//typedef struct {
+//	void *bm;
+//	ldt_fs_t *ldt_fs;
+//} BuzzMachine;
+
+#define BML_C
+#include "bml.h"
+
 // buzz machine loader handle
 #ifdef USE_DLLWRAPPER1
-static HINSTANCE h=NULL;
+static HINSTANCE h=0L;
 static ldt_fs_t *ldt_fs;
 #endif
 #ifdef USE_DLLWRAPPER2

@@ -1,4 +1,22 @@
-/* $Id: bml.h,v 1.8 2005-06-18 07:32:58 ensonic Exp $
+/* $Id: bml.h,v 1.9 2006-08-24 19:24:22 ensonic Exp $
+ *
+ * Buzz Machine Loader
+ * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 #ifndef BML_H
@@ -15,7 +33,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#undef BUZZ_MACHINE_LOADER_CPP
 #include <BuzzMachineLoader.h>
 
 #ifndef FALSE
@@ -24,6 +41,8 @@
 #ifndef TRUE
 #define TRUE (!FALSE)
 #endif
+
+typedef void BuzzMachine;
 
 //#ifdef __cplusplus
 //extern "C" {
@@ -35,7 +54,7 @@ extern char *bml_convertpath(char *inpath);
 
 // dll passthrough API method pointer types
 typedef void (*BMSetMasterInfo)(long bpm, long tpb, long srat);
-typedef BuzzMachine *(*BMNew)(char *bm_file_name);
+typedef void * (*BMNew)(char *bm_file_name);
 typedef void (*BMInit)(BuzzMachine *bm);
 typedef void (*BMFree)(BuzzMachine *bm);
 

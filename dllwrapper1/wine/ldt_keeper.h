@@ -6,6 +6,9 @@ extern "C"
 {
 #endif
 
+/* manage i386 per-process segment descriptors
+ * LDT = Local Descriptor Table
+ */
 typedef struct {
   void* fs_seg;
   char* prev_struct;

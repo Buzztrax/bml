@@ -1,3 +1,14 @@
+2006-08-24  Stefan Kost  <ensonic@users.sf.net>
+
+	* COPYING:
+	* buzz/BuzzMachineLoader.h:
+	* dllwrapper1/wine/ldt_keeper.h:
+	* src/bml.c:
+	* src/bml.h:
+	* src/bmltest_info.c:
+	* src/bmltest_process.c:
+         Add licence header + more comments
+
 2006-08-05  Stefan Kost  <ensonic@users.sf.net>
 
 	* Makefile.in:
