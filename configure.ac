@@ -1,7 +1,7 @@
-# $Id: configure.ac,v 1.6 2006-08-04 21:49:18 ensonic Exp $
+# $Id: configure.ac,v 1.7 2006-08-27 14:31:51 ensonic Exp $
 
 # Initialise the autoconf/automake tool
-AC_INIT([bml], [0.0.1], [buzztard-devel@lists.sourceforge.net])
+AC_INIT([bml], [0.1.0], [buzztard-devel@lists.sourceforge.net])
 AC_CONFIG_SRCDIR([ChangeLog])
 AC_CONFIG_HEADERS(config.h)
 

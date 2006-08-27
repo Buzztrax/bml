@@ -1,3 +1,11 @@
+2006-08-27  Stefan Kost  <ensonic@users.sf.net>
+
+	* NEWS:
+	* configure.ac:
+	* dllwrapper2/Makefile.in:
+	* src/Makefile.am:
+           prepare release 0.1.0
+
 2006-08-24  Stefan Kost  <ensonic@users.sf.net>
 
 	* COPYING:

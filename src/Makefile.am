@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.5 2005-06-03 16:01:04 ensonic Exp $
+## $Id: Makefile.am,v 1.6 2006-08-27 14:31:51 ensonic Exp $
 
 lib_LTLIBRARIES = libbml.la
 
@@ -35,10 +35,15 @@ bmltest_process_SOURCES= bmltest_process.c
 bmltest_process_LDADD = $(BASE_DEPS_LIBS) \
 	libbml.la
 
-EXTRA_DIST = BuzzmachineLoader.dll
+dlldir = $(libdir)
+dll_DATA = BuzzMachineLoader.dll
 
-install-data-local:
-	$(INSTALL) $(top_builddir)/src/BuzzMachineLoader.dll $(libdir)
+EXTRA_DIST = $(dll_DATA)
 
-uninstall-local:
-	rm -r $(libdir)/BuzzMachineLoader.dll
+#
+#install-data-local:
+#	$(INSTALL) $(top_srcdir)/src/BuzzMachineLoader.dll $(libdir)
+#
+#uninstall-local:
+#	rm -r $(libdir)/BuzzMachineLoader.dll
+#
