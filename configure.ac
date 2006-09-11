@@ -1,4 +1,4 @@
-# $Id: configure.ac,v 1.7 2006-08-27 14:31:51 ensonic Exp $
+# $Id: configure.ac,v 1.8 2006-09-11 13:35:05 ensonic Exp $
 
 # Initialise the autoconf/automake tool
 AC_INIT([bml], [0.1.0], [buzztard-devel@lists.sourceforge.net])
@@ -45,9 +45,11 @@ if test "$enable_coverage" = "yes"; then
 	#AC_DEFINE(APP_COVERAGE, [1], [enable coverage analysis])
 	AM_CONDITIONAL(USE_COVERAGE, true)
 	COVERAGE_CFLAGS="-O0 -g -fprofile-arcs -ftest-coverage"
+	COVERAGE_LIBS="-lgcov"
 else
 	AM_CONDITIONAL(USE_COVERAGE, false)
 	COVERAGE_CFLAGS=""
+	COVERAGE_LIBS=""
 fi
 
 AC_HEADER_STDC([])
@@ -60,7 +62,9 @@ AM_CONDITIONAL(USE_DLLWRAPPER1, true)
 AM_CONDITIONAL(USE_DLLWRAPPER2, false)
 
 BML_CFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS"
+BML_LIBS="$COVERAGE_LIBS"
 AC_SUBST(BML_CFLAGS)
+AC_SUBST(BML_LIBS)
 
 AC_CONFIG_FILES( \
   Makefile \
