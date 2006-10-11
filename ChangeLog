@@ -1,3 +1,8 @@
+2006-10-11  Stefan Kost  <ensonic@users.sf.net>
+
+	* README:
+	  /home/ensonic -> $HOME
+
 2006-09-11  Stefan Kost  <ensonic@users.sf.net>
 
 	* configure.ac:
