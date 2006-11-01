@@ -1,3 +1,31 @@
+2006-11-01  Stefan Kost  <ensonic@users.sf.net>
+
+	* .cvsignore:
+	  ignore more
+
+	* dllwrapper1/wine/module.c: (MODULE_LoadLibraryExA),
+	(LoadLibraryExA):
+	* dllwrapper1/wine/win32.c: (test_heap), (my_mreq), (my_release),
+	(mreq_private), (ext_unknown), (expCreateThread), (destroy_event),
+	(expCreateEventA), (expHeapCreate), (expHeapAlloc), (expHeapFree),
+	(expVirtualAlloc), (expInitializeCriticalSection),
+	(expEnterCriticalSection), (expLeaveCriticalSection),
+	(expDeleteCriticalSection), (expLocalAlloc), (expGlobalAlloc),
+	(expGlobalSize), (expCreateSemaphoreA), (expGetModuleFileNameA),
+	(expCreateWindowExA), (expGetPrivateProfileIntA),
+	(expWritePrivateProfileStringA), (expGetEnvironmentVariableA),
+	(UnregisterComClass), (expIsRectEmpty), (expFindNextFileA),
+	(expFindFirstFileA), (expCreateFileA), (expmalloc), (expcalloc),
+	(expnew), (exp_initterm), (expfopen), (explog10), (expcos),
+	(exppow), (expldexp), (expfrexp), (expExitProcess),
+	(expMessageBoxA), (expTerminateProcess), (expVariantInit),
+	(LookupExternalNative), (LookupExternal), (LookupExternalByName),
+	(my_garbagecollection):
+	* src/bml.c: (bml_setup), (bml_finalize):
+	  more printf->TRACE/dbgprintf to be silent when not enabling debug
+
+=== release 0.1.0 ===
+
 2006-10-29  Stefan Kost  <ensonic@users.sf.net>
 
 	* Makefile.in:

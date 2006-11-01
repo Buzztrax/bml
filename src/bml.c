@@ -1,4 +1,4 @@
-/* $Id: bml.c,v 1.10 2006-08-24 19:24:22 ensonic Exp $
+/* $Id: bml.c,v 1.11 2006-11-01 07:09:57 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -51,6 +51,12 @@ static void *h=NULL;
 
 #define BMLX(a) fptr_ ## a
 //#define BMLX(a) a
+
+#ifdef LOG
+#  define TRACE printf
+#else
+#  define TRACE(...)
+#endif
 
 pthread_mutex_t ldt_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -321,24 +327,24 @@ const char *bml_describe_track_value(BuzzMachine *bm, int const param,int const 
 }
 
 int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
-  printf("%s\n",__FUNCTION__);
+  TRACE("%s\n",__FUNCTION__);
   
 #ifdef USE_DLLWRAPPER1
   ldt_fs=Setup_LDT_Keeper();
-  printf("%s:   wrapper initialized: 0x%p\n",__FUNCTION__,ldt_fs);
+  TRACE("%s:   wrapper initialized: 0x%p\n",__FUNCTION__,ldt_fs);
   //Check_FS_Segment(ldt_fs);
 #endif
 #ifdef USE_DLLWRAPPER2
   SharedWineInit(sighandler);
 #endif
 
-  printf("%s:   dsplib loaded: %d\n",__FUNCTION__,h);
+  TRACE("%s:   dsplib loaded: %d\n",__FUNCTION__,h);
 
   if(!(h=LoadDLL("BuzzMachineLoader.dll"))) {
-	printf("%s:   failed to load bml\n",__FUNCTION__);
+	TRACE("%s:   failed to load bml\n",__FUNCTION__);
 	return(FALSE);
   }
-  printf("%s:   bml loaded: %d\n",__FUNCTION__,h);
+  TRACE("%s:   bml loaded: %d\n",__FUNCTION__,h);
 
   if(!(BMLX(bml_set_master_info)=(BMSetMasterInfo)GetSymbol(h,"bm_set_master_info"))) { puts("bm_set_master_info is missing");return(FALSE);}
   if(!(BMLX(bml_new)=(BMNew)GetSymbol(h,"bm_new"))) { puts("bm_new is missing");return(FALSE);}
@@ -373,7 +379,7 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
   if(!(BMLX(bml_describe_track_value)=(BMDescribeTrackValue)GetSymbol(h,"bm_describe_track_value"))) { puts("bm_describe_track_value is missing");return(FALSE);}
 
   // @todo more API entries
-  printf("%s:   symbols connected\n",__FUNCTION__);
+  TRACE("%s:   symbols connected\n",__FUNCTION__);
   
   return(TRUE);
 }
@@ -383,7 +389,7 @@ void bml_finalize(void) {
 #ifdef USE_DLLWRAPPER1
   Restore_LDT_Keeper(ldt_fs);
 #endif
-  printf("%s:   bml unloaded\n",__FUNCTION__);
+  TRACE("%s:   bml unloaded\n",__FUNCTION__);
 }
 
 char *bml_convertpath(char *inpath) {

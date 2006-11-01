@@ -331,7 +331,7 @@ static WINE_MODREF *MODULE_LoadLibraryExA( LPCSTR libname, HFILE hfile, DWORD fl
 	}
 
 
-	printf("Failed to load module '%s'; error=0x%08lx, \n", libname, GetLastError());
+	TRACE("Failed to load module '%s'; error=0x%08lx, \n", libname, GetLastError());
 	return NULL;
 }
 
@@ -437,7 +437,7 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 	}
 
 	if (!wm)
-	    printf("wine/module: Win32 LoadLibrary failed to load: %s\n", checked);
+	    TRACE("wine/module: Win32 LoadLibrary failed to load: %s\n", checked);
 
         // remove a few divs in the VP codecs that make trouble
         if (strstr(libname,"vp5vfw.dll") && wm)

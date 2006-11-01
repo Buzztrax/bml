@@ -12,6 +12,7 @@ INSTALL
 install.sh
 missing
 Makefile
+Makefile.in
 Make.rules
 testmachine
 testmachine.log
