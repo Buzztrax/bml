@@ -1,4 +1,4 @@
-/* $Id: bml.c,v 1.11 2006-11-01 07:09:57 ensonic Exp $
+/* $Id: bml.c,v 1.12 2006-11-12 13:57:20 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -32,10 +32,12 @@
 #include <winnt.h>
 #endif
 
-//typedef struct {
-//	void *bm;
-//	ldt_fs_t *ldt_fs;
-//} BuzzMachine;
+#if 0
+typedef struct {
+	void *bm;
+	ldt_fs_t *ldt_fs;
+} BuzzMachine;
+#endif
 
 #define BML_C
 #include "bml.h"
