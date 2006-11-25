@@ -1,3 +1,14 @@
+2006-11-25  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader.dll:
+	  new version
+
+	* src/bml.c: (bml_init):
+	* src/bml.h:
+	* src/bmltest_info.c: (test_info):
+	* src/bmltest_process.c: (test_process):
+	  add two new params fro bm_init
+
 2006-11-12  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/bml.c:

@@ -1,4 +1,4 @@
-/* $Id: bmltest_process.c,v 1.5 2006-08-24 19:24:22 ensonic Exp $
+/* $Id: bmltest_process.c,v 1.6 2006-11-25 14:03:59 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -58,7 +58,7 @@ void test_process(const char *dllpath,const char *infilename,const char *outfile
     //int ival=0,oval,vs=10;
     
     puts("  machine created");
-    bml_init(bm);
+    bml_init(bm,0,NULL);
     puts("  machine initialized");
 
     // open raw files

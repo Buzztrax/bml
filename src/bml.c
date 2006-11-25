@@ -1,4 +1,4 @@
-/* $Id: bml.c,v 1.12 2006-11-12 13:57:20 ensonic Exp $
+/* $Id: bml.c,v 1.13 2006-11-25 14:03:59 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -125,10 +125,10 @@ BuzzMachine *bml_new(char *bm_file_name) {
 	return(bm);
 }
 
-void bml_init(BuzzMachine *bm) {
+void bml_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data) {
 	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment(ldt_fs);
-	BMLX(bml_init(bm));
+	BMLX(bml_init(bm,blob_size,blob_data));
 	pthread_mutex_unlock(&ldt_mutex);
 }
 

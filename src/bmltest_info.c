@@ -1,4 +1,4 @@
-/* $Id: bmltest_info.c,v 1.9 2006-08-24 19:24:22 ensonic Exp $
+/* $Id: bmltest_info.c,v 1.10 2006-11-25 14:03:59 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -54,7 +54,7 @@ void test_info(const char *dllpath) {
     void *addr;
 
     puts("  machine created");
-    bml_init(bm);
+    bml_init(bm,0,NULL);
     puts("  machine initialized");
 
     if(bml_get_machine_info(bm,BM_PROP_SHORT_NAME,(void *)&str))           printf("    Short Name: \"%s\"\n",str);

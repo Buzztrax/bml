@@ -1,4 +1,4 @@
-/* $Id: bml.h,v 1.9 2006-08-24 19:24:22 ensonic Exp $
+/* $Id: bml.h,v 1.10 2006-11-25 14:03:59 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -55,7 +55,7 @@ extern char *bml_convertpath(char *inpath);
 // dll passthrough API method pointer types
 typedef void (*BMSetMasterInfo)(long bpm, long tpb, long srat);
 typedef void * (*BMNew)(char *bm_file_name);
-typedef void (*BMInit)(BuzzMachine *bm);
+typedef void (*BMInit)(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data);
 typedef void (*BMFree)(BuzzMachine *bm);
 
 typedef int (*BMGetMachineInfo)(BuzzMachine *bm, BuzzMachineProperty key, void *value);
@@ -120,7 +120,7 @@ extern BMSetNumTracks bm_set_num_tracks;
 // dll wrapper API functions
 extern void bml_set_master_info(long bpm, long tpb, long srat);
 extern BuzzMachine *bml_new(char *bm_file_name);
-extern void bml_init(BuzzMachine *bm);
+extern void bml_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data);
 extern void bml_free(BuzzMachine *bm);
 
 extern int bml_get_machine_info(BuzzMachine *bm, BuzzMachineProperty key, void *value);
