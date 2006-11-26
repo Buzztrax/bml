@@ -1,4 +1,4 @@
-$Id: README,v 1.12 2006-10-11 11:22:07 ensonic Exp $
+$Id: README,v 1.13 2006-11-26 14:37:53 ensonic Exp $
 
 = quick info =
 Please turn you browser to http://www.buzztard.org to learn what this project
@@ -11,19 +11,21 @@ This lib is either using the libavifile wrapper or the libfst one.
 See original README in README.libfst for the latter.
 
 = installing =
-You need to copy the all *.dll libraries from a windows buzz installation to
-your LD_LIBARY_PATH. We recommend to copy them to buzztard-prefix/lib.
+The emulation uses some parts of wine at runtime. It needs kernel32.dll, e.g.
+/usr/lib/wine/kernel32.dll.so. The original windows dll should also work.
+
+Then you need to copy the all *.dll libraries from a windows buzz installation
+to your LD_LIBARY_PATH. We recommend to copy them to buzztard-prefix/lib.
 Now you need to fix up some library names.
   ln -s Dsplib.dll dsplib.dll
   ln -s Nblib.dll nblib.dll
-  ln -s Ninereeds Dsplib.dll Ninereeds DSPLIB.dll
+  ln -s "Ninereeds Dsplib.dll" "Ninereeds DSPLIB.dll"
 
 Next copy the machines. You can e.g. just copy the whole Gear folder to
 buzztard-prefix/lib as well.
 Then export this path, e.g.:
   export BML_PATH=$HOME/buzztard/lib/Gear/Effects:$HOME/buzztard/lib/Gear/Generators
 You might need to fix some machine names (e.g. names with '?' in them).
-
 
 = usage =
 For testing, create a folder 'machines' and put some original buzz machines

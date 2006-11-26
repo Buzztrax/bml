@@ -1,3 +1,8 @@
+2006-11-26  set REAL_NAME environment variable  <ensonic@users.sf.net>
+
+	* README:
+	* src/BuzzMachineLoader.dll:
+
 2006-11-26  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader.dll:
