@@ -1,3 +1,8 @@
+2007-01-26  Stefan Kost  <ensonic@users.sf.net>
+
+	* configure.ac:
+	  configure cleanups
+
 2006-11-26  set REAL_NAME environment variable  <ensonic@users.sf.net>
 
 	* README:

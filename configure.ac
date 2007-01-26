@@ -1,14 +1,14 @@
-# $Id: configure.ac,v 1.8 2006-09-11 13:35:05 ensonic Exp $
+dnl $Id: configure.ac,v 1.9 2007-01-26 15:49:49 ensonic Exp $
 
-# Initialise the autoconf/automake tool
+dnl Initialise the autoconf/automake tool
 AC_INIT([bml], [0.1.0], [buzztard-devel@lists.sourceforge.net])
 AC_CONFIG_SRCDIR([ChangeLog])
 AC_CONFIG_HEADERS(config.h)
 
-# Initialise the automake tool
+dnl Initialise the automake tool
 AM_INIT_AUTOMAKE([check-news])
 
-# Checks for programs.
+dnl Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_CPP
@@ -18,7 +18,7 @@ AC_ISC_POSIX
 AC_PROG_LIBTOOL
 AM_PROG_CC_STDC
 
-# enable runtime debugging code
+dnl enable runtime debugging code
 AC_MSG_CHECKING(whether to enable runtime debugging code)
 AC_ARG_ENABLE(
   debug,
@@ -33,7 +33,7 @@ else
   DEBUG_CFLAGS=""
 fi
 
-# enable coverage analysis
+dnl enable coverage analysis
 AC_MSG_CHECKING(whether to enable coverage analysis)
 AC_ARG_ENABLE(
 	coverage,
