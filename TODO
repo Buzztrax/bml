@@ -1,9 +1,11 @@
-problems
+$Id: TODO,v 1.3 2007-02-19 19:51:56 ensonic Exp $
 
-* map buzz api to gstreamer api
-  * master info -> struct + gobject porperties
-  * callbackinterface (wavetable access)
+= missing features =
+* callbackinterface (wavetable access)
 
-* with wine2005 it works in bt-cmd and crashes in bt-edit when calling bm_tick/bm_work
-  * differences between bt_cmd/bt_edit
-  * differences between wine version
+= known not working machines =
+Arguelles TruePan
+FSM Infector
+Jeskola Raverb
+  BuzzMachineCallbacks::GetEnvSize (wave=-96185375,env=0)
+Sonic Verb

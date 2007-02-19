@@ -1,5 +1,10 @@
 2007-02-19  Stefan Kost  <ensonic@users.sf.net>
 
+	* TODO:
+	  start a list of machines that don't work yet
+
+2007-02-19  Stefan Kost  <ensonic@users.sf.net>
+
 	* dllwrapper1/wine/module.c: (LoadLibraryExA):
 	  fix logging
 
@@ -7,14 +12,14 @@
 
 	* configure.ac:
 	  add AM_PROG_AS to fix "am__fastdepCCAS does not appear in
-	  AM_CONDITIONAL"
+	  AM_CONDITIONAL", spotted by Daniel Oberhoff
 
 2007-01-26  Stefan Kost  <ensonic@users.sf.net>
 
 	* configure.ac:
 	  configure cleanups
 
-2006-11-26  set REAL_NAME environment variable  <ensonic@users.sf.net>
+2006-11-26  Stefan Kost  <ensonic@users.sf.net>
 
 	* README:
 	* src/BuzzMachineLoader.dll:
