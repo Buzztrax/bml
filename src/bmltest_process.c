@@ -1,4 +1,4 @@
-/* $Id: bmltest_process.c,v 1.6 2006-11-25 14:03:59 ensonic Exp $
+/* $Id: bmltest_process.c,v 1.7 2007-02-19 20:48:47 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -54,18 +54,28 @@ void test_process(const char *dllpath,const char *infilename,const char *outfile
     int s_size=BUFFER_SIZE,i_size;
     short int buffer_w[BUFFER_SIZE];
     float buffer_f[BUFFER_SIZE];
-    int i;
+    int i,type;
     //int ival=0,oval,vs=10;
+    const char *type_name[3]={"","generator","effect"};
     
     puts("  machine created");
     bml_init(bm,0,NULL);
-    puts("  machine initialized");
+    bml_get_machine_info(bm,BM_PROP_TYPE,&type);
+    printf("  %s initialized\n",type_name[type]);
+    
 
     // open raw files
     infile=fopen(infilename,"rb");
     outfile=fopen(outfilename,"wb");
     if(infile && outfile) {
       printf("    processing ");
+      if(type==1) {
+        int num_global, num_track;
+        // trigger a note for generators
+        bml_get_machine_info(bm,BM_PROP_NUM_GLOBAL_PARAMS,&num_global);
+        bml_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,&num_track);
+        // @todo: get trigger parameter(s)
+      }
       while(!feof(infile)) {
         // assumes the first param is of pt_word type 
         //bm_set_global_parameter_value(bm,0,ival);
