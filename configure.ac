@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 1.9 2007-01-26 15:49:49 ensonic Exp $
+dnl $Id: configure.ac,v 1.10 2007-02-19 11:30:46 ensonic Exp $
 
 dnl Initialise the autoconf/automake tool
 AC_INIT([bml], [0.1.0], [buzztard-devel@lists.sourceforge.net])
@@ -16,6 +16,7 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_ISC_POSIX
 AC_PROG_LIBTOOL
+AM_PROG_AS
 AM_PROG_CC_STDC
 
 dnl enable runtime debugging code
