@@ -1,3 +1,9 @@
+2007-02-20  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/bmltest_process.c: (test_process):
+	* testmachine.sh:
+	  trigger params for sources in testscript
+
 2007-02-19  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/bmltest_process.c: (test_process):

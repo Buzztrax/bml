@@ -1,4 +1,4 @@
-/* $Id: bmltest_process.c,v 1.7 2007-02-19 20:48:47 ensonic Exp $
+/* $Id: bmltest_process.c,v 1.8 2007-02-20 07:36:41 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -54,14 +54,14 @@ void test_process(const char *dllpath,const char *infilename,const char *outfile
     int s_size=BUFFER_SIZE,i_size;
     short int buffer_w[BUFFER_SIZE];
     float buffer_f[BUFFER_SIZE];
-    int i,type;
+    int i,mtype;
     //int ival=0,oval,vs=10;
     const char *type_name[3]={"","generator","effect"};
     
     puts("  machine created");
     bml_init(bm,0,NULL);
-    bml_get_machine_info(bm,BM_PROP_TYPE,&type);
-    printf("  %s initialized\n",type_name[type]);
+    bml_get_machine_info(bm,BM_PROP_TYPE,&mtype);
+    printf("  %s initialized\n",type_name[mtype]);
     
 
     // open raw files
@@ -69,12 +69,41 @@ void test_process(const char *dllpath,const char *infilename,const char *outfile
     outfile=fopen(outfilename,"wb");
     if(infile && outfile) {
       printf("    processing ");
-      if(type==1) {
-        int num_global, num_track;
+      if(mtype==1) {
+        int num,ptype,pflags;
+
         // trigger a note for generators
-        bml_get_machine_info(bm,BM_PROP_NUM_GLOBAL_PARAMS,&num_global);
-        bml_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,&num_track);
-        // @todo: get trigger parameter(s)
+        bml_get_machine_info(bm,BM_PROP_NUM_GLOBAL_PARAMS,&num);
+        // set value for trigger parameter(s)
+        for(i=0;i<num;i++) {
+          bml_get_global_parameter_info(bm,i,BM_PARA_FLAGS,(void *)&pflags);
+          if(!(pflags&2)) {
+            bml_get_global_parameter_info(bm,i,BM_PARA_TYPE,(void *)&ptype);
+            switch(ptype) {
+              case 0: // note
+                bml_set_global_parameter_value(bm,i,32);
+                break;
+              case 1: // switch
+                bml_set_global_parameter_value(bm,i,1);
+                break;
+            }
+          }
+        }
+        bml_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,&num);
+        for(i=0;i<num;i++) {
+          bml_get_track_parameter_info(bm,i,BM_PARA_FLAGS,(void *)&pflags);
+          if(!(pflags&2)) {
+            bml_get_track_parameter_info(bm,i,BM_PARA_TYPE,(void *)&ptype);
+            switch(ptype) {
+              case 0: // note
+                bml_set_track_parameter_value(bm,i,0,32);
+                break;
+              case 1: // switch
+                bml_set_track_parameter_value(bm,i,0,1);
+                break;
+            }
+          }
+        }
       }
       while(!feof(infile)) {
         // assumes the first param is of pt_word type 
