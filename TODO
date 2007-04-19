@@ -1,4 +1,8 @@
-$Id: TODO,v 1.3 2007-02-19 19:51:56 ensonic Exp $
+$Id: TODO,v 1.4 2007-04-19 14:36:18 ensonic Exp $
+
+= missing window function entries =
+unk__malloc_dbg
+unk_GetCommandLineW
 
 = missing features =
 * callbackinterface (wavetable access)

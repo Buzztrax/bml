@@ -210,7 +210,7 @@ static inline void __attribute__((__format__(__printf__, 1, 2))) dbgprintf(char*
     if (verbose > 2)
     {
 	va_list va;
-	
+
 	va_start(va, fmt);
 //	vprintf(fmt, va);
 	mp_dbg(MSGT_WIN32, MSGL_DBG3, fmt, va);
@@ -826,7 +826,7 @@ static void* WINAPI expWaitForMultipleObjects(int count, const void** objects,
 
     dbgprintf("WaitForMultipleObjects(%d, %p, %d, duration %d) =>\n",
 	count, objects, WaitAll, duration);
-    
+
     for (i = 0; i < count; i++)
     {
 	object = (void *) objects[i];
@@ -849,7 +849,7 @@ static HANDLE WINAPI expCreateMutexA(void *pSecAttr,
 		    char bInitialOwner, const char *name)
 {
     HANDLE mlist = (HANDLE)expCreateEventA(pSecAttr, 0, 0, name);
-    
+
     if (name)
 	dbgprintf("CreateMutexA(%p, %d, '%s') => 0x%x\n",
 	    pSecAttr, bInitialOwner, name, mlist);
@@ -1382,7 +1382,7 @@ static void WINAPI expLeaveCriticalSection(CRITICAL_SECTION* c)
 	dbgprintf("Win32 Warning: Leaving uninitialized Critical Section %p!!\n", c);
 	return;
     }
-    
+
     /* xine: recursive unlocking */
     if( cs->locked )
     {
@@ -1468,13 +1468,13 @@ static int WINAPI expTlsSetValue(int index, void* value)
 //    if((index<0) || (index>64))
     if((index>=64))
 	return 0;
-	
+
     /* qt passes -1 here. probably a side effect of some bad patching */
     if( index < 0 ) {
       tls_minus_one = value;
       return 1;
     }
-     
+
 #if 0
     *(void**)((char*)fs_seg+0x88+4*index) = value;
 #else
@@ -1483,7 +1483,7 @@ static int WINAPI expTlsSetValue(int index, void* value)
      */
     index = 0x88+4*index;
      __asm__ __volatile__(
-	"movl %0,%%fs:(%1)" :: "r" (value), "r" (index) 
+	"movl %0,%%fs:(%1)" :: "r" (value), "r" (index)
     );
 #endif
     return 1;
@@ -1492,12 +1492,12 @@ static int WINAPI expTlsSetValue(int index, void* value)
 static void* WINAPI expTlsGetValue(DWORD index)
 {
     void *ret;
-    
+
     dbgprintf("TlsGetValue(%ld)\n",index);
 //    if((index<0) || (index>64))
-    if((index>=64)) 
+    if((index>=64))
       return NULL;
-      
+
     /* qt passes -1 here. probably a side effect of some bad patching */
     if( index < 0 ) {
       return tls_minus_one;
@@ -1511,7 +1511,7 @@ static void* WINAPI expTlsGetValue(DWORD index)
      */
     index = 0x88+4*index;
      __asm__ __volatile__(
-	"movl %%fs:(%1),%0" : "=r" (ret) : "r" (index) 
+	"movl %%fs:(%1),%0" : "=r" (ret) : "r" (index)
     );
     return ret;
 #endif
@@ -2135,6 +2135,13 @@ static const char* WINAPI expGetCommandLineA()
     dbgprintf("GetCommandLineA() => \"c:\\aviplay.exe\"\n");
     return "c:\\aviplay.exe";
 }
+
+static const char* WINAPI expGetCommandLineW()
+{
+    dbgprintf("GetCommandLineW() => \"c:\\aviplay.exe\"\n");
+    return "c:\\aviplay.exe";
+}
+
 //static short envs[]={'p', 'a', 't', 'h', ' ', 'c', ':', '\\', 0, 0};
 static LPWSTR WINAPI expGetEnvironmentStringsW()
 {
@@ -2511,7 +2518,7 @@ static int WINAPI expMonitorFromPoint(void *p, int flags)
     return 0;
 }
 
-static int WINAPI expEnumDisplayMonitors(void *dc, RECT *r, 
+static int WINAPI expEnumDisplayMonitors(void *dc, RECT *r,
     int WINAPI (*callback_proc)(), void *callback_param)
 {
     dbgprintf("EnumDisplayMonitors(%p, %p, %p, %p) => ?\n",
@@ -2521,26 +2528,26 @@ static int WINAPI expEnumDisplayMonitors(void *dc, RECT *r,
 
 #if 0
 typedef struct tagMONITORINFO {
-    DWORD  cbSize; 
-    RECT   rcMonitor; 
-    RECT   rcWork; 
-    DWORD  dwFlags; 
-} MONITORINFO, *LPMONITORINFO; 
+    DWORD  cbSize;
+    RECT   rcMonitor;
+    RECT   rcWork;
+    DWORD  dwFlags;
+} MONITORINFO, *LPMONITORINFO;
 #endif
 
 #define CCHDEVICENAME 8
-typedef struct tagMONITORINFOEX {  
-    DWORD  cbSize; 
-    RECT   rcMonitor; 
-    RECT   rcWork; 
-    DWORD  dwFlags; 
+typedef struct tagMONITORINFOEX {
+    DWORD  cbSize;
+    RECT   rcMonitor;
+    RECT   rcWork;
+    DWORD  dwFlags;
     TCHAR  szDevice[CCHDEVICENAME];
-} MONITORINFOEX, *LPMONITORINFOEX; 
+} MONITORINFOEX, *LPMONITORINFOEX;
 
 static int WINAPI expGetMonitorInfoA(void *mon, LPMONITORINFO lpmi)
 {
     dbgprintf("GetMonitorInfoA(%p, %p) => 1\n", mon, lpmi);
-    
+
     lpmi->rcMonitor.right = lpmi->rcWork.right = PSEUDO_SCREEN_WIDTH;
     lpmi->rcMonitor.left = lpmi->rcWork.left = 0;
     lpmi->rcMonitor.bottom = lpmi->rcWork.bottom = PSEUDO_SCREEN_HEIGHT;
@@ -2554,7 +2561,7 @@ static int WINAPI expGetMonitorInfoA(void *mon, LPMONITORINFO lpmi)
 	dbgprintf("MONITORINFOEX!\n");
 	strncpy(lpmiex->szDevice, "Monitor1", CCHDEVICENAME);
     }
-    
+
     return 1;
 }
 
@@ -3426,7 +3433,7 @@ static int WINAPI expCreateDirectoryA(const char *pathname, void *sa)
 	buf[0] = '.';
 	buf[1] = 0;
     }
-#if 0    
+#if 0
     if (strrchr(pathname, '\\'))
 	mkdir(strcat(strrchr(pathname, '\\')+1, '/'), 666);
     else
@@ -3851,6 +3858,13 @@ static int expdelete(void* memory)
     my_release(memory);
     return 0;
 }
+
+/* FIXME: its not accepting this  */
+static void* exp_malloc_dbg (int size,int type,char *file,int line)
+{
+    return my_mreq(size,0);
+}
+
 
 /*
  * local definition - we need only the last two members at this point
@@ -4277,8 +4291,6 @@ static double expfrexp(double x, int* expo)
     return frexp(x, expo);
 }
 
-
-
 static int exp_stricmp(const char* s1, const char* s2)
 {
     return strcasecmp(s1, s2);
@@ -4538,25 +4550,25 @@ static int expDirectDrawCreate(void)
 }
 
 #if 1
-typedef struct tagPALETTEENTRY { 
-    BYTE peRed; 
-    BYTE peGreen; 
-    BYTE peBlue; 
-    BYTE peFlags; 
-} PALETTEENTRY; 
+typedef struct tagPALETTEENTRY {
+    BYTE peRed;
+    BYTE peGreen;
+    BYTE peBlue;
+    BYTE peFlags;
+} PALETTEENTRY;
 
 /* reversed the first 2 entries */
-typedef struct tagLOGPALETTE { 
-    WORD         palNumEntries; 
-    WORD         palVersion; 
-    PALETTEENTRY palPalEntry[1]; 
-} LOGPALETTE; 
+typedef struct tagLOGPALETTE {
+    WORD         palNumEntries;
+    WORD         palVersion;
+    PALETTEENTRY palPalEntry[1];
+} LOGPALETTE;
 
 static HPALETTE WINAPI expCreatePalette(CONST LOGPALETTE *lpgpl)
 {
     HPALETTE test;
     int i;
-    
+
     dbgprintf("CreatePalette(%p) => NULL\n", lpgpl);
 
     i = sizeof(LOGPALETTE)+((lpgpl->palNumEntries-1)*sizeof(PALETTEENTRY));
@@ -4584,10 +4596,10 @@ static int WINAPI expGetClientRect(HWND win, RECT *r)
 }
 
 #if 0
-typedef struct tagPOINT { 
-    LONG x; 
-    LONG y; 
-} POINT, *PPOINT; 
+typedef struct tagPOINT {
+    LONG x;
+    LONG y;
+} POINT, *PPOINT;
 #endif
 
 static int WINAPI expClientToScreen(HWND win, POINT *p)
@@ -4627,7 +4639,7 @@ static void *exprealloc(void *ptr, size_t size)
     if (!ptr)
 	return my_mreq(size,0);
     else
-	return my_realloc(ptr, size);        
+	return my_realloc(ptr, size);
 }
 
 static double expfloor(double x)
@@ -4753,6 +4765,7 @@ struct exports exp_kernel32[]=
     FF(SizeofResource, -1)
     FF(CloseHandle, -1)
     FF(GetCommandLineA, -1)
+    FF(GetCommandLineW, -1)
     FF(GetEnvironmentStringsW, -1)
     FF(FreeEnvironmentStringsW, -1)
     FF(FreeEnvironmentStringsA, -1)
@@ -4843,6 +4856,7 @@ struct exports exp_kernel32[]=
 
 struct exports exp_msvcrt[]={
     FF(malloc, -1)
+    FF(_malloc_dbg, -1)
     FF(_initterm, -1)
     FF(__dllonexit, -1)
     FF(free, -1)
@@ -5144,7 +5158,7 @@ static void* add_stub(void)
     int i;
 
     /* xine: check if stub for this export was created before */
-    for(i = 0; i < pos; i++) 
+    for(i = 0; i < pos; i++)
     {
       if(strcmp(export_names[pos], export_names[i])==0)
         return extcode+i*0x30; /* return existing stub */
@@ -5153,12 +5167,12 @@ static void* add_stub(void)
     /* xine: side effect of the stub fix. we must not
      * allocate a stub for this function otherwise QT dll
      * will try to call it.
-     */      
+     */
     if( strcmp(export_names[pos], "AllocateAndInitializeSid") == 0 )
     {
       return 0;
     }
-      
+
 #if 0
     memcpy(answ, &unk_exp1, 0x64);
     *(int*)(answ+9)=pos;
@@ -5174,14 +5188,14 @@ static void* add_stub(void)
     //answ[23] = 0x68; // pushl $0  (0x68 0x00000000)
     *((long*) (answ + 24)) = (long)called_unk;
 
-    /* xine: don't overflow the stub tables */    
+    /* xine: don't overflow the stub tables */
     if( (pos+1) < sizeof(extcode) / 0x30 &&
         (pos+1) < sizeof(export_names) / sizeof(export_names[0]) ) {
       pos++;
     } else {
       strcpy(export_names[pos], "too many unresolved exports");
     }
-      
+
     return (void*)answ;
 }
 
@@ -5248,7 +5262,7 @@ void* LookupExternal(const char* library, int ordinal)
 	if((func=LookupExternalNative(library,(LPCSTR) ordinal))) {
 		return func;
 	}
-	
+
 /* xine: pos is now tested inside add_stub()
     if(pos>150)return 0;
 */
