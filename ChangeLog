@@ -1,5 +1,12 @@
 2007-05-02  Stefan Kost  <ensonic@users.sf.net>
 
+	* ChangeLog:
+	  Released
+
+=== release 0.2.0 ===
+
+2007-05-02  Stefan Kost  <ensonic@users.sf.net>
+
 	* NEWS:
 	* TODO:
 	* configure.ac:
