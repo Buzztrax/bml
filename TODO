@@ -1,15 +1,31 @@
-$Id: TODO,v 1.4 2007-04-19 14:36:18 ensonic Exp $
+$Id: TODO,v 1.5 2007-05-02 19:36:03 ensonic Exp $
 
 = missing window function entries =
 unk__malloc_dbg
-unk_GetCommandLineW
 
 = missing features =
 * callbackinterface (wavetable access)
 
 = known not working machines =
+== Generators ==
+
+== Effects ==
 Arguelles TruePan
 FSM Infector
 Jeskola Raverb
   BuzzMachineCallbacks::GetEnvSize (wave=-96185375,env=0)
 Sonic Verb
+
+cheapo rec.dll
+  hangs after GetInfo()
+Ynzn's Remote Compressor.dll
+Ynzn's Remote Gate.dll
+  both crash (problem with name?)
+PSI Corp's LFO Filter.dll
+Repeater.dll
+RnZnAnFnCnR VST Effect Adapter.dll
+Rnznanf Vst Effect Adapter.dll
+Rout VST Plugin Loader.dll
+Shaman Chorus.dll
+WhiteNoise AuxReturn.dll
+  crash

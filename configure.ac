@@ -1,7 +1,7 @@
-dnl $Id: configure.ac,v 1.10 2007-02-19 11:30:46 ensonic Exp $
+dnl $Id: configure.ac,v 1.11 2007-05-02 19:36:03 ensonic Exp $
 
 dnl Initialise the autoconf/automake tool
-AC_INIT([bml], [0.1.0], [buzztard-devel@lists.sourceforge.net])
+AC_INIT([bml], [0.2.0], [buzztard-devel@lists.sourceforge.net])
 AC_CONFIG_SRCDIR([ChangeLog])
 AC_CONFIG_HEADERS(config.h)
 
