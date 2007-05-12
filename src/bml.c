@@ -1,4 +1,4 @@
-/* $Id: bml.c,v 1.13 2006-11-25 14:03:59 ensonic Exp $
+/* $Id: bml.c,v 1.14 2007-05-12 11:06:03 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -62,7 +62,13 @@ static void *h=NULL;
 
 pthread_mutex_t ldt_mutex = PTHREAD_MUTEX_INITIALIZER;
 
+
+typedef void (*BMLDebugLogger)(char *str);
+typedef void (*BMSetLogger)(BMLDebugLogger func);
+
+
 // API method pointers
+BMSetLogger BMLX(bml_set_logger);
 BMSetMasterInfo BMLX(bml_set_master_info);
 BMNew BMLX(bml_new);
 BMInit BMLX(bml_init);
@@ -107,6 +113,8 @@ BMDescribeTrackValue BMLX(bml_describe_track_value);
 #define GetSymbol(dll,name) WineGetProcAddress(dll,name)
 #define FreeDLL(dll) WineFreeLibrary(dll)
 #endif
+
+// passthrough functions
 
 void bml_set_master_info(long bpm, long tpb, long srat) {
 	pthread_mutex_lock(&ldt_mutex);
@@ -328,6 +336,12 @@ const char *bml_describe_track_value(BuzzMachine *bm, int const param,int const 
 	return(ret);
 }
 
+// wrapper management
+
+void bml_logger(char *str) {
+  TRACE(str);
+}
+
 int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
   TRACE("%s\n",__FUNCTION__);
   
@@ -347,6 +361,8 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
 	return(FALSE);
   }
   TRACE("%s:   bml loaded: %d\n",__FUNCTION__,h);
+
+  if(!(BMLX(bml_set_logger)=(BMSetLogger)GetSymbol(h,"bm_set_logger"))) { puts("bm_set_logger is missing");return(FALSE);}
 
   if(!(BMLX(bml_set_master_info)=(BMSetMasterInfo)GetSymbol(h,"bm_set_master_info"))) { puts("bm_set_master_info is missing");return(FALSE);}
   if(!(BMLX(bml_new)=(BMNew)GetSymbol(h,"bm_new"))) { puts("bm_new is missing");return(FALSE);}
@@ -382,6 +398,8 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
 
   // @todo more API entries
   TRACE("%s:   symbols connected\n",__FUNCTION__);
+  
+  BMLX(bml_set_logger(bml_logger));
   
   return(TRUE);
 }
