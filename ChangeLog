@@ -1,3 +1,21 @@
+2007-05-13  Stefan Kost  <ensonic@users.sf.net>
+
+	* NEWS:
+	* README:
+	* TODO:
+	* configure.ac:
+	* testmachine.sh:
+	* tests/bt-cfg.sh.in:
+	* tests/testmachine.sh:
+	  Move test script to tests dir and add cfg. Add examples abou how to
+	  scan for issues.
+
+	* dllwrapper1/wine/pe_image.c: (dump_exports),
+	(PE_FindExportedFunction), (fixup_imports), (calc_vma_size),
+	(do_relocations), (PE_LoadImage), (PE_CreateModule),
+	(PE_LoadLibraryExA), (PE_InitDLL), (_fixup_address):
+	  Fix logging
+
 2007-05-12  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader.dll:

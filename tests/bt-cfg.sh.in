@@ -1,0 +1,4 @@
+#!/bin/sh
+# $Id: bt-cfg.sh.in,v 1.1 2007-05-13 17:17:05 ensonic Exp $
+
+LIBDIR="@prefix@/lib"

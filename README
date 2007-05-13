@@ -1,4 +1,4 @@
-$Id: README,v 1.13 2006-11-26 14:37:53 ensonic Exp $
+$Id: README,v 1.14 2007-05-13 17:17:04 ensonic Exp $
 
 = quick info =
 Please turn you browser to http://www.buzztard.org to learn what this project
@@ -12,7 +12,8 @@ See original README in README.libfst for the latter.
 
 = installing =
 The emulation uses some parts of wine at runtime. It needs kernel32.dll, e.g.
-/usr/lib/wine/kernel32.dll.so. The original windows dll should also work.
+/usr/lib/wine/kernel32.dll.so, MFC42.DLL, MSVCRT.dll.
+The original windows dll should also work.
 
 Then you need to copy the all *.dll libraries from a windows buzz installation
 to your LD_LIBARY_PATH. We recommend to copy them to buzztard-prefix/lib.
