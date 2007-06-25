@@ -1,3 +1,21 @@
+2007-06-25  Stefan Kost  <ensonic@users.sf.net>
+
+	* README:
+	* dllwrapper1/wine/module.c: (MODULE_FindModule), (MODULE_InitDll),
+	(LoadLibraryExA), (dump_component), (report_func),
+	(report_func_ret):
+	* dllwrapper1/wine/win32.c: (expLoadCursorA), (expSetLocalTime),
+	(expGetSystemTime), (expSystemTimeToFileTime),
+	(expLocalFileTimeToFileTime), (expSetFileTime), (expCreateFileA),
+	(expCreateFileW), (expCreatePipe), (expLockFile), (expUnlockFile),
+	(expGetNumberOfConsoleInputEvents), (expPeekConsoleInputA),
+	(expReadConsoleInputA), (expPeekNamedPipe),
+	(expGetFileInformationByHandle), (expWriteConsoleA),
+	(expSetEndOfFile), (add_stub), (LookupExternal):
+	  More functions wrapped.
+	* src/BuzzMachineLoader.dll:
+	  Better logging capabillities. Emulate API for buzz<1.2 machines
+
 2007-05-13  Stefan Kost  <ensonic@users.sf.net>
 
 	* NEWS:

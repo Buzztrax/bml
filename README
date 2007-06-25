@@ -1,4 +1,4 @@
-$Id: README,v 1.14 2007-05-13 17:17:04 ensonic Exp $
+$Id: README,v 1.15 2007-06-25 16:06:26 ensonic Exp $
 
 = quick info =
 Please turn you browser to http://www.buzztard.org to learn what this project
@@ -12,15 +12,17 @@ See original README in README.libfst for the latter.
 
 = installing =
 The emulation uses some parts of wine at runtime. It needs kernel32.dll, e.g.
-/usr/lib/wine/kernel32.dll.so, MFC42.DLL, MSVCRT.dll.
+/usr/lib/wine/kernel32.dll.so, MFC42.DLL, MSVCRT.DLL.
 The original windows dll should also work.
 
 Then you need to copy the all *.dll libraries from a windows buzz installation
 to your LD_LIBARY_PATH. We recommend to copy them to buzztard-prefix/lib.
+
 Now you need to fix up some library names.
   ln -s Dsplib.dll dsplib.dll
   ln -s Nblib.dll nblib.dll
   ln -s "Ninereeds Dsplib.dll" "Ninereeds DSPLIB.dll"
+  ln -s MSVCRT.DLL MSVCRT.dll
 
 Next copy the machines. You can e.g. just copy the whole Gear folder to
 buzztard-prefix/lib as well.

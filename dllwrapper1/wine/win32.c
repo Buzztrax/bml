@@ -2924,11 +2924,12 @@ static int WINAPI expGetDesktopWindow()
     return 0;
 }
 
-static int cursor[100];
+static int cursor[100]={0,};
 
 static int WINAPI expLoadCursorA(int handle,LPCSTR name)
 {
-    dbgprintf("LoadCursorA(%d, %p='%s') => 0x%x\n", handle, name, name, (int)&cursor[0]);
+    //dbgprintf("LoadCursorA(%d, %p='%s') => 0x%x\n", handle, name, name, (int)&cursor[0]);
+    dbgprintf("LoadCursorA(%d, %p) => 0x%x\n", handle, name, (int)&cursor[0]);
     return (int)&cursor[0];
 }
 static int WINAPI expSetCursor(void *cursor)
@@ -3063,6 +3064,17 @@ static int WINAPI expGetTimeZoneInformation(LPTIME_ZONE_INFORMATION lpTimeZoneIn
     return TIME_ZONE_ID_STANDARD;
 }
 
+static int WINAPI expSetLocalTime(SYSTEMTIME* systime)
+{
+    dbgprintf("SetLocalTime(%p)\n", systime);
+    dbgprintf("  Year: %d\n  Month: %d\n  Day of week: %d\n"
+	      "  Day: %d\n  Hour: %d\n  Minute: %d\n  Second:  %d\n"
+	      "  Milliseconds: %d\n",
+	      systime->wYear, systime->wMonth, systime->wDayOfWeek, systime->wDay,
+	      systime->wHour, systime->wMinute, systime->wSecond, systime->wMilliseconds);
+    return 1;
+}
+
 static void WINAPI expGetLocalTime(SYSTEMTIME* systime)
 {
     time_t local_time;
@@ -3089,7 +3101,7 @@ static void WINAPI expGetLocalTime(SYSTEMTIME* systime)
 	      systime->wHour, systime->wMinute, systime->wSecond, systime->wMilliseconds);
 }
 
-static int WINAPI expGetSystemTime(SYSTEMTIME* systime)
+static void WINAPI expGetSystemTime(SYSTEMTIME* systime)
 {
     time_t local_time;
     struct tm *local_tm;
@@ -3113,7 +3125,6 @@ static int WINAPI expGetSystemTime(SYSTEMTIME* systime)
 	      "  Milliseconds: %d\n",
 	      systime->wYear, systime->wMonth, systime->wDayOfWeek, systime->wDay,
 	      systime->wHour, systime->wMinute, systime->wSecond, systime->wMilliseconds);
-    return 0;
 }
 
 #define SECS_1601_TO_1970  ((369 * 365 + 89) * 86400ULL)
@@ -3129,6 +3140,35 @@ static void WINAPI expGetSystemTimeAsFileTime(FILETIME* systime)
     secs += tv.tv_usec * 10;
     systime->dwLowDateTime = secs & 0xffffffff;
     systime->dwHighDateTime = (secs >> 32);
+}
+
+static int WINAPI expSystemTimeToFileTime(const SYSTEMTIME* systime,LPFILETIME filetime)
+{
+  unsigned long long secs;
+
+  /* FIXME: we need real seonds here */
+  secs = systime->wSecond +
+         systime->wMinute * 60 +
+         systime->wHour * 60 * 60 +
+         systime->wDay * 24 * 60 * 60;
+
+  filetime->dwLowDateTime = secs & 0xffffffff;
+  filetime->dwHighDateTime = (secs >> 32);
+  return 1;
+}
+
+static int WINAPI expLocalFileTimeToFileTime(const FILETIME* localfiletime,LPFILETIME filetime)
+{
+  /* FIXME: implement me  */
+  filetime->dwLowDateTime = localfiletime->dwLowDateTime;
+  filetime->dwHighDateTime = localfiletime->dwHighDateTime;
+  return 1;
+}
+
+static int WINAPI expSetFileTime(HANDLE hFile, const FILETIME* lpCreationTime, const FILETIME* lpLastAccessTime, const FILETIME* lpLastWriteTime)
+{
+  /* FIXME: implement me  */
+  return 1;
 }
 
 static int WINAPI expGetEnvironmentVariableA(const char* name, char* field, int size)
@@ -3509,60 +3549,135 @@ static HANDLE WINAPI expCreateFileA(LPCSTR cs1,DWORD i1,DWORD i2,
 
     if(strncmp(cs1, "AP", 2) == 0)
     {
-	int result;
-	char* tmp=(char*)malloc(strlen(win32_def_path)+50);
-	strcpy(tmp, win32_def_path);
-	strcat(tmp, "/");
-	strcat(tmp, "APmpg4v1.apl");
-	result=open(tmp, O_RDONLY);
-	free(tmp);
-	return result;
+        int result;
+        char* tmp=(char*)malloc(strlen(win32_def_path)+50);
+        strcpy(tmp, win32_def_path);
+        strcat(tmp, "/");
+        strcat(tmp, "APmpg4v1.apl");
+        result=open(tmp, O_RDONLY);
+        free(tmp);
+        return result;
     }
     if (strstr(cs1, "vp3"))
     {
-	int r;
-	int flg = 0;
-	char* tmp=(char*)malloc(20 + strlen(cs1));
-	strcpy(tmp, "/tmp/");
-	strcat(tmp, cs1);
-	r = 4;
-	while (tmp[r])
-	{
-	    if (tmp[r] == ':' || tmp[r] == '\\')
-		tmp[r] = '_';
-	    r++;
-	}
-	if (GENERIC_READ & i1)
-	    flg |= O_RDONLY;
-	else if (GENERIC_WRITE & i1)
-	{
-	    flg |= O_WRONLY;
-	    dbgprintf("Warning: openning filename %s  %d (flags; 0x%x) for write\n", tmp, r, flg);
-	}
-	r=open(tmp, flg);
-	free(tmp);
-	return r;
+      int r;
+      int flg = 0;
+      char* tmp=(char*)malloc(20 + strlen(cs1));
+      strcpy(tmp, "/tmp/");
+      strcat(tmp, cs1);
+      r = 4;
+      while (tmp[r])
+      {
+          if (tmp[r] == ':' || tmp[r] == '\\')
+          tmp[r] = '_';
+          r++;
+      }
+      if (GENERIC_READ & i1)
+          flg |= O_RDONLY;
+      else if (GENERIC_WRITE & i1)
+      {
+          flg |= O_WRONLY;
+          dbgprintf("Warning: openning filename %s  %d (flags; 0x%x) for write\n", tmp, r, flg);
+      }
+      r=open(tmp, flg);
+      free(tmp);
+      return r;
     }
 
-#if 0
+//#if 0
     /* we need this for some virtualdub filters */
     {
-	int r;
-	int flg = 0;
-	if (GENERIC_READ & i1)
-	    flg |= O_RDONLY;
-	else if (GENERIC_WRITE & i1)
-	{
-	    flg |= O_WRONLY;
-	    dbgprintf("Warning: openning filename %s  %d (flags; 0x%x) for write\n", cs1, r, flg);
-	}
-	r=open(cs1, flg);
-	return r;
+      int r;
+      int flg = 0;
+      if (GENERIC_READ & i1)
+          flg |= O_RDONLY;
+      else if (GENERIC_WRITE & i1)
+      {
+          flg |= O_WRONLY;
+          dbgprintf("Warning: openning filename %s  (flags; 0x%x) for write\n", cs1, flg);
+      }
+      r=open(cs1, flg);
+      return r;
     }
-#endif
+//#endif
 
     return atoi(cs1+2);
 }
+
+static HANDLE WINAPI expCreateFileW(LPCWSTR filename,DWORD access,DWORD sharing,
+  LPSECURITY_ATTRIBUTES sa,DWORD creation,DWORD attributes,HANDLE template)
+{
+  // mbstowcs, MultiByteToWideChar
+  return expCreateFileA((LPCSTR)filename,access,sharing,sa,creation,attributes,template);
+}
+
+static int WINAPI expCreatePipe(PHANDLE hReadPipe,PHANDLE hWritePipe,LPSECURITY_ATTRIBUTES lpPipeAttributes,DWORD nSize)
+{
+  /* FIXME: implement me */
+  return 1;
+}
+
+static int WINAPI expLockFile(HANDLE hFile,DWORD dwFileOffsetLow,DWORD dwFileOffsetHigh,DWORD nNumberOfBytesToUnlockLow,DWORD nNumberOfBytesToUnlockHigh)
+{
+  /* FIXME: implement me */
+  return 1;
+}
+
+static int WINAPI expUnlockFile(HANDLE hFile,DWORD dwFileOffsetLow,DWORD dwFileOffsetHigh,DWORD nNumberOfBytesToUnlockLow,DWORD nNumberOfBytesToUnlockHigh)
+{
+  /* FIXME: implement me */
+  return 1;
+}
+
+static int WINAPI expGetNumberOfConsoleInputEvents(HANDLE hConsoleInput,LPDWORD lpcNumberOfEvents)
+{
+  /* FIXME: implement me */
+  *lpcNumberOfEvents=0;
+  return 1;
+}
+
+static int WINAPI expPeekConsoleInputA(HANDLE hConsoleInput,/*PINPUT_RECORD*/void *lpBuffer,DWORD nLength,LPDWORD lpNumberOfEventsRead)
+{
+  /* FIXME: implement me */
+  *lpNumberOfEventsRead=0;
+  return 1;
+}
+
+static int WINAPI expReadConsoleInputA(HANDLE handle,/*PINPUT_RECORD*/void *buffer,DWORD count,LPDWORD pRead)
+{
+  /* FIXME: implement me */
+  return 0;
+}
+
+static int WINAPI expPeekNamedPipe(HANDLE hNamedPipe,LPVOID lpBuffer,DWORD nBufferSize,LPDWORD lpBytesRead,LPDWORD lpTotalBytesAvail,LPDWORD lpBytesLeftThisMessage)
+{
+  /* FIXME: implement me */
+  return 0;
+}
+
+static int WINAPI expGetFileInformationByHandle(HANDLE hFile,/*LPBY_HANDLE_FILE_INFORMATION*/void * lpFileInformation)
+{
+  /* FIXME: implement me */
+  return 0;
+}
+
+static int WINAPI expWriteConsoleA(HANDLE hConsoleOutput,const VOID* lpBuffer,DWORD nNumberOfCharsToWrite,LPDWORD lpNumberOfCharsWritten,LPVOID lpReserved)
+{
+  *lpNumberOfCharsWritten=nNumberOfCharsToWrite;
+  return 1;
+}
+
+static int WINAPI expSetEndOfFile(HANDLE hFile)
+{
+  /* FIXME: implement me */
+  return 1;
+}
+
+/*
+GetConsoleMode
+
+*/
+
 static UINT WINAPI expGetSystemDirectoryA(
   char* lpBuffer,  // address of buffer for system directory
   UINT uSize        // size of directory buffer
@@ -3572,6 +3687,7 @@ static UINT WINAPI expGetSystemDirectoryA(
     strcpy(lpBuffer,".");
     return 1;
 }
+
 /*
 static char sysdir[]=".";
 static LPCSTR WINAPI expGetSystemDirectoryA()
@@ -4799,9 +4915,13 @@ struct exports exp_kernel32[]=
     FF(InterlockedDecrement, -1)
     FF(GetTimeZoneInformation, -1)
     FF(OutputDebugStringA, -1)
+    FF(SetLocalTime, -1)
     FF(GetLocalTime, -1)
     FF(GetSystemTime, -1)
     FF(GetSystemTimeAsFileTime, -1)
+    FF(SystemTimeToFileTime, -1)
+    FF(LocalFileTimeToFileTime, -1)
+    FF(SetFileTime, -1)
     FF(GetEnvironmentVariableA, -1)
     FF(SetEnvironmentVariableA, -1)
     FF(RtlZeroMemory,-1)
@@ -4818,6 +4938,17 @@ struct exports exp_kernel32[]=
     FF(SetFilePointer,-1)
     FF(GetTempFileNameA,-1)
     FF(CreateFileA,-1)
+    FF(CreateFileW,-1)
+    FF(CreatePipe, -1)
+    FF(LockFile, -1)
+    FF(UnlockFile, -1)
+    FF(GetNumberOfConsoleInputEvents, -1)
+    FF(ReadConsoleInputA, -1)
+    FF(PeekConsoleInputA, -1)
+    FF(PeekNamedPipe, -1)
+    FF(GetFileInformationByHandle, -1)
+    FF(WriteConsoleA, -1)
+    FF(SetEndOfFile, -1)
     FF(GetSystemDirectoryA,-1)
     FF(GetWindowsDirectoryA,-1)
 #ifdef QTX
@@ -5146,9 +5277,9 @@ static void ext_stubs(void)
 
 //static void add_stub(int pos)
 
-extern int unk_exp1;
+//extern int unk_exp1;
 static int pos=0;
-static char extcode[20000];// place for 200 unresolved exports
+static char extcode[30000];// place for 300 unresolved exports
 static const char* called_unk = "Called unk_%s\n";
 
 static void* add_stub(void)
@@ -5193,7 +5324,7 @@ static void* add_stub(void)
         (pos+1) < sizeof(export_names) / sizeof(export_names[0]) ) {
       pos++;
     } else {
-      strcpy(export_names[pos], "too many unresolved exports");
+      strcpy(export_names[pos], " too many unresolved exports");
     }
 
     return (void*)answ;
@@ -5240,8 +5371,8 @@ void* LookupExternal(const char* library, int ordinal)
 
     if(library==0)
     {
-	dbgprintf("ERROR: library=0\n");
-	return (void*)ext_unknown;
+      dbgprintf("ERROR: library=0\n");
+      return (void*)ext_unknown;
     }
     //    dbgprintf("%x %x\n", &unk_exp1, &unk_exp2);
 
