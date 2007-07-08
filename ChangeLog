@@ -1,3 +1,8 @@
+2007-07-08  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader.dll:
+	  Update bridge library (removed -1 from again setNumTracks(tracks)).
+
 2007-06-25  Stefan Kost  <ensonic@users.sf.net>
 
 	* README:
