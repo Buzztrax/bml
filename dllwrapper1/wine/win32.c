@@ -4315,6 +4315,12 @@ static double explog10(double x)
     return log10(x);
 }
 
+static double expsin(double x)
+{
+    /*dbgprintf("Sin %f => %f  0x%Lx\n", x, sin(x), *((int64_t*)&x));*/
+    return sin(x);
+}
+
 static double expcos(double x)
 {
     /*dbgprintf("Cos %f => %f  0x%Lx\n", x, cos(x), *((int64_t*)&x));*/
@@ -4337,6 +4343,15 @@ static void explog10(void)
 	 "fldln2	\n\t"
 	 "fxch %st(1)	\n\t"
 	 "fyl2x		\n\t"
+	);
+}
+
+static void expsin(void)
+{
+    __asm__ __volatile__
+	(
+	 "fldl 8(%esp)	\n\t"
+	 "fsin		\n\t"
 	);
 }
 
@@ -5018,6 +5033,7 @@ struct exports exp_msvcrt[]={
     FF(srand, -1)
     FF(log10, -1)
     FF(pow, -1)
+    FF(sin, -1)
     FF(cos, -1)
     FF(_ftol,-1)
     FF(_CIpow,-1)

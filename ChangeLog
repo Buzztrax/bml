@@ -1,3 +1,11 @@
+2007-09-02  Stefan Kost  <ensonic@users.sf.net>
+
+	* autogen.sh:
+	  Zpdate autogen.sh to be in sync with other modules.
+
+	* dllwrapper1/wine/win32.c:
+	  Add sin() to emulated api. Fixes #1786592.
+
 2007-07-08  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader.dll:

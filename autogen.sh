@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: autogen.sh,v 1.4 2005-05-18 12:47:16 ensonic Exp $
+# $Id: autogen.sh,v 1.5 2007-09-02 12:27:25 ensonic Exp $
 # Run this to generate all the initial makefiles, etc.
 
 DIE=0
@@ -45,8 +45,8 @@ version_check ()
   if test ! -z "$MICRO"; then VERSION=$VERSION.$MICRO; else MICRO=0; fi
 
   debug "major $MAJOR minor $MINOR micro $MICRO"
-  
-  for SUGGESTION in $PKG_PATH; do 
+
+  for SUGGESTION in $PKG_PATH; do
     COMMAND="$SUGGESTION"
 
     # don't check if asked not to
@@ -62,7 +62,7 @@ version_check ()
     }
 
     debug "checking version with $COMMAND"
-    ($COMMAND --version) < /dev/null > /dev/null 2>&1 || 
+    ($COMMAND --version) < /dev/null > /dev/null 2>&1 ||
     {
       echo "not found."
       continue
@@ -316,12 +316,10 @@ version_check "autoconf" "$AUTOCONF autoconf autoconf-2.54 autoconf-2.53 autocon
               "ftp://ftp.gnu.org/pub/gnu/autoconf/" 2 52 || DIE=1
 version_check "automake" "$AUTOMAKE automake automake-1.7 automake17 automake-1.6" \
               "ftp://ftp.gnu.org/pub/gnu/automake/" 1 6 || DIE=1
-#version_check "autopoint" "autopoint" \
-#              "ftp://ftp.gnu.org/pub/gnu/gettext/" 0 12 1 || DIE=1
 version_check "libtoolize" "libtoolize" \
               "ftp://ftp.gnu.org/pub/gnu/libtool/" 1 5 0 || DIE=1
 version_check "pkg-config" "" \
-              "http://www.freedesktop.org/software/pkgconfig" 0 8 0 || DIE=1
+              "ftp://ftp.gnome.org/pub/gnome/sources/pkgconfig/" 0 8 0 || DIE=1
 
 die_check $DIE
 
@@ -341,11 +339,6 @@ if test -z "$*"; then
 fi
 
 toplevel_check $srcfile
-
-# autopoint
-#    older autopoint (< 0.12) has a tendency to complain about mkinstalldirs
-#if test -x mkinstalldirs; then rm mkinstalldirs; fi
-#tool_run "$autopoint --force"
 
 # aclocal
 if test -f acinclude.m4; then rm acinclude.m4; fi
