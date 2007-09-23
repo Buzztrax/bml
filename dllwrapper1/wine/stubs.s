@@ -33,3 +33,6 @@ exp_EH_prolog:
 	leal  12(%esp), %ebp
 	pushl %eax
 	ret
+
+.section .note.GNU-stack,"",@progbits
+

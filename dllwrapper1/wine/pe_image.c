@@ -47,6 +47,9 @@
 #ifdef HAVE_SYS_MMAN_H
 #include <sys/mman.h>
 #endif
+#ifdef HAVE_ALLOCA_H
+#include <alloca.h>
+#endif
 #include "windef.h"
 #include "winbase.h"
 #include "winerror.h"

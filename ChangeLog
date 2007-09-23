@@ -1,5 +1,24 @@
 2007-09-23  Stefan Kost  <ensonic@users.sf.net>
 
+	* README:
+	  Add info about how to build on 64bit systems.
+
+	* configure.ac:
+	* dllwrapper1/wine/Makefile.am:
+	* dllwrapper1/wine/elfdll.c:
+	* dllwrapper1/wine/ldt_keeper.c:
+	* dllwrapper1/wine/module.c:
+	* dllwrapper1/wine/pe_image.c:
+	* dllwrapper1/wine/pshpack1.h:
+	* dllwrapper1/wine/pshpack2.h:
+	* dllwrapper1/wine/stubs.s:
+	* dllwrapper1/wine/win32.c:
+	* dllwrapper1/wine/wrapper.S:
+	* dllwrapper1/wine/wrapper.h:
+	  Some cleanups and sync with upstream changes.
+
+2007-09-23  Stefan Kost  <ensonic@users.sf.net>
+
 	* configure.ac:
 	  Improved lcov detection.
 

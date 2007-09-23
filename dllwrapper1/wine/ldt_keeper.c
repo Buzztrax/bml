@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id: ldt_keeper.c,v 1.2 2006-08-04 21:49:18 ensonic Exp $
+ * $Id: ldt_keeper.c,v 1.3 2007-09-23 18:53:48 ensonic Exp $
  *
  *
  * contents:
@@ -54,6 +54,7 @@
 
 /* applied some modification to make make our xine friend more happy */
 #include "ldt_keeper.h"
+#include "config.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -90,12 +91,14 @@ int modify_ldt(int func, void *ptr, unsigned long bytecount);
 #include <sys/sysi86.h>
 
 /* solaris x86: add missing prototype for sysi86() */
+#ifndef HAVE_SYSI86
 #ifdef  __cplusplus
 extern "C" {
 #endif
 int sysi86(int, void*);
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 #ifndef NUMSYSLDTS             /* SunOS 2.5.1 does not define NUMSYSLDTS */

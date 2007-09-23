@@ -39,8 +39,8 @@
 
 #ifdef EMU_QTX_API
 #include "wrapper.h"
-static int report_func(void *stack_base, int stack_size, reg386_t *reg, u_int32_t *flags);
-static int report_func_ret(void *stack_base, int stack_size, reg386_t *reg, u_int32_t *flags);
+int report_func(void *stack_base, int stack_size, reg386_t *reg, u_int32_t *flags);
+int report_func_ret(void *stack_base, int stack_size, reg386_t *reg, u_int32_t *flags);
 #endif
 
 //#undef TRACE
@@ -541,8 +541,6 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 	    printf ("wine/module: QuickTime.qts patched!!! old entry=%p\n",ptr[0]);
 
 #ifdef EMU_QTX_API
-	    report_entry = report_func;
-	    report_ret   = report_func_ret;
 	    wrapper_target=ptr[0];
 	    ptr[0]=wrapper;
 #endif
@@ -705,7 +703,7 @@ static int dump_component(char* name,int type,void* _orig, ComponentParameters *
 static u_int32_t ret_array[4096];
 static int ret_i=0;
 
-static int report_func(void *stack_base, int stack_size, reg386_t *reg, u_int32_t *flags)
+int report_func(void *stack_base, int stack_size, reg386_t *reg, u_int32_t *flags)
 {
 #ifdef DEBUG_QTX_API
   int i;
@@ -904,7 +902,7 @@ static int report_func(void *stack_base, int stack_size, reg386_t *reg, u_int32_
     return 0;
 }
 
-static int report_func_ret(void *stack_base, int stack_size, reg386_t *reg, u_int32_t *flags)
+int report_func_ret(void *stack_base, int stack_size, reg386_t *reg, u_int32_t *flags)
 {
 #ifdef DEBUG_QTX_API
   int i;
@@ -1018,9 +1016,7 @@ FARPROC MODULE_GetProcAddress(
 //      || !strcmp(function,"_CallComponentFunctionWithStorage")
 //      || !strcmp(function,"_CallComponent")
       ){
-	fprintf(stderr,"theQuickTimeDispatcher caught -> %p\n",retproc);
-      report_entry = report_func;
-      report_ret   = report_func_ret;
+	  fprintf(stderr,"theQuickTimeDispatcher caught -> %p\n",retproc);
       wrapper_target=(void *)retproc;
       retproc=(void *)wrapper;
     }

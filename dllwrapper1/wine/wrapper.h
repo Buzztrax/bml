@@ -11,10 +11,6 @@ typedef struct {
   u_int32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
 } reg386_t;
 
-typedef int (*wrapper_func_t)(void *stack_base, int stack_size, reg386_t *reg,  u_int32_t *flags);
-
-extern wrapper_func_t report_entry, report_ret;
-
 extern void (*wrapper_target)(void);
 
 extern int wrapper(void);

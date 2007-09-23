@@ -13,6 +13,7 @@
 #include "elfdll.h"
 #include "debugtools.h"
 #include "winerror.h"
+#include "ext.h"
 
 //DEFAULT_DEBUG_CHANNEL(elfdll)
 

@@ -4704,7 +4704,8 @@ static HPALETTE WINAPI expCreatePalette(CONST LOGPALETTE *lpgpl)
 
     i = sizeof(LOGPALETTE)+((lpgpl->palNumEntries-1)*sizeof(PALETTEENTRY));
     test = (HPALETTE)malloc(i);
-    memcpy((void *)test, lpgpl, i);
+    /* preventive expect bad values leading to overapping */
+    memmove((void *)test, lpgpl, i);
 
     return test;
 }

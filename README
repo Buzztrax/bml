@@ -1,4 +1,4 @@
-$Id: README,v 1.15 2007-06-25 16:06:26 ensonic Exp $
+$Id: README,v 1.16 2007-09-23 18:53:48 ensonic Exp $
 
 = quick info =
 Please turn you browser to http://www.buzztard.org to learn what this project
@@ -9,6 +9,12 @@ The libbml is a library that loads buzz machines from the windows music
 composer buzz, so that Linux apps can use them.
 This lib is either using the libavifile wrapper or the libfst one.
 See original README in README.libfst for the latter.
+
+= building =
+Please note that this library only works on x86 systems. On 64bit systems you
+can build a 32 bit binary by running 
+CFLAGS="-m32" CASFLAGS="-m32" make
+.
 
 = installing =
 The emulation uses some parts of wine at runtime. It needs kernel32.dll, e.g.

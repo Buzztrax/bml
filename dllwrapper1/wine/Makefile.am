@@ -1,7 +1,6 @@
 noinst_LTLIBRARIES = libloader.la
 
 CCAS = $(CC)
-CCASFLAGS = 
 
 %.o: %.s
 	$(CC) -c $< -o $@
