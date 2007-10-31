@@ -1,5 +1,11 @@
 2007-10-31  Stefan Kost  <ensonic@users.sf.net>
 
+	* .cvsignore:
+	* tests/.cvsignore:
+	  More cleaning.
+
+2007-10-31  Stefan Kost  <ensonic@users.sf.net>
+
 	* src/BuzzMachineLoader/.cvsigore:
 	  Add .cvsignore file.
 

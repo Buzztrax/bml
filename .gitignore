@@ -28,3 +28,6 @@ depcomp
 libtool
 ltmain.sh
 *.cache
+*.log
+*.tar.gz
+
