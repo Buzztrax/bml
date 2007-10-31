@@ -1,4 +1,4 @@
-/* $Id: bmltest_process.c,v 1.8 2007-02-20 07:36:41 ensonic Exp $
+/* $Id: bmltest_process.c,v 1.9 2007-10-31 18:02:07 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -22,9 +22,13 @@
  * process data with a buzz machine
  *
  * invoke it e.g. as
- *   env LD_LIBRARY_PATH="." ./bmltest_process ../machines/elak_svf.dll input.raw output.raw
+ *   LD_LIBRARY_PATH=".:./BuzzMachineLoader/.libs" ./bmltest_process ../machines/elak_svf.dll input.raw output1.raw
+ *   LD_LIBRARY_PATH=".:./BuzzMachineLoader/.libs" ./bmltest_process ../../buzzmachines/Elak/SVF/libelak_svf.so input.raw output2.raw
  *
- * the dll *must* be a buzz-machine, no error checking ;-)
+ * the dll/so *must* be a buzz-machine, not much error checking ;-)
+ *
+ * aplay -fS16_LE -r44100 input.raw
+ * aplay -fS16_LE -r44100 output1.raw
  */
 
 #include <sys/types.h>
@@ -40,16 +44,13 @@
 
 #define BUFFER_SIZE 1024
 
-void test_process(const char *dllpath,const char *infilename,const char *outfilename) {
+void test_process_w(char *libpath,const char *infilename,const char *outfilename) {
   // buzz machine handle
   void *bm;
-  char *fulldllpath;
  
-  fulldllpath=bml_convertpath((char *)dllpath);
-
-  printf("%s(\"%s\" -> \"%s\")\n",__FUNCTION__,dllpath,fulldllpath);
+  printf("%s(\"%s\")\n",__FUNCTION__,libpath);
   
-  if((bm=bml_new(fulldllpath))) {
+  if((bm=bmlw_new(libpath))) {
     FILE *infile,*outfile;
     int s_size=BUFFER_SIZE,i_size;
     short int buffer_w[BUFFER_SIZE];
@@ -58,9 +59,9 @@ void test_process(const char *dllpath,const char *infilename,const char *outfile
     //int ival=0,oval,vs=10;
     const char *type_name[3]={"","generator","effect"};
     
-    puts("  machine created");
-    bml_init(bm,0,NULL);
-    bml_get_machine_info(bm,BM_PROP_TYPE,&mtype);
+    puts("  windows machine created");
+    bmlw_init(bm,0,NULL);
+    bmlw_get_machine_info(bm,BM_PROP_TYPE,&mtype);
     printf("  %s initialized\n",type_name[mtype]);
     
 
@@ -73,33 +74,33 @@ void test_process(const char *dllpath,const char *infilename,const char *outfile
         int num,ptype,pflags;
 
         // trigger a note for generators
-        bml_get_machine_info(bm,BM_PROP_NUM_GLOBAL_PARAMS,&num);
+        bmlw_get_machine_info(bm,BM_PROP_NUM_GLOBAL_PARAMS,&num);
         // set value for trigger parameter(s)
         for(i=0;i<num;i++) {
-          bml_get_global_parameter_info(bm,i,BM_PARA_FLAGS,(void *)&pflags);
+          bmlw_get_global_parameter_info(bm,i,BM_PARA_FLAGS,(void *)&pflags);
           if(!(pflags&2)) {
-            bml_get_global_parameter_info(bm,i,BM_PARA_TYPE,(void *)&ptype);
+            bmlw_get_global_parameter_info(bm,i,BM_PARA_TYPE,(void *)&ptype);
             switch(ptype) {
               case 0: // note
-                bml_set_global_parameter_value(bm,i,32);
+                bmlw_set_global_parameter_value(bm,i,32);
                 break;
               case 1: // switch
-                bml_set_global_parameter_value(bm,i,1);
+                bmlw_set_global_parameter_value(bm,i,1);
                 break;
             }
           }
         }
-        bml_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,&num);
+        bmlw_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,&num);
         for(i=0;i<num;i++) {
-          bml_get_track_parameter_info(bm,i,BM_PARA_FLAGS,(void *)&pflags);
+          bmlw_get_track_parameter_info(bm,i,BM_PARA_FLAGS,(void *)&pflags);
           if(!(pflags&2)) {
-            bml_get_track_parameter_info(bm,i,BM_PARA_TYPE,(void *)&ptype);
+            bmlw_get_track_parameter_info(bm,i,BM_PARA_TYPE,(void *)&ptype);
             switch(ptype) {
               case 0: // note
-                bml_set_track_parameter_value(bm,i,0,32);
+                bmlw_set_track_parameter_value(bm,i,0,32);
                 break;
               case 1: // switch
-                bml_set_track_parameter_value(bm,i,0,1);
+                bmlw_set_track_parameter_value(bm,i,0,1);
                 break;
             }
           }
@@ -114,10 +115,10 @@ void test_process(const char *dllpath,const char *infilename,const char *outfile
         
         printf(".");
         // set GlobalVals, TrackVals
-        bml_tick(bm);
+        bmlw_tick(bm);
         i_size=fread(buffer_w,2,s_size,infile);
         for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i]/32768.0;
-        bml_work(bm,buffer_f,i_size,3/*WM_READWRITE*/);
+        bmlw_work(bm,buffer_f,i_size,3/*WM_READWRITE*/);
         for(i=0;i<i_size;i++) buffer_w[i]=(short int)(buffer_f[i]*32768.0);
         fwrite(buffer_w,2,i_size,outfile);
       }
@@ -127,7 +128,95 @@ void test_process(const char *dllpath,const char *infilename,const char *outfile
     if(infile) fclose(infile);
     if(outfile) fclose(outfile);
     puts("  done");
-    bml_free(bm);
+    bmlw_free(bm);
+  }
+}
+
+void test_process_n(char *libpath,const char *infilename,const char *outfilename) {
+  // buzz machine handle
+  void *bm;
+
+  printf("%s(\"%s\")\n",__FUNCTION__,libpath);
+  
+  if((bm=bmln_new(libpath))) {
+    FILE *infile,*outfile;
+    int s_size=BUFFER_SIZE,i_size;
+    short int buffer_w[BUFFER_SIZE];
+    float buffer_f[BUFFER_SIZE];
+    int i,mtype;
+    //int ival=0,oval,vs=10;
+    const char *type_name[3]={"","generator","effect"};
+    
+    puts("  native machine created");
+    bmln_init(bm,0,NULL);
+    bmln_get_machine_info(bm,BM_PROP_TYPE,&mtype);
+    printf("  %s initialized\n",type_name[mtype]);
+    
+
+    // open raw files
+    infile=fopen(infilename,"rb");
+    outfile=fopen(outfilename,"wb");
+    if(infile && outfile) {
+      printf("    processing ");
+      if(mtype==1) {
+        int num,ptype,pflags;
+
+        // trigger a note for generators
+        bmln_get_machine_info(bm,BM_PROP_NUM_GLOBAL_PARAMS,&num);
+        // set value for trigger parameter(s)
+        for(i=0;i<num;i++) {
+          bmln_get_global_parameter_info(bm,i,BM_PARA_FLAGS,(void *)&pflags);
+          if(!(pflags&2)) {
+            bmln_get_global_parameter_info(bm,i,BM_PARA_TYPE,(void *)&ptype);
+            switch(ptype) {
+              case 0: // note
+                bmln_set_global_parameter_value(bm,i,32);
+                break;
+              case 1: // switch
+                bmln_set_global_parameter_value(bm,i,1);
+                break;
+            }
+          }
+        }
+        bmln_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,&num);
+        for(i=0;i<num;i++) {
+          bmln_get_track_parameter_info(bm,i,BM_PARA_FLAGS,(void *)&pflags);
+          if(!(pflags&2)) {
+            bmln_get_track_parameter_info(bm,i,BM_PARA_TYPE,(void *)&ptype);
+            switch(ptype) {
+              case 0: // note
+                bmln_set_track_parameter_value(bm,i,0,32);
+                break;
+              case 1: // switch
+                bmln_set_track_parameter_value(bm,i,0,1);
+                break;
+            }
+          }
+        }
+      }
+      while(!feof(infile)) {
+        // assumes the first param is of pt_word type 
+        //bm_set_global_parameter_value(bm,0,ival);
+        //oval=bm_get_global_parameter_value(bm,0);printf("        Value: %d\n",oval);
+        //ival+=vs;
+        //if(((vs>0) && (ival==1000)) || ((vs<0) && (ival==0))) vs=-vs; 
+        
+        printf(".");
+        // set GlobalVals, TrackVals
+        bmln_tick(bm);
+        i_size=fread(buffer_w,2,s_size,infile);
+        for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i]/32768.0;
+        bmln_work(bm,buffer_f,i_size,3/*WM_READWRITE*/);
+        for(i=0;i<i_size;i++) buffer_w[i]=(short int)(buffer_f[i]*32768.0);
+        fwrite(buffer_w,2,i_size,outfile);
+      }
+      //printf("\n");
+    }
+    else puts("    file error!");
+    if(infile) fclose(infile);
+    if(outfile) fclose(outfile);
+    puts("  done");
+    bmln_free(bm);
   }
 }
 
@@ -136,12 +225,24 @@ int main( int argc, char **argv ) {
   puts("main beg");
 
   if(bml_setup(0)) {
+    char *lib_name;
+    int sl;
 
-    bml_set_master_info(120,4,44100);
+    bmlw_set_master_info(120,4,44100);
+    bmln_set_master_info(120,4,44100);
     puts("  master info initialized");
 
     if(argc>2) {
-      test_process(argv[1],argv[2],argv[3]);
+      lib_name=argv[1];
+      sl=strlen(lib_name);
+      if(sl>4) {
+        if(!strcmp(&lib_name[sl-4],".dll")) {
+          test_process_w(lib_name,argv[2],argv[3]);
+        }
+        else {
+          test_process_n(lib_name,argv[2],argv[3]);
+        }
+      }
     }
     else puts("    not enough args!");
     bml_finalize();

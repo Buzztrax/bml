@@ -1,4 +1,8 @@
-$Id: TODO,v 1.6 2007-05-13 17:17:04 ensonic Exp $
+$Id: TODO,v 1.7 2007-10-31 18:02:06 ensonic Exp $
+
+= general =
+
+* get rid of bml_convertpath() here and in gstbml
 
 = missing window function entries =
 unk__malloc_dbg

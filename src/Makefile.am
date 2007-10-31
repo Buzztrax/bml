@@ -1,4 +1,6 @@
-## $Id: Makefile.am,v 1.6 2006-08-27 14:31:51 ensonic Exp $
+## $Id: Makefile.am,v 1.7 2007-10-31 18:02:07 ensonic Exp $
+
+SUBDIRS = . BuzzMachineLoader
 
 lib_LTLIBRARIES = libbml.la
 
@@ -23,16 +25,16 @@ libbml_la_LIBADD = $(BASE_DEPS_LIBS) \
 endif
 
 libbml_la_CFLAGS = $(BML_CFLAGS)
-libbml_la_LDFLAGS = -lm -lpthread
+libbml_la_LDFLAGS = -lm -lpthread -ldl
 
 bin_PROGRAMS=bmltest_info bmltest_process
 
 bmltest_info_SOURCES= bmltest_info.c
-bmltest_info_LDADD = $(BASE_DEPS_LIBS) \
+bmltest_info_LDADD = $(BASE_DEPS_LIBS) -ldl \
 	libbml.la
 
 bmltest_process_SOURCES= bmltest_process.c
-bmltest_process_LDADD = $(BASE_DEPS_LIBS) \
+bmltest_process_LDADD = $(BASE_DEPS_LIBS) -ldl \
 	libbml.la
 
 dlldir = $(libdir)

@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 1.14 2007-09-23 18:53:48 ensonic Exp $
+dnl $Id: configure.ac,v 1.15 2007-10-31 18:02:06 ensonic Exp $
 
 dnl Initialise the autoconf/automake tool
 AC_INIT([bml], [0.2.0], [buzztard-devel@lists.sourceforge.net])
@@ -89,6 +89,7 @@ AC_CONFIG_FILES( \
   Makefile \
   libbml.pc \
   src/Makefile \
+  src/BuzzMachineLoader/Makefile \
   dllwrapper1/Makefile \
   dllwrapper1/wine/Makefile \
   dllwrapper2/Makefile \

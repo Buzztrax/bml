@@ -1,3 +1,46 @@
+2007-10-31  Stefan Kost  <ensonic@users.sf.net>
+
+	* TODO:
+	* configure.ac:
+	* src/BuzzMachineLoader/BuzzMDKHelper.cpp:
+	* src/BuzzMachineLoader/BuzzMDKHelper.h:
+	* src/BuzzMachineLoader/BuzzMachine.h:
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.cpp:
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.h:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.cpp:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.h:
+	* src/BuzzMachineLoader/BuzzMachineLoader.aps:
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	* src/BuzzMachineLoader/BuzzMachineLoader.h:
+	* src/BuzzMachineLoader/BuzzMachineLoader.ncb:
+	* src/BuzzMachineLoader/BuzzMachineLoader.rc:
+	* src/BuzzMachineLoader/BuzzMachineLoader.sln:
+	* src/BuzzMachineLoader/BuzzMachineLoader.suo:
+	* src/BuzzMachineLoader/BuzzMachineLoader.vcproj:
+	* src/BuzzMachineLoader/BuzzMachineVirtualCallbacks.cpp:
+	* src/BuzzMachineLoader/MachineDataImpl.cpp:
+	* src/BuzzMachineLoader/MachineDataImpl.h:
+	* src/BuzzMachineLoader/MachineInterface.h:
+	* src/BuzzMachineLoader/Makefile.am:
+	* src/BuzzMachineLoader/OscTable.cpp:
+	* src/BuzzMachineLoader/OscTable.h:
+	* src/BuzzMachineLoader/bw.h:
+	* src/BuzzMachineLoader/debug.cpp:
+	* src/BuzzMachineLoader/debug.h:
+	* src/BuzzMachineLoader/dsplib.h:
+	* src/BuzzMachineLoader/resample.h:
+	* src/BuzzMachineLoader/resource.h:
+	* src/BuzzMachineLoader/stdafx.cpp:
+	* src/BuzzMachineLoader/stdafx.h:
+	* src/BuzzMachineLoader/windows_compat.h:
+	* src/Makefile.am:
+	* src/bml.c:
+	* src/bml.h:
+	* src/bmltest_info.c:
+	* src/bmltest_process.c:
+	  Add windows wrapper sources. Add dual build to allow to use wrapped
+	  and native buzzmachines in parallel.
+
 2007-09-23  Stefan Kost  <ensonic@users.sf.net>
 
 	* README:

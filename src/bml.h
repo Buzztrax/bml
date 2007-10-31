@@ -1,4 +1,4 @@
-/* $Id: bml.h,v 1.10 2006-11-25 14:03:59 ensonic Exp $
+/* $Id: bml.h,v 1.11 2007-10-31 18:02:07 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -50,7 +50,9 @@ typedef void BuzzMachine;
 
 extern int bml_setup(void (*sighandler)(int,siginfo_t*,void*));
 extern void bml_finalize(void);
+#if 0
 extern char *bml_convertpath(char *inpath);
+#endif
 
 // dll passthrough API method pointer types
 typedef void (*BMSetMasterInfo)(long bpm, long tpb, long srat);
@@ -117,38 +119,71 @@ extern BMStop bm_stop;
 extern BMSetNumTracks bm_set_num_tracks;
 */
 
-// dll wrapper API functions
-extern void bml_set_master_info(long bpm, long tpb, long srat);
-extern BuzzMachine *bml_new(char *bm_file_name);
-extern void bml_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data);
-extern void bml_free(BuzzMachine *bm);
+// windows plugin API functions
+extern void bmlw_set_master_info(long bpm, long tpb, long srat);
+extern BuzzMachine *bmlw_new(char *bm_file_name);
+extern void bmlw_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data);
+extern void bmlw_free(BuzzMachine *bm);
 
-extern int bml_get_machine_info(BuzzMachine *bm, BuzzMachineProperty key, void *value);
-extern int bml_get_global_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value);
-extern int bml_get_track_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value);
-extern int bml_get_attribute_info(BuzzMachine *bm,int index,BuzzMachineAttribute key,void *value);
+extern int bmlw_get_machine_info(BuzzMachine *bm, BuzzMachineProperty key, void *value);
+extern int bmlw_get_global_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value);
+extern int bmlw_get_track_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value);
+extern int bmlw_get_attribute_info(BuzzMachine *bm,int index,BuzzMachineAttribute key,void *value);
 
-extern void *bml_get_track_parameter_location(BuzzMachine *bm,int track,int index);
-extern int bml_get_track_parameter_value(BuzzMachine *bm,int track,int index);
-extern void bml_set_track_parameter_value(BuzzMachine *bm,int track,int index,int value);
+extern void *bmlw_get_track_parameter_location(BuzzMachine *bm,int track,int index);
+extern int bmlw_get_track_parameter_value(BuzzMachine *bm,int track,int index);
+extern void bmlw_set_track_parameter_value(BuzzMachine *bm,int track,int index,int value);
 
-extern void *bml_get_global_parameter_location(BuzzMachine *bm,int index);
-extern int bml_get_global_parameter_value(BuzzMachine *bm,int index);
-extern void bml_set_global_parameter_value(BuzzMachine *bm,int index,int value);
+extern void *bmlw_get_global_parameter_location(BuzzMachine *bm,int index);
+extern int bmlw_get_global_parameter_value(BuzzMachine *bm,int index);
+extern void bmlw_set_global_parameter_value(BuzzMachine *bm,int index,int value);
 
-extern void *bml_get_attribute_location(BuzzMachine *bm,int index);
-extern int bml_get_attribute_value(BuzzMachine *bm,int index);
-extern void bml_set_attribute_value(BuzzMachine *bm,int index,int value);
+extern void *bmlw_get_attribute_location(BuzzMachine *bm,int index);
+extern int bmlw_get_attribute_value(BuzzMachine *bm,int index);
+extern void bmlw_set_attribute_value(BuzzMachine *bm,int index,int value);
 
-extern void bml_tick(BuzzMachine *bm);
-extern int bml_work(BuzzMachine *bm,float *psamples, int numsamples, int const mode);
-extern int bml_work_m2s(BuzzMachine *bm,float *pin, float *pout, int numsamples, int const mode);
-extern void bml_stop(BuzzMachine *bm);
+extern void bmlw_tick(BuzzMachine *bm);
+extern int bmlw_work(BuzzMachine *bm,float *psamples, int numsamples, int const mode);
+extern int bmlw_work_m2s(BuzzMachine *bm,float *pin, float *pout, int numsamples, int const mode);
+extern void bmlw_stop(BuzzMachine *bm);
 
-extern void bml_set_num_tracks(BuzzMachine *bm, int num);
+extern void bmlw_set_num_tracks(BuzzMachine *bm, int num);
 
-extern const char *bml_describe_global_value(BuzzMachine *bm, int const param,int const value);
-extern const char *bml_describe_track_value(BuzzMachine *bm, int const param,int const value);
+extern const char *bmlw_describe_global_value(BuzzMachine *bm, int const param,int const value);
+extern const char *bmlw_describe_track_value(BuzzMachine *bm, int const param,int const value);
+
+// native plugin API functions
+extern BMSetMasterInfo bmln_set_master_info;
+extern BMNew bmln_new;
+extern BMInit bmln_init;
+extern BMFree bmln_free;
+
+extern BMGetMachineInfo bmln_get_machine_info;
+extern BMGetGlobalParameterInfo bmln_get_global_parameter_info;
+extern BMGetTrackParameterInfo bmln_get_track_parameter_info;
+extern BMGetAttributeInfo bmln_get_attribute_info;
+
+extern BMGetTrackParameterLocation bmln_get_track_parameter_location;
+extern BMGetTrackParameterValue bmln_get_track_parameter_value;
+extern BMSetTrackParameterValue bmln_set_track_parameter_value;
+
+extern BMGetGlobalParameterLocation bmln_get_global_parameter_location;
+extern BMGetGlobalParameterValue bmln_get_global_parameter_value;
+extern BMSetGlobalParameterValue bmln_set_global_parameter_value;
+
+extern BMGetAttributeLocation bmln_get_attribute_location;
+extern BMGetAttributeValue bmln_get_attribute_value;
+extern BMSetAttributeValue bmln_set_attribute_value;
+
+extern BMTick bmln_tick;
+extern BMWork bmln_work;
+extern BMWorkM2S bmln_work_m2s;
+extern BMStop bmln_stop;
+
+extern BMSetNumTracks bmln_set_num_tracks;
+
+extern BMDescribeGlobalValue bmln_describe_global_value;
+extern BMDescribeTrackValue bmln_describe_track_value;
 
 //#ifdef __cplusplus
 //}
