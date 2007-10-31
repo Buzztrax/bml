@@ -1,5 +1,10 @@
 2007-10-31  Stefan Kost  <ensonic@users.sf.net>
 
+	* src/BuzzMachineLoader/.cvsigore:
+	  Add .cvsignore file.
+
+2007-10-31  Stefan Kost  <ensonic@users.sf.net>
+
 	* TODO:
 	* configure.ac:
 	* src/BuzzMachineLoader/BuzzMDKHelper.cpp:
