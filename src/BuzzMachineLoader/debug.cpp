@@ -1,4 +1,4 @@
-/* $Id: debug.cpp,v 1.1 2007-10-31 18:02:06 ensonic Exp $
+/* $Id: debug.cpp,v 1.2 2007-11-10 19:06:37 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -26,7 +26,7 @@
 
 DebugLoggerFunc debug_log_func=NULL;
 
-void DebugLogger(char *file, unsigned int line, char *func, const char *obj, char *fmt,...) {
+void DebugLogger(const char *file, unsigned int line, const char *func, const char *obj, const char *fmt,...) {
     va_list args;
 
     // Initialize variable arguments.

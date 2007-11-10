@@ -1,10 +1,10 @@
-## $Id: Makefile.am,v 1.1 2007-10-31 18:02:06 ensonic Exp $
+## $Id: Makefile.am,v 1.2 2007-11-10 19:06:37 ensonic Exp $
 
 lib_LTLIBRARIES = libbuzzmachineloader.la
 
 libbuzzmachineloader_la_SOURCES = \
-    BuzzMDKHelper.cpp \            
-    BuzzMDKHelper.h \         
+    BuzzMDKHelper.cpp \
+    BuzzMDKHelper.h \
     BuzzMachine.h \
     BuzzMachineCallbacks.cpp \
     BuzzMachineCallbacks.h \
@@ -21,9 +21,9 @@ libbuzzmachineloader_la_SOURCES = \
     bw.h \
     debug.cpp \
     debug.h \
-    dsplib.h \           
+    dsplib.h \
     resample.h \
-    windows_compat.h                    
+    windows_compat.h
 
 libbuzzmachineloader_la_CXXFLAGS = $(BML_CFLAGS)
 libbuzzmachineloader_la_LDFLAGS = -lm -lpthread -ldl

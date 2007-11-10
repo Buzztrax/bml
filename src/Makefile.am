@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.7 2007-10-31 18:02:07 ensonic Exp $
+## $Id: Makefile.am,v 1.8 2007-11-10 19:06:37 ensonic Exp $
 
 SUBDIRS = . BuzzMachineLoader
 
@@ -42,10 +42,3 @@ dll_DATA = BuzzMachineLoader.dll
 
 EXTRA_DIST = $(dll_DATA)
 
-#
-#install-data-local:
-#	$(INSTALL) $(top_srcdir)/src/BuzzMachineLoader.dll $(libdir)
-#
-#uninstall-local:
-#	rm -r $(libdir)/BuzzMachineLoader.dll
-#

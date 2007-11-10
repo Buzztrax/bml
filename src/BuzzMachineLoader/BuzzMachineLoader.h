@@ -1,4 +1,4 @@
-/* $Id: BuzzMachineLoader.h,v 1.1 2007-10-31 18:02:06 ensonic Exp $
+/* $Id: BuzzMachineLoader.h,v 1.2 2007-11-10 19:06:37 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -37,7 +37,6 @@ extern "C" {
 #ifdef BUZZ_MACHINE_LOADER
 class BuzzMachineCallbacks;
 
-// @idea what about deriving this from CMICallbacks
 class BuzzMachine {
 public:
 	// library handle
@@ -47,7 +46,8 @@ public:
 	BuzzMachineCallbacks *callbacks;
 	// classes
 	CMachineInfo *machine_info;
-	CMachineInterface *machine;
+	CMachineInterface *machine_iface;
+	CMachine *machine;
 	//callbacks->machine_ex;
 	//CMachineInterfaceEx *machine_ex;
 };

@@ -1,4 +1,4 @@
-/* $Id: bmltest_info.c,v 1.11 2007-10-31 18:02:07 ensonic Exp $
+/* $Id: bmltest_info.c,v 1.12 2007-11-10 19:06:37 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -28,6 +28,8 @@
  * the dll/so *must* be a buzz-machine, not much error checking ;-)
  */
 
+#include "config.h"
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -39,6 +41,7 @@
 
 #include "bml.h"
 
+#ifdef HAVE_X86
 void test_info_w(char *libpath) {
   // buzz machine handle
   void *bm;
@@ -159,6 +162,7 @@ void test_info_w(char *libpath) {
     bmlw_free(bm);
   }
 }
+#endif  /* HAVE_X86 */
 
 void test_info_n(char *libpath) {
   // buzz machine handle
@@ -299,7 +303,11 @@ int main( int argc, char **argv ) {
       sl=strlen(lib_name);
       if(sl>4) {
         if(!strcmp(&lib_name[sl-4],".dll")) {
+#ifdef HAVE_X86
           test_info_w(lib_name);
+#else
+          puts("no dll emulation on non x86 platforms");
+#endif  /* HAVE_X86 */
         }
         else {
           test_info_n(lib_name);

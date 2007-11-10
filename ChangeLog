@@ -1,3 +1,26 @@
+2007-11-10  Stefan Kost  <ensonic@users.sf.net>
+
+	* README:
+	* TODO:
+	* configure.ac:
+	* dllwrapper1/wine/Makefile.am:
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.cpp:
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.h:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.cpp:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.h:
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	* src/BuzzMachineLoader/BuzzMachineLoader.h:
+	* src/BuzzMachineLoader/Makefile.am:
+	* src/BuzzMachineLoader/debug.cpp:
+	* src/BuzzMachineLoader/debug.h:
+	* src/Makefile.am:
+	* src/bml.c:
+	* src/bmltest_info.c:
+	* src/bmltest_process.c:
+	  Check for CPU arch. Only build dll-wrapper part on x86. Automatically
+	  add correct flags for build on 64bit arch. Enable debug logging on the
+	  native bml lib. Add some todo about enhancing compatibillity.
+
 2007-10-31  Stefan Kost  <ensonic@users.sf.net>
 
 	* .cvsignore:

@@ -1,4 +1,4 @@
-/* $Id: bmltest_process.c,v 1.9 2007-10-31 18:02:07 ensonic Exp $
+/* $Id: bmltest_process.c,v 1.10 2007-11-10 19:06:37 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -31,6 +31,8 @@
  * aplay -fS16_LE -r44100 output1.raw
  */
 
+#include "config.h"
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -44,6 +46,7 @@
 
 #define BUFFER_SIZE 1024
 
+#ifdef HAVE_X86
 void test_process_w(char *libpath,const char *infilename,const char *outfilename) {
   // buzz machine handle
   void *bm;
@@ -131,6 +134,7 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
     bmlw_free(bm);
   }
 }
+#endif  /* HAVE_X86 */
 
 void test_process_n(char *libpath,const char *infilename,const char *outfilename) {
   // buzz machine handle
@@ -237,7 +241,11 @@ int main( int argc, char **argv ) {
       sl=strlen(lib_name);
       if(sl>4) {
         if(!strcmp(&lib_name[sl-4],".dll")) {
+#ifdef HAVE_X86
           test_process_w(lib_name,argv[2],argv[3]);
+#else
+          puts("no dll emulation on non x86 platforms");
+#endif  /* HAVE_X86 */
         }
         else {
           test_process_n(lib_name,argv[2],argv[3]);

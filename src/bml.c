@@ -1,4 +1,4 @@
-/* $Id: bml.c,v 1.15 2007-10-31 18:02:07 ensonic Exp $
+/* $Id: bml.c,v 1.16 2007-11-10 19:06:37 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -21,6 +21,7 @@
 
 #include "config.h"
 
+#ifdef HAVE_X86
 #ifdef USE_DLLWRAPPER1
 #include "win32.h"
 #include "windef.h"
@@ -31,23 +32,32 @@
 #include <windows.h>
 #include <winnt.h>
 #endif
+#endif  /* HAVE_X86 */
+
 #include <dlfcn.h>
 
 #define BML_C
 #include "bml.h"
 
-// buzz machine loader handle
+// buzz machine loader handle and dll handling
+#ifdef HAVE_X86
 #ifdef USE_DLLWRAPPER1
 static HINSTANCE emu_dll=0L;
 static ldt_fs_t *ldt_fs;
+#define LoadDLL(name) LoadLibraryA(name)
+#define GetSymbol(dll,name) GetProcAddress(dll,name)
+#define FreeDLL(dll) FreeLibrary(dll)
 #endif
 #ifdef USE_DLLWRAPPER2
 static void *emu_dll=NULL;
+#define LoadDLL(name) (void *)WineLoadLibrary(name)
+#define GetSymbol(dll,name) WineGetProcAddress(dll,name)
+#define FreeDLL(dll) WineFreeLibrary(dll)
 #endif
-static void *emu_so=NULL;
-
-
 #define BMLX(a) fptr_ ## a
+pthread_mutex_t ldt_mutex = PTHREAD_MUTEX_INITIALIZER;
+#endif  /* HAVE_X86 */
+static void *emu_so=NULL;
 
 #ifdef LOG
 #  define TRACE printf
@@ -55,13 +65,10 @@ static void *emu_so=NULL;
 #  define TRACE(...)
 #endif
 
-pthread_mutex_t ldt_mutex = PTHREAD_MUTEX_INITIALIZER;
-
-
 typedef void (*BMLDebugLogger)(char *str);
 typedef void (*BMSetLogger)(BMLDebugLogger func);
 
-
+#ifdef HAVE_X86
 // windows plugin API method pointers
 BMSetLogger BMLX(bmlw_set_logger);
 BMSetMasterInfo BMLX(bmlw_set_master_info);
@@ -95,6 +102,8 @@ BMSetNumTracks BMLX(bmlw_set_num_tracks);
 
 BMDescribeGlobalValue BMLX(bmlw_describe_global_value);
 BMDescribeTrackValue BMLX(bmlw_describe_track_value);
+
+#endif /* HAVE_X86 */
 
 // native plugin API method pointers
 BMSetLogger bmln_set_logger;
@@ -130,20 +139,7 @@ BMSetNumTracks bmln_set_num_tracks;
 BMDescribeGlobalValue bmln_describe_global_value;
 BMDescribeTrackValue bmln_describe_track_value;
 
-
-// setup API wrapper
-
-#ifdef USE_DLLWRAPPER1
-#define LoadDLL(name) LoadLibraryA(name)
-#define GetSymbol(dll,name) GetProcAddress(dll,name)
-#define FreeDLL(dll) FreeLibrary(dll)
-#endif
-#ifdef USE_DLLWRAPPER2
-#define LoadDLL(name) (void *)WineLoadLibrary(name)
-#define GetSymbol(dll,name) WineGetProcAddress(dll,name)
-#define FreeDLL(dll) WineFreeLibrary(dll)
-#endif
-
+#ifdef HAVE_X86
 // passthrough functions
 
 void bmlw_set_master_info(long bpm, long tpb, long srat) {
@@ -365,6 +361,7 @@ const char *bmlw_describe_track_value(BuzzMachine *bm, int const param,int const
 	pthread_mutex_unlock(&ldt_mutex);
 	return(ret);
 }
+#endif /* HAVE_X86 */
 
 // wrapper management
 
@@ -375,6 +372,7 @@ void bml_logger(char *str) {
 int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
   TRACE("%s\n",__FUNCTION__);
   
+#ifdef HAVE_X86
 #ifdef USE_DLLWRAPPER1
   ldt_fs=Setup_LDT_Keeper();
   TRACE("%s:   wrapper initialized: 0x%p\n",__FUNCTION__,ldt_fs);
@@ -427,6 +425,7 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
   // @todo more API entries
   TRACE("%s:   symbols connected\n",__FUNCTION__);
   BMLX(bmlw_set_logger(bml_logger));
+#endif /* HAVE_X86 */
 
   if(!(emu_so=dlopen("libbuzzmachineloader.so",RTLD_LAZY))) {
 	TRACE("%s:   failed to load native bml : %s\n",__FUNCTION__,dlerror());
@@ -476,27 +475,12 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
 }
 
 void bml_finalize(void) {
+#ifdef HAVE_X86
   FreeDLL(emu_dll);
 #ifdef USE_DLLWRAPPER1
   Restore_LDT_Keeper(ldt_fs);
 #endif
+#endif /* HAVE_X86 */
   dlclose(emu_so);
   TRACE("%s:   bml unloaded\n",__FUNCTION__);
 }
-
-#if 0
-char *bml_convertpath(char *inpath) {
-#ifdef USE_DLLWRAPPER1
-    return(inpath);
-#endif
-#ifdef USE_DLLWRAPPER2
-    static char outpath[2048],*str;
-    
-    GetFullPathName(inpath,2048,outpath,&str);
-    // !!! this is a temporary hack,
-    // as my outdated version of wine always maps to 'Y:\'
-    if(inpath[0]=='/') outpath[0]='Z';
-    return(outpath);
-#endif
-}
-#endif

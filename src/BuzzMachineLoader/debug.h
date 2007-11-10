@@ -1,4 +1,4 @@
-/* $Id: debug.h,v 1.1 2007-10-31 18:02:06 ensonic Exp $
+/* $Id: debug.h,v 1.2 2007-11-10 19:06:37 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -23,8 +23,15 @@ typedef void(*DebugLoggerFunc)(char *str);
 
 extern DebugLoggerFunc debug_log_func;
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#ifdef LOG
+#define _DEBUG
+#endif
+#endif
+
 #ifdef _DEBUG
-extern void DebugLogger(char *file, unsigned int line, char *func, const char *obj, char *fmt,...);
+extern void DebugLogger(const char *file, unsigned int line, const char *func, const char *obj, const char *fmt,...);
 
 #define DBG(str) DebugLogger(__FILE__,__LINE__,__FUNCTION__,NULL,str)
 #define DBG1(str,p1) DebugLogger(__FILE__,__LINE__,__FUNCTION__,NULL,str,p1)

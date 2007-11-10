@@ -1,9 +1,11 @@
-dnl $Id: configure.ac,v 1.15 2007-10-31 18:02:06 ensonic Exp $
+dnl $Id: configure.ac,v 1.16 2007-11-10 19:06:37 ensonic Exp $
 
 dnl Initialise the autoconf/automake tool
+AC_PREREQ(2.59)
 AC_INIT([bml], [0.2.0], [buzztard-devel@lists.sourceforge.net])
 AC_CONFIG_SRCDIR([ChangeLog])
 AC_CONFIG_HEADERS(config.h)
+AC_CANONICAL_HOST([])
 
 dnl Initialise the automake tool
 AM_INIT_AUTOMAKE([check-news])
@@ -18,6 +20,22 @@ AC_ISC_POSIX
 AC_PROG_LIBTOOL
 AM_PROG_AS
 AM_PROG_CC_STDC
+
+dnl check target cpu architecture
+ARCH_CFLAGS=""
+ARCH_CASFLAGS=""
+case "x${host_cpu}" in
+  xi?86 | k?)
+    HAVE_X86=yes
+    AC_DEFINE(HAVE_X86, 1, [Defined if host is x86])
+    ;;
+  xx86_64|xamd64)
+    HAVE_X86=yes
+    AC_DEFINE(HAVE_X86, 1, [Defined if host is x86])
+    ARCH_CFLAGS="-m32"
+    ARCH_CASFLAGS="-m32"
+    ;;
+esac
 
 dnl enable runtime debugging code
 AC_MSG_CHECKING(whether to enable runtime debugging code)
@@ -80,9 +98,11 @@ AM_CONDITIONAL(USE_DLLWRAPPER1, true)
 #AC_DEFINE(USE_DLLWRAPPER2, [0], [use the libfst dll wrapper])
 AM_CONDITIONAL(USE_DLLWRAPPER2, false)
 
-BML_CFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS"
+BML_CFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS $ARCH_CFLAGS"
+BML_CASFLAGS="$ARCH_CASFLAGS"
 BML_LIBS="$COVERAGE_LIBS"
 AC_SUBST(BML_CFLAGS)
+AC_SUBST(BML_CASFLAGS)
 AC_SUBST(BML_LIBS)
 
 AC_CONFIG_FILES( \
