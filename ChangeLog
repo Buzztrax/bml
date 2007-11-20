@@ -1,3 +1,8 @@
+2007-11-21  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	  Free the machine-iface causes a double free here. Disable for now.
+
 2007-11-10  Stefan Kost  <ensonic@users.sf.net>
 
 	* README:

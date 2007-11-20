@@ -1,4 +1,4 @@
-/* $Id: BuzzMachineLoader.cpp,v 1.2 2007-11-10 19:06:37 ensonic Exp $
+/* $Id: BuzzMachineLoader.cpp,v 1.3 2007-11-20 22:34:12 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -98,7 +98,9 @@ extern "C" DE void bm_free(BuzzMachine *bm) {
         BuzzMachineCallbacks *callbacks = bm->callbacks;
         int version = bm->machine_info->Version;
         
-        delete bm->machine_iface;
+        DBG("freeing\n");
+        // FIXME: for Infector this leads to a double free?
+        //delete bm->machine_iface;
         
         if(callbacks) {
             if(version & 0xff < 15) {
