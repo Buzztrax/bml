@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.8 2007-11-10 19:06:37 ensonic Exp $
+## $Id: Makefile.am,v 1.9 2007-11-21 07:22:22 ensonic Exp $
 
 SUBDIRS = . BuzzMachineLoader
 
@@ -31,11 +31,11 @@ bin_PROGRAMS=bmltest_info bmltest_process
 
 bmltest_info_SOURCES= bmltest_info.c
 bmltest_info_LDADD = $(BASE_DEPS_LIBS) -ldl \
-	libbml.la
+	$(top_builddir)/src/libbml.la
 
 bmltest_process_SOURCES= bmltest_process.c
 bmltest_process_LDADD = $(BASE_DEPS_LIBS) -ldl \
-	libbml.la
+	$(top_builddir)/src/libbml.la
 
 dlldir = $(libdir)
 dll_DATA = BuzzMachineLoader.dll
