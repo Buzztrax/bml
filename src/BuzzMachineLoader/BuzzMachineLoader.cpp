@@ -1,4 +1,4 @@
-/* $Id: BuzzMachineLoader.cpp,v 1.3 2007-11-20 22:34:12 ensonic Exp $
+/* $Id: BuzzMachineLoader.cpp,v 1.4 2007-12-03 19:05:05 ensonic Exp $
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
@@ -166,7 +166,12 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
     DBG("  parameters initialized\n");
 #endif
     // create the machine data input
-    CMachineDataInput * pcmdii = new CMachineDataInputImpl(blob_data, blob_size);
+    CMachineDataInput * pcmdii = NULL;
+
+    if (blob_size && blob_data) {
+      pcmdii = new CMachineDataInputImpl(blob_data, blob_size);
+    }
+   
     // call Init
     try {
         bm->machine_iface->Init(pcmdii);
@@ -552,6 +557,7 @@ extern "C" DE void bm_set_global_parameter_value(BuzzMachine *bm,int index,int v
     if(!(bm->machine_iface->GlobalVals)) return;
 
     void *ptr=bm_get_global_parameter_location(bm,index);
+    printf("%s: index=%d, GlobalVals :%p, %p\n",__PRETTY_FUNCTION__,index,bm->machine_iface->GlobalVals,ptr);
     switch(bm->machine_info->Parameters[index]->Type) {
         case pt_note:
         case pt_switch:

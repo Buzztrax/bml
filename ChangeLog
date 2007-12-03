@@ -1,3 +1,8 @@
+2007-12-03  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	  Only create CMachineInput if needed.
+
 2007-11-21  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/Makefile.am:
