@@ -194,7 +194,7 @@ void CMICallbacks::DeletePattern(CPattern *ppat) {
 
 int CMICallbacks::GetPatternData(CPattern *ppat, int const row, int const group, int const track, int const field) {
 	printf("CMICallbacks::%s(ppat=%p,row=%d,group=%d,track=%d,field=%d)\n",__FUNCTION__,ppat,row,group,track,field);
-	return(NULL);
+	return(0);
 }
 
 void CMICallbacks::SetPatternData(CPattern *ppat, int const row, int const group, int const track, int const field, int const value) {

@@ -1,5 +1,10 @@
 2007-12-12  Stefan Kost  <ensonic@users.sf.net>
 
+	* src/BuzzMachineLoader/BuzzMachineVirtualCallbacks.cpp:
+	  Take this one too.
+
+2007-12-12  Stefan Kost  <ensonic@users.sf.net>
+
 	* src/BuzzMachineLoader/BuzzMachineCallbacks.cpp:
 	  More build fixes.
 
