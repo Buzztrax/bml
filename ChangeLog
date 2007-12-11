@@ -1,5 +1,10 @@
 2007-12-12  Stefan Kost  <ensonic@users.sf.net>
 
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.cpp:
+	  More build fixes.
+
+2007-12-12  Stefan Kost  <ensonic@users.sf.net>
+
 	* src/BuzzMachineLoader/MachineInterface.h:
 	  Fix gcc warnings.
 
