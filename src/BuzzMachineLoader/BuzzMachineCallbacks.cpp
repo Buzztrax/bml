@@ -240,7 +240,7 @@ void BuzzMachineCallbacks::DeletePattern(CPattern *ppat) {
 int BuzzMachineCallbacks::GetPatternData(CPattern *ppat, int const row, int const group, int const track, int const field) {
     DBG5("(ppat=%p,row=%d,group=%d,track=%d,field=%d)\n",ppat,row,group,track,field);
     FIXME;
-    return(NULL);
+    return(0);
 }
 
 void BuzzMachineCallbacks::SetPatternData(CPattern *ppat, int const row, int const group, int const track, int const field, int const value) {
