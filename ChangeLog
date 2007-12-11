@@ -1,3 +1,8 @@
+2007-12-12  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader/MachineInterface.h:
+	  Fix gcc warnings.
+
 2007-12-03  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
