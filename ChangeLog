@@ -1,3 +1,11 @@
+2008-02-04  Stefan Kost  <ensonic@users.sf.net>
+
+	* README:
+	* dllwrapper1/wine/pe_image.c:
+	* dllwrapper1/wine/win32.c:
+	  Our wine wrapper can resolve filenames incasesensitive. No more
+	  symlinks needed! Yay.
+
 2007-12-12  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader/BuzzMachineVirtualCallbacks.cpp:

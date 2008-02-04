@@ -5377,6 +5377,7 @@ static void* LookupExternalNative(const char* library, LPCSTR name)
 	return func;
 
 no_dll:
+    dbgprintf("Dll not found: '%s'\n",library);
 #endif
 	return NULL;
 }

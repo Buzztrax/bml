@@ -31,12 +31,6 @@ The original windows dll should also work.
 Then you need to copy the all *.dll libraries from a windows buzz installation
 to your LD_LIBARY_PATH. We recommend to copy them to buzztard-prefix/lib.
 
-Now you need to fix up some library names.
-  ln -s Dsplib.dll dsplib.dll
-  ln -s Nblib.dll nblib.dll
-  ln -s "Ninereeds Dsplib.dll" "Ninereeds DSPLIB.dll"
-  ln -s MSVCRT.DLL MSVCRT.dll
-
 Next copy the machines. You can e.g. just copy the whole Gear folder to
 buzztard-prefix/lib as well.
 You might need to fix some machine names (e.g. names with '?' in them).

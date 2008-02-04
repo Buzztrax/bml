@@ -1,6 +1,6 @@
 /*
  *  Copyright	1994	Eric Youndale & Erik Bos
- *  Copyright	1995	Martin von Löwis
+ *  Copyright	1995	Martin von Lï¿½wis
  *  Copyright   1996-98 Marcus Meissner
  *
  *	based on Eric Youndale's pe-test and:
@@ -41,6 +41,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <dirent.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -837,7 +838,51 @@ WINE_MODREF *PE_LoadLibraryExA (LPCSTR name, DWORD flags)
 	strncpy(filename, name, sizeof(filename));
 	hFile=open(filename, O_RDONLY);
 	if(hFile==-1)
-	    return NULL;
+    {
+        TRACE("did not found module '%s'\n", name);
+        /* do case insensitive search on dir */
+        char *dirname = ".", *libname = filename;
+        char *last_delim = strrchr(filename,'/');
+        DIR *dirp;
+        struct dirent *dp;
+        
+        if (last_delim)
+        {
+          *last_delim = '\0';
+          dirname = filename;
+          libname = &last_delim[1];
+        }
+  
+        dirp = opendir(dirname);
+        while (dirp)
+        {
+            errno = 0;
+            if ((dp = readdir(dirp)) != NULL)
+            {
+                if (strcasecmp(dp->d_name, libname) == 0)
+                {
+                    if (last_delim)
+                    {
+                        strcpy(libname, dp->d_name);
+                        *last_delim='/';
+                    }
+                    else {
+                        strncpy(filename, dp->d_name, sizeof(filename));
+                    }
+                    TRACE("found module with '%s'\n", filename);
+                    hFile=open(filename, O_RDONLY);
+                    break;
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+        closedir(dirp);
+        if(hFile==-1)
+            return NULL;
+    }
 
 
 	hModule32 = PE_LoadImage( hFile, filename, &version );
