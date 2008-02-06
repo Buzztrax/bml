@@ -35,6 +35,12 @@ Next copy the machines. You can e.g. just copy the whole Gear folder to
 buzztard-prefix/lib as well.
 You might need to fix some machine names (e.g. names with '?' in them).
 
+## new ## wine configuration
+wineprefixcreate
+mkdir -p ~/.wine/drive_c/windows/system32
+cp <windows>/mfc42.dll ~/.wine/drive_c/windows/system32/
+regsvr32 ~/.wine/drive_c/windows/system32/mfc42.dll
+
 = usage =
 For testing, create a folder 'machines' and put some original buzz machines
 in there. After building invoke :
