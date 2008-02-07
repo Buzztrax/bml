@@ -4427,7 +4427,7 @@ static int exp_stricmp(const char* s1, const char* s2)
     return strcasecmp(s1, s2);
 }
 
-/* from declaration taken from Wine sources - this fountion seems to be
+/* from declaration taken from Wine sources - this function seems to be
  * undocumented in any M$ doc */
 static int exp_setjmp3(void* jmpbuf, int x)
 {
@@ -4815,6 +4815,14 @@ static double exp_CIsinh(void)
     return sinh(x);
 }
 
+/*
+//static void exp_CxxThrowException( void *object, cxx_exception_type *type )
+static void exp_CxxThrowException( void *object, void *type )
+{
+  dbgprintf("_CxxThrowException\n");
+}
+*/
+
 struct exports
 {
     char name[64];
@@ -4998,7 +5006,7 @@ struct exports exp_kernel32[]=
     FF(ExitProcess,-1)
     {"LoadLibraryExA", -1, (void*)&LoadLibraryExA},
     FF(SetThreadIdealProcessor,-1)
-	FF(TerminateProcess, -1)
+    FF(TerminateProcess, -1)
 };
 
 struct exports exp_msvcrt[]={
@@ -5058,9 +5066,10 @@ struct exports exp_msvcrt[]={
     {"clock",-1,(void*)&clock},
     {"memchr",-1,(void*)&memchr},
     {"vfprintf",-1,(void*)&vfprintf},
-//    {"realloc",-1,(void*)&realloc},
+    //{"realloc",-1,(void*)&realloc},
     FF(realloc,-1)
-    {"puts",-1,(void*)&puts}
+    {"puts",-1,(void*)&puts},
+    //FF(_CxxThrowException,-1)
 };
 struct exports exp_winmm[]={
     FF(GetDriverModuleHandle, -1)

@@ -13,8 +13,20 @@ unk__malloc_dbg
 = missing features =
 * callbackinterface (wavetable access)
 
+= what windows dll to copy and which not =
+== don't (we need to emulate) ==
+kernel32.dll ntdll.dll
+== seems safe ==
+msvcp50.dll  msvcp60.dll MFC42.DLL  MSVCRT.DLL
+
 = known not working machines =
 == Generators ==
+Geonik's PrimiFun.dll
+  Called unk__CxxThrowException
+  http://www.winehq.org/pipermail/wine-patches/2002-October/003917.html
+  http://source.winehq.org/source/dlls/msvcrt/cppexcept.c
+  http://source.winehq.org/source/dlls/msvcrt/cppexcept.h
+  - the unk__ is gone (empty impl), but it segfaults. may be we need a full impl
 
 == Effects ==
 Arguelles TruePan
