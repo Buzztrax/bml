@@ -1,5 +1,10 @@
 2008-02-10  Stefan Kost  <ensonic@users.sf.net>
 
+	* src/BuzzMachineLoader.dll:
+	  New version
+
+2008-02-10  Stefan Kost  <ensonic@users.sf.net>
+
 	* src/BuzzMachineLoader/BuzzMachineCallbacks.cpp:
 	* src/BuzzMachineLoader/BuzzMachineCallbacks.h:
 	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.cpp:
