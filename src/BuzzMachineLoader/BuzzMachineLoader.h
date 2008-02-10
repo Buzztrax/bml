@@ -35,7 +35,6 @@ extern "C" {
 
 // our high level instance handle
 #ifdef BUZZ_MACHINE_LOADER
-class BuzzMachineCallbacks;
 
 class BuzzMachine {
 public:
@@ -43,7 +42,7 @@ public:
 	HMODULE h;
 	char *lib_name;
 	// callback instance
-	BuzzMachineCallbacks *callbacks;
+	CMICallbacks *callbacks;
 	// classes
 	CMachineInfo *machine_info;
 	CMachineInterface *machine_iface;

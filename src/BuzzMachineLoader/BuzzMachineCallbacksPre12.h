@@ -52,6 +52,7 @@ public:
         defaultWaveLevel.RootNote=0;
         defaultWaveLevel.SamplesPerSec=0;
         mdkHelper=NULL;
+        ClearAuxBuffer();
     }
     BuzzMachineCallbacksPre12(CMachine *_machine, CMachineInterface *_machine_interface,CMachineInfo *_machine_info) {
         machine=_machine;
@@ -64,6 +65,7 @@ public:
         defaultWaveLevel.RootNote=0;
         defaultWaveLevel.SamplesPerSec=0;
         mdkHelper=NULL;
+        ClearAuxBuffer();
     }
 
     CWaveInfo const *GetWave(int const i);

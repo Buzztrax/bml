@@ -42,7 +42,7 @@
 #include "BuzzMachineLoader.h"
 #include "dsplib.h"
 
-#ifdef _MSVC_
+#ifdef _MSC_VER
 #define DE __declspec(dllexport)
 #else
 #define DE 
@@ -57,14 +57,6 @@ typedef void (*CMIInitPtr)(CMachineInterface *_this, CMachineDataInput * const p
 
 // globals
 CMasterInfo master_info;
-
-/*
-CMachineDataInput mdi;
-
-void CMachineDataInput::Read(void *pbuf, int const numbytes) {
-    DBG2("(pbuf=%p,numbytes=%d)\n",pbuf,numbytes);
-}
-*/
 
 // prototypes
 
@@ -88,14 +80,15 @@ extern "C" DE void bm_set_master_info(long bpm, long tpb, long srat) {
   master_info.PosInTick=0; /*master_info.SamplesPerTick-1;*/
   master_info.TicksPerSec=(float)master_info.SamplesPerSec/(float)master_info.SamplesPerTick;
 #ifdef WIN32
-  // todo:: this needs porting
   DSP_Init(master_info.SamplesPerSec);
+#else
+  // todo:: this needs porting
 #endif
 }
 
 extern "C" DE void bm_free(BuzzMachine *bm) {
     if(bm) {
-        BuzzMachineCallbacks *callbacks = bm->callbacks;
+        CMICallbacks *callbacks = bm->callbacks;
         int version = bm->machine_info->Version;
         
         DBG("freeing\n");
@@ -103,12 +96,12 @@ extern "C" DE void bm_free(BuzzMachine *bm) {
         //delete bm->machine_iface;
         
         if(callbacks) {
-            if(version & 0xff < 15) {
+            if((version & 0xff) < 15) {
                 delete (BuzzMachineCallbacksPre12 *)callbacks;
                 DBG("  freed old callback instance\n");
             }
             else {
-                delete callbacks;
+                delete (BuzzMachineCallbacks *)callbacks;
                 DBG("  freed callback instance\n");
             }         
         }
@@ -127,18 +120,20 @@ extern "C" DE void bm_free(BuzzMachine *bm) {
     }
 }
 
+#define BM_INIT_PARAMS_FIRST 1
+
 extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data) {
     int i,j;
     int wNumberOfTracks=0;
 
-    DBG3("  bm_init(%p,%ld,%p)\n",bm,blob_data, blob_size);
+    DBG2("  bm_init(bm,%ld,%p)\n",blob_size,blob_data);
 
     // initialise attributes
     for(i=0;i<bm->machine_info->numAttributes;i++) {
         bm_set_attribute_value(bm,i,bm->machine_info->Attributes[i]->DefValue);
     }
     DBG("  attributes initialized\n");
-#if 1 /* params_first */
+#ifdef BM_INIT_PARAMS_FIRST /* params_first */
     // initialise global parameters (DefValue or NoValue, Buzz seems to use NoValue)
     for(i=0;i<bm->machine_info->numGlobalParameters;i++) {
         if(bm->machine_info->Parameters[i]->Flags&MPF_STATE) {
@@ -190,7 +185,7 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
         DBG("  CMachineInterface::AttributesChanged() called\n");
     }
 
-#if 0  /* params_later */
+#ifndef BM_INIT_PARAMS_FIRST  /* params_later */
     // initialise global parameters (DefValue or NoValue, Buzz seems to use NoValue)
     for(i=0;i<bm->machine_info->numGlobalParameters;i++) {
         if(bm->machine_info->Parameters[i]->Flags&MPF_STATE) {
@@ -202,7 +197,7 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
     }
     DBG("  global parameters initialized\n");
 #endif
-#if 0 /* params_later */
+#ifndef BM_INIT_PARAMS_FIRST /* params_later */
     // initialise track parameters
     if((bm->machine_info->minTracks>0) && (bm->machine_info->maxTracks>0)) {
         wNumberOfTracks=bm->machine_info->minTracks;
@@ -221,7 +216,7 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
             DBG("  CMachineInterface::SetNumTracks() called\n");
         }
 
-#if 0
+#ifndef BM_INIT_PARAMS_FIRST
         for(j=0;j<bm->machine_info->maxTracks;j++) {
             for(i=0;i<bm->machine_info->numTrackParameters;i++) {
                 if(bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->Flags&MPF_STATE) {
@@ -338,15 +333,21 @@ extern "C" DE BuzzMachine *bm_new(char *bm_file_name) {
      */
     bm->machine=NULL;
 
-    if(bm->machine_info->Version & 0xff < 15) {
+    DBG1("  mi-version 0x%04x\n",bm->machine_info->Version);
+    if((bm->machine_info->Version & 0xff) < 15) {
       // @todo: we need to pass a CMachine as first arg
-      bm->callbacks=(BuzzMachineCallbacks *)new BuzzMachineCallbacksPre12(bm->machine,bm->machine_iface,bm->machine_info);
-      DBG("  need to create old callback instance\n");
+      bm->callbacks=(CMICallbacks *)new BuzzMachineCallbacksPre12(bm->machine,bm->machine_iface,bm->machine_info);
+      DBG2("  old callback instance created (size=%d, addr=%p)\n",sizeof(BuzzMachineCallbacksPre12),bm->callbacks);
+	  DBG1("  &callback->GetWave()     =%p\n",&BuzzMachineCallbacksPre12::GetWave);
+      DBG1("  &callback->GetWaveLevel()=%p\n",&BuzzMachineCallbacksPre12::GetWaveLevel);
+      DBG1("  &callback->MessageBox()  =%p\n",&BuzzMachineCallbacksPre12::MessageBox);
+      DBG1("  &callback->Lock()        =%p\n",&BuzzMachineCallbacksPre12::Lock);
+      DBG1("  &callback->Unlock()      =%p\n",&BuzzMachineCallbacksPre12::Unlock);
     }
     else {
       // @todo: we need to pass a CMachine as first arg
-      bm->callbacks=new BuzzMachineCallbacks(bm->machine,bm->machine_iface,bm->machine_info);
-      DBG("  callback instance created\n");
+      bm->callbacks=(CMICallbacks *)new BuzzMachineCallbacks(bm->machine,bm->machine_iface,bm->machine_info);
+      DBG1("  callback instance created (size=%d)\n",sizeof(BuzzMachineCallbacks));
     }
 
     bm->machine_iface->pMasterInfo=&master_info;
@@ -557,7 +558,7 @@ extern "C" DE void bm_set_global_parameter_value(BuzzMachine *bm,int index,int v
     if(!(bm->machine_iface->GlobalVals)) return;
 
     void *ptr=bm_get_global_parameter_location(bm,index);
-    printf("%s: index=%d, GlobalVals :%p, %p\n",__PRETTY_FUNCTION__,index,bm->machine_iface->GlobalVals,ptr);
+    //printf("%s: index=%d, GlobalVals :%p, %p\n",__PRETTY_FUNCTION__,index,bm->machine_iface->GlobalVals,ptr);
     switch(bm->machine_info->Parameters[index]->Type) {
         case pt_note:
         case pt_switch:

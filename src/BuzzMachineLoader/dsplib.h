@@ -30,7 +30,7 @@
 
 typedef unsigned long dword;
 
-#ifdef _MSVC_
+#ifdef _MSC_VER
 #define DI __declspec(dllimport)
 #else
 #define DI 
@@ -40,7 +40,7 @@ typedef unsigned long dword;
 
 // you don't need to call DSP_Init in machines 
 // buzz uses the same dll so it has done it already 
-#ifdef _MSVC_
+#ifdef _MSC_VER
 DI void __fastcall DSP_Init(int const samplerate);
 #else
 DI void __attribute__ ((fastcall)) DSP_Init(int const samplerate);
