@@ -1,3 +1,9 @@
+2008-02-11  Stefan Kost  <ensonic@users.sf.net>
+
+	* TODO:
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	  Don't access version, if its not initialized yet.
+
 2008-02-10  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader.dll:

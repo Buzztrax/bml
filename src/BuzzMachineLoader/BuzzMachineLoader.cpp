@@ -89,13 +89,13 @@ extern "C" DE void bm_set_master_info(long bpm, long tpb, long srat) {
 extern "C" DE void bm_free(BuzzMachine *bm) {
     if(bm) {
         CMICallbacks *callbacks = bm->callbacks;
-        int version = bm->machine_info->Version;
-        
         DBG("freeing\n");
         // FIXME: for Infector this leads to a double free?
         //delete bm->machine_iface;
         
         if(callbacks) {
+            int version = bm->machine_info->Version;
+        
             if((version & 0xff) < 15) {
                 delete (BuzzMachineCallbacksPre12 *)callbacks;
                 DBG("  freed old callback instance\n");
