@@ -1,5 +1,10 @@
 2008-02-11  Stefan Kost  <ensonic@users.sf.net>
 
+	* src/bmltest_process.c:
+	  Extended the test app.
+
+2008-02-11  Stefan Kost  <ensonic@users.sf.net>
+
 	* src/BuzzMachineLoader.dll:
 	  New version
 

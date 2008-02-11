@@ -24,17 +24,21 @@
  * invoke it e.g. as
  *   LD_LIBRARY_PATH=".:./BuzzMachineLoader/.libs" ./bmltest_process ../machines/elak_svf.dll input.raw output1.raw
  *   LD_LIBRARY_PATH=".:./BuzzMachineLoader/.libs" ./bmltest_process ../../buzzmachines/Elak/SVF/libelak_svf.so input.raw output2.raw
+ *   LD_LIBRARY_PATH=".:./BuzzMachineLoader/.libs" ./bmltest_process ~/buzztard/lib/Gear/Effects/Jeskola\ NiNjA\ dElaY.dll  input.raw output1.raw
  *
  * the dll/so *must* be a buzz-machine, not much error checking ;-)
  *
  * aplay -fS16_LE -r44100 input.raw
  * aplay -fS16_LE -r44100 output1.raw
+ *
+ * plot [0:] [-35000:35000] 'output1.raw' binary format="%short" using 1 with lines
  */
 
 #include "config.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <math.h>
 #include <unistd.h>
 #include <signal.h>
 #include <stddef.h>
@@ -61,6 +65,8 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
     int i,mtype;
     //int ival=0,oval,vs=10;
     const char *type_name[3]={"","generator","effect"};
+    int nan=0,inf=0;
+    float ma=0.0;
     
     puts("  windows machine created");
     bmlw_init(bm,0,NULL);
@@ -120,9 +126,14 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
         // set GlobalVals, TrackVals
         bmlw_tick(bm);
         i_size=fread(buffer_w,2,s_size,infile);
-        for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i]/32768.0;
+        for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i]/32768.0f;
         bmlw_work(bm,buffer_f,i_size,3/*WM_READWRITE*/);
-        for(i=0;i<i_size;i++) buffer_w[i]=(short int)(buffer_f[i]*32768.0);
+        for(i=0;i<i_size;i++) {
+          if(isnan(buffer_f[i])) nan=1;
+          if(isinf(buffer_f[i])) inf=1;
+          if(fabs(buffer_f[i])>ma) ma=buffer_f[i];
+          buffer_w[i]=(short int)(buffer_f[i]*32768.0f);
+        }
         fwrite(buffer_w,2,i_size,outfile);
       }
       //printf("\n");
@@ -131,6 +142,9 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
     if(infile) fclose(infile);
     if(outfile) fclose(outfile);
     puts("  done");
+    if(nan) puts("some values are nan");
+    if(inf) puts("some values are inf");
+    printf("max value : %f\n",ma);
     bmlw_free(bm);
   }
 }
@@ -150,6 +164,8 @@ void test_process_n(char *libpath,const char *infilename,const char *outfilename
     int i,mtype;
     //int ival=0,oval,vs=10;
     const char *type_name[3]={"","generator","effect"};
+    int nan=0,inf=0;
+    float ma=0.0;
     
     puts("  native machine created");
     bmln_init(bm,0,NULL);
@@ -209,9 +225,14 @@ void test_process_n(char *libpath,const char *infilename,const char *outfilename
         // set GlobalVals, TrackVals
         bmln_tick(bm);
         i_size=fread(buffer_w,2,s_size,infile);
-        for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i]/32768.0;
+        for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i]/32768.0f;
         bmln_work(bm,buffer_f,i_size,3/*WM_READWRITE*/);
-        for(i=0;i<i_size;i++) buffer_w[i]=(short int)(buffer_f[i]*32768.0);
+        for(i=0;i<i_size;i++) {
+          if(isnan(buffer_f[i])) nan=1;
+          if(isinf(buffer_f[i])) inf=1;
+          if(fabs(buffer_f[i])>ma) ma=buffer_f[i];
+          buffer_w[i]=(short int)(buffer_f[i]*32768.0f);
+        }
         fwrite(buffer_w,2,i_size,outfile);
       }
       //printf("\n");
@@ -220,6 +241,9 @@ void test_process_n(char *libpath,const char *infilename,const char *outfilename
     if(infile) fclose(infile);
     if(outfile) fclose(outfile);
     puts("  done");
+    if(nan) puts("some values are nan");
+    if(inf) puts("some values are inf");
+    printf("max value : %f\n",ma);
     bmln_free(bm);
   }
 }
