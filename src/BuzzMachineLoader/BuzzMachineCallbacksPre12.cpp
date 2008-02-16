@@ -132,7 +132,7 @@ int BuzzMachineCallbacksPre12::GetPlayPos() {
  *
  */
 float *BuzzMachineCallbacksPre12::GetAuxBuffer() {
-    DBGO1(machine_info->Name,"()\n=%p\n",auxBuffer);
+    DBGO1(machine_info->Name,"()=%p\n",auxBuffer);
     return(auxBuffer);
 }
 

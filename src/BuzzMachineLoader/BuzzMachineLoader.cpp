@@ -121,6 +121,7 @@ extern "C" DE void bm_free(BuzzMachine *bm) {
 }
 
 #define BM_INIT_PARAMS_FIRST 1
+#define BM_INIT_ATTRIBUTES_CHANGED_FIRST 1
 
 extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data) {
     int i,j;
@@ -175,6 +176,7 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
     catch(...) { DBG(" -> exeption\n"); }
     DBG("  CMachineInterface::Init() called\n");
 
+#ifdef BM_INIT_ATTRIBUTES_CHANGED_FIRST
     // call AttributesChanged
     if(bm->machine_info->numAttributes>0) {
         try {
@@ -184,6 +186,7 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
         catch(...) { DBG(" -> exeption\n"); }
         DBG("  CMachineInterface::AttributesChanged() called\n");
     }
+#endif
 
 #ifndef BM_INIT_PARAMS_FIRST  /* params_later */
     // initialise global parameters (DefValue or NoValue, Buzz seems to use NoValue)
@@ -202,7 +205,6 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
     if((bm->machine_info->minTracks>0) && (bm->machine_info->maxTracks>0)) {
         wNumberOfTracks=bm->machine_info->minTracks;
 #endif
-        DBG3(" need to initialize %d track params for tracks: %d...%d\n",bm->machine_info->numTrackParameters,bm->machine_info->minTracks,bm->machine_info->maxTracks);
         if(wNumberOfTracks) {
             // call SetNumTracks
             DBG1("  CMachineInterface::SetNumTracks(%d)\n",wNumberOfTracks);
@@ -217,6 +219,7 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
         }
 
 #ifndef BM_INIT_PARAMS_FIRST
+        DBG3(" need to initialize %d track params for tracks: %d...%d\n",bm->machine_info->numTrackParameters,bm->machine_info->minTracks,bm->machine_info->maxTracks);
         for(j=0;j<bm->machine_info->maxTracks;j++) {
             for(i=0;i<bm->machine_info->numTrackParameters;i++) {
                 if(bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->Flags&MPF_STATE) {
@@ -229,6 +232,18 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
         }
     }
     DBG("  track parameters initialized\n");
+#endif
+
+#ifndef BM_INIT_ATTRIBUTES_CHANGED_FIRST
+    // call AttributesChanged
+    if(bm->machine_info->numAttributes>0) {
+        try {
+            bm->machine_iface->AttributesChanged();
+        }
+        catch (std::exception& e) { DBG1("-> exeption: %s\n",e.what()); }
+        catch(...) { DBG(" -> exeption\n"); }
+        DBG("  CMachineInterface::AttributesChanged() called\n");
+    }
 #endif
 
     // now that we've given the machine the initial global- and track-parameters,
@@ -645,7 +660,6 @@ extern "C" DE void bm_stop(BuzzMachine *bm) {
 }
 
 /*
-virtual void AttributesChanged() {}
 virtual void Command(int const i) {}
 */
 extern "C" DE void bm_set_num_tracks(BuzzMachine *bm, int num) {

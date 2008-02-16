@@ -98,6 +98,8 @@ BMWork BMLX(bmlw_work);
 BMWorkM2S BMLX(bmlw_work_m2s);
 BMStop BMLX(bmlw_stop);
 
+BMAttributesChanged BMLX(bmlw_attributes_changed);
+
 BMSetNumTracks BMLX(bmlw_set_num_tracks);
 
 BMDescribeGlobalValue BMLX(bmlw_describe_global_value);
@@ -133,6 +135,8 @@ BMTick bmln_tick;
 BMWork bmln_work;
 BMWorkM2S bmln_work_m2s;
 BMStop bmln_stop;
+
+BMAttributesChanged bmln_attributes_changed;
 
 BMSetNumTracks bmln_set_num_tracks;
 
@@ -334,6 +338,14 @@ void bmlw_stop(BuzzMachine *bm) {
 }
 
 
+void bmlw_attributes_changed(BuzzMachine *bm) {
+	pthread_mutex_lock(&ldt_mutex);
+	Check_FS_Segment(ldt_fs);
+	BMLX(bmlw_attributes_changed(bm));
+	pthread_mutex_unlock(&ldt_mutex);
+}
+
+
 void bmlw_set_num_tracks(BuzzMachine *bm, int num) {
 	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment(ldt_fs);
@@ -417,6 +429,8 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
   if(!(BMLX(bmlw_work_m2s)=(BMWorkM2S)GetSymbol(emu_dll,"bm_work_m2s"))) { puts("bm_work_m2s is missing");return(FALSE);}
   if(!(BMLX(bmlw_stop)=(BMStop)GetSymbol(emu_dll,"bm_stop"))) { puts("bm_stop is missing");return(FALSE);}
 
+  if(!(BMLX(bmlw_attributes_changed)=(BMAttributesChanged)GetSymbol(emu_dll,"bm_attributes_changed"))) { puts("bm_attributes_changed is missing");return(FALSE);}
+
   if(!(BMLX(bmlw_set_num_tracks)=(BMSetNumTracks)GetSymbol(emu_dll,"bm_set_num_tracks"))) { puts("bm_set_num_tracks is missing");return(FALSE);}
 
   if(!(BMLX(bmlw_describe_global_value)=(BMDescribeGlobalValue)GetSymbol(emu_dll,"bm_describe_global_value"))) { puts("bm_describe_global_value is missing");return(FALSE);}
@@ -461,6 +475,8 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
   if(!(bmln_work=(BMWork)dlsym(emu_so,"bm_work"))) { puts("bm_work is missing");return(FALSE);}
   if(!(bmln_work_m2s=(BMWorkM2S)dlsym(emu_so,"bm_work_m2s"))) { puts("bm_work_m2s is missing");return(FALSE);}
   if(!(bmln_stop=(BMStop)dlsym(emu_so,"bm_stop"))) { puts("bm_stop is missing");return(FALSE);}
+
+  if(!(bmln_attributes_changed=(BMAttributesChanged)dlsym(emu_so,"bm_attributes_changed"))) { puts("bm_attributes_changed is missing");return(FALSE);}
 
   if(!(bmln_set_num_tracks=(BMSetNumTracks)dlsym(emu_so,"bm_set_num_tracks"))) { puts("bm_set_num_tracks is missing");return(FALSE);}
 

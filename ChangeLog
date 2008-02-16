@@ -1,3 +1,18 @@
+2008-02-16  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.cpp:
+	  Remove newline fro log print.
+
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	* src/BuzzMachineLoader/BuzzMachineLoader.h:
+	* src/bml.c:
+	* src/bml.h:
+	  Add AttributesChanged to wrapped api.
+
+	* src/bmltest_process.c:
+	  Try calling this to get ninja delay fixed. I looks like something is
+	  not getting initialized here.
+
 2008-02-11  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/bmltest_process.c:

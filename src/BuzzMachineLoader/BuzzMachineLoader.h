@@ -118,6 +118,8 @@ extern bool   bm_work(BuzzMachine *bm,float *psamples, int numsamples, int const
 extern bool   bm_work_m2s(BuzzMachine *bm,float *pin, float *pout, int numsamples, int const mode);
 extern void   bm_stop(BuzzMachine *bm);
 
+extern void bm_attributes_changed(BuzzMachine *bm);
+
 extern void   bm_set_num_tracks(BuzzMachine *bm, int num);
 */
 #endif

@@ -82,42 +82,12 @@ typedef int  (*BMWork)(BuzzMachine *bm,float *psamples, int numsamples, int cons
 typedef int  (*BMWorkM2S)(BuzzMachine *bm,float *pin, float *pout, int numsamples, int const mode);
 typedef void (*BMStop)(BuzzMachine *bm);
 
+typedef void (*BMAttributesChanged)(BuzzMachine *bm);
+
 typedef void (*BMSetNumTracks)(BuzzMachine *bm, int num);
 
 typedef const char *(*BMDescribeGlobalValue)(BuzzMachine *bm, int const param,int const value);
 typedef const char *(*BMDescribeTrackValue)(BuzzMachine *bm, int const param,int const value);
-
-// dll passthrough API method pointers
-/*
-extern BMSetMasterInfo bml_set_master_info;
-extern BMNew bm_new;
-extern BMInit bm_init;
-extern BMFree bm_free;
-
-extern BMGetMachineInfo bm_get_machine_info;
-extern BMGetGlobalParameterInfo bm_get_global_parameter_info;
-extern BMGetTrackParameterInfo bm_get_track_parameter_info;
-extern BMGetAttributeInfo bm_get_attribute_info;
-
-extern BMGetTrackParameterLocation bm_get_track_parameter_location;
-extern BMGetTrackParameterValue bm_get_track_parameter_value;
-extern BMSetTrackParameterValue bm_set_track_parameter_value;
-
-extern BMGetGlobalParameterLocation bm_get_global_parameter_location;
-extern BMGetGlobalParameterValue bm_get_global_parameter_value;
-extern BMSetGlobalParameterValue bm_set_global_parameter_value;
-
-extern BMGetAttributeLocation bm_get_attribute_location;
-extern BMGetAttributeValue bm_get_attribute_value;
-extern BMSetAttributeValue bm_set_attribute_value;
-
-extern BMTick bm_tick;
-extern BMWork bm_work;
-extern BMWorkM2S bm_work_m2s;
-extern BMStop bm_stop;
-
-extern BMSetNumTracks bm_set_num_tracks;
-*/
 
 // windows plugin API functions
 extern void bmlw_set_master_info(long bpm, long tpb, long srat);
@@ -146,6 +116,8 @@ extern void bmlw_tick(BuzzMachine *bm);
 extern int bmlw_work(BuzzMachine *bm,float *psamples, int numsamples, int const mode);
 extern int bmlw_work_m2s(BuzzMachine *bm,float *pin, float *pout, int numsamples, int const mode);
 extern void bmlw_stop(BuzzMachine *bm);
+
+extern void bmlw_attributes_changed(BuzzMachine *bm);
 
 extern void bmlw_set_num_tracks(BuzzMachine *bm, int num);
 
@@ -179,6 +151,8 @@ extern BMTick bmln_tick;
 extern BMWork bmln_work;
 extern BMWorkM2S bmln_work_m2s;
 extern BMStop bmln_stop;
+
+extern BMAttributesChanged bmln_attributes_changed;
 
 extern BMSetNumTracks bmln_set_num_tracks;
 

@@ -48,7 +48,8 @@
 
 #include "bml.h"
 
-#define BUFFER_SIZE 1024
+// like MachineInterface.h::MAX_BUFFER_LENGTH
+#define BUFFER_SIZE 256
 
 #ifdef HAVE_X86
 void test_process_w(char *libpath,const char *infilename,const char *outfilename) {
@@ -73,6 +74,10 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
     bmlw_get_machine_info(bm,BM_PROP_TYPE,&mtype);
     printf("  %s initialized\n",type_name[mtype]);
     
+    //bmlw_stop(bm);
+    //bmlw_set_num_tracks(bm,2);
+    //bmlw_set_num_tracks(bm,1);
+    bmlw_attributes_changed(bm);
 
     // open raw files
     infile=fopen(infilename,"rb");
