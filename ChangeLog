@@ -1,7 +1,18 @@
+2008-02-17  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	  Format comment.
+
+	* TODO:
+	* src/bmltest_info.c:
+	* tests/sorttable.js:
+	* tests/testmachine.sh:
+	  Generate html result table.
+
 2008-02-16  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.cpp:
-	  Remove newline fro log print.
+	  Remove newline from log print.
 
 	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
 	* src/BuzzMachineLoader/BuzzMachineLoader.h:

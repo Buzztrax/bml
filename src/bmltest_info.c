@@ -61,6 +61,8 @@ void test_info_w(char *libpath) {
 
     if(bmlw_get_machine_info(bm,BM_PROP_SHORT_NAME,(void *)&str))           printf("    Short Name: \"%s\"\n",str);
     if(bmlw_get_machine_info(bm,BM_PROP_NAME,(void *)&str))                 printf("    Name: \"%s\"\n",str);
+    if(bmlw_get_machine_info(bm,BM_PROP_AUTHOR,(void *)&str))               printf("    Author: \"%s\"\n",str);
+    if(bmlw_get_machine_info(bm,BM_PROP_COMMANDS,(void *)&str))             printf("    Commands: \"%s\"\n",str);
     if(bmlw_get_machine_info(bm,BM_PROP_TYPE,(void *)&val))                 printf("    Type: %i -> \"%s\"\n",val,((val<3)?machine_types[val]:"unknown"));
     if(bmlw_get_machine_info(bm,BM_PROP_VERSION,(void *)&val))              printf("    Version: %3.1f\n",(float)val/10.0);
     if(bmlw_get_machine_info(bm,BM_PROP_FLAGS,(void *)&val)) {              printf("    Flags: 0x%x\n",val);
@@ -153,10 +155,6 @@ void test_info_w(char *libpath) {
         val=bmlw_get_attribute_value(bm,i);printf("        RealValue: %d\n",val);
       }
     }
-    if(bmlw_get_machine_info(bm,BM_PROP_NAME,(void *)&str))                 printf("    Name: \"%s\"\n",str);
-    if(bmlw_get_machine_info(bm,BM_PROP_SHORT_NAME,(void *)&str))           printf("    ShortName: \"%s\"\n",str);
-    if(bmlw_get_machine_info(bm,BM_PROP_AUTHOR,(void *)&str))               printf("    Author: \"%s\"\n",str);
-    if(bmlw_get_machine_info(bm,BM_PROP_COMMANDS,(void *)&str))             printf("    Commands: \"%s\"\n",str);
 
     puts("  done");
     bmlw_free(bm);
@@ -183,6 +181,8 @@ void test_info_n(char *libpath) {
 
     if(bmln_get_machine_info(bm,BM_PROP_SHORT_NAME,(void *)&str))           printf("    Short Name: \"%s\"\n",str);
     if(bmln_get_machine_info(bm,BM_PROP_NAME,(void *)&str))                 printf("    Name: \"%s\"\n",str);
+    if(bmln_get_machine_info(bm,BM_PROP_AUTHOR,(void *)&str))               printf("    Author: \"%s\"\n",str);
+    if(bmln_get_machine_info(bm,BM_PROP_COMMANDS,(void *)&str))             printf("    Commands: \"%s\"\n",str);
     if(bmln_get_machine_info(bm,BM_PROP_TYPE,(void *)&val))                 printf("    Type: %i -> \"%s\"\n",val,((val<3)?machine_types[val]:"unknown"));
     if(bmln_get_machine_info(bm,BM_PROP_VERSION,(void *)&val))              printf("    Version: %3.1f\n",(float)val/10.0);
     if(bmln_get_machine_info(bm,BM_PROP_FLAGS,(void *)&val)) {              printf("    Flags: 0x%x\n",val);
@@ -275,10 +275,6 @@ void test_info_n(char *libpath) {
         val=bmln_get_attribute_value(bm,i);printf("        RealValue: %d\n",val);
       }
     }
-    if(bmln_get_machine_info(bm,BM_PROP_NAME,(void *)&str))                 printf("    Name: \"%s\"\n",str);
-    if(bmln_get_machine_info(bm,BM_PROP_SHORT_NAME,(void *)&str))           printf("    ShortName: \"%s\"\n",str);
-    if(bmln_get_machine_info(bm,BM_PROP_AUTHOR,(void *)&str))               printf("    Author: \"%s\"\n",str);
-    if(bmln_get_machine_info(bm,BM_PROP_COMMANDS,(void *)&str))             printf("    Commands: \"%s\"\n",str);
 
     puts("  done");
     bmln_free(bm);

@@ -37,6 +37,8 @@ m_fail=0;
 trap "sig_segv=1" SIGSEGV
 trap "sig_int=1" INT
 touch testmachine.failtmp
+rm testmachine.body.html
+touch testmachine.body.html
 
 # run test loop
 
@@ -49,29 +51,43 @@ for machine in $machine_glob ; do
   #env >testmachine.log 2>&1 LD_LIBRARY_PATH="../src/" ../src/bmltest_info "$machine"
   #res=$?
   # this suppresses the output of e.g. "Sementation fault"
-  res=`env >testmachine.log 2>&1 LD_LIBRARY_PATH="../src/:$LIBDIR" ../src/bmltest_info "$machine"; echo $?`
+  res=`env >testmachine.log 2>&1 LD_LIBRARY_PATH="../src/:../src/BuzzMachineLoader/.libs:$LD_LIBRARY_PATH" ../src/bmltest_info "$machine"; echo $?`
   cat testmachine.log | grep >"$log_name" -v "Warning: the specified"
   if [ $sig_int -eq "1" ] ; then res=1; fi
   if [ $res -eq "0" ] ; then
     echo "okay : $machine";
     m_okay=$((m_okay+1))
     mv "$log_name" "$log_name".okay
+    tablecolor="#EEFFEE"
   else
     echo "fail : $machine";
     m_fail=$((m_fail+1))
     mv "$log_name" "$log_name".fail
+    tablecolor="#FFEEEE"
     reason=`tail -n1 "$log_name".fail | strings`;
     echo "$reason :: $name" >>testmachine.failtmp
   fi
+  cat testmachine.log | iconv >testmachine.tmp -fWINDOWS-1250 -tUTF-8 -c
+  fieldShortName=`egrep -o "Short Name: .*$" testmachine.tmp | sed -e 's/Short Name: "\(.*\)"/\1/'`
+  fieldAuthor=`egrep -o "Author: .*$" testmachine.tmp | sed -e 's/Author: "\(.*\)"/\1/'`
+  fieldVersion=`egrep -o "Version: .*$" testmachine.tmp | sed -e 's/Version: "\(.*\)"/\1/'`
+  echo >>testmachine.body.html "<tr bgcolor=\"$tablecolor\"><td>$fieldShortName</td><td>$fieldAuthor</td><td>$fieldVersion</td></tr>"
 done
 
 # cleanup and report
 
-rm testmachine.log
+rm testmachine.log testmachine.tmp
 sort testmachine.failtmp >testmachine.fails
 rm testmachine.failtmp
 
+echo >testmachine.html "<html><head><script src=\"sorttable.js\"></script><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body>"
+echo >>testmachine.html "<table class=\"sortable\" border=1 cellspacing=0>"
+echo >>testmachine.html "<tr><th>Name</th><th>Author</th><th>API Version</th></tr>"
+cat >>testmachine.html testmachine.body.html
+echo >>testmachine.html "</table></body></html>"
+rm testmachine.body.html
+
 m_all=$((m_fail+m_okay))
 echo "Of $m_all machine(s) $m_okay machine(s) worked and $m_fail machine(s) failed."
-echo "See testmachine.fails for details"
+echo "See testmachine.fails and testmachine.html for details"
 

@@ -246,12 +246,13 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
     }
 #endif
 
-    // now that we've given the machine the initial global- and track-parameters,
-    // and the attributes, give it a tick
-    // (NOTE - must tick HERE rather than later, to give (for example) the Master machine
-    // a chance to update its state before any other machines need to rely on it ...)
-    // (NOTE - must tick AFTER AttributesChanged, and after we've set initial track and global
-    // data for machine)
+    /* we've given the machine the initial global- and track-parameters,
+     * and the attributes, give it a tick
+     * - tick HERE rather than later, to give (for example) the Master machine a
+     *   chance to update its state before any other machines need to rely on it
+     * - tick AFTER AttributesChanged, and after we've set initial track and
+     *   global data for machine)
+     */
     try {
         bm->machine_iface->Tick();
     }
