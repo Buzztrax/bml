@@ -9,19 +9,9 @@ $Id: TODO,v 1.8 2007-11-10 19:06:37 ensonic Exp $
 
 = testing =
 modify tests/testmachine.h
-grep some more values from stdout
-    Short Name: "GB Sound"
-    Name: "kazuya GB Sound Generator"
-    Author: "kazuya"
-    Commands: "WaveRAM Editor
-    Type: 1 -> "MT_GENERATOR"
-    Version: 1.5
-    Flags: 0x1
-    MinTracks: 1
-    MaxTracks: 8
-    NumGlobalParams: 42
-    NumTrackParams: 4
-    NumAttributes: 3
+eventually improve scrolling:
+  http://www.litotes.demon.co.uk/example_scripts/tableScroll.html
+result should go to a given directory (use date-time when not provided)
   
 = missing window function entries =
 unk__malloc_dbg

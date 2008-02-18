@@ -78,6 +78,7 @@ void test_info_w(char *libpath) {
     }
     if(bmlw_get_machine_info(bm,BM_PROP_MIN_TRACKS,(void *)&val))           printf("    MinTracks: %i\n",val);
     if(bmlw_get_machine_info(bm,BM_PROP_MAX_TRACKS,(void *)&val))           printf("    MaxTracks: %i\n",val);
+    fflush(stdout);
     if(bmlw_get_machine_info(bm,BM_PROP_NUM_GLOBAL_PARAMS,(void *)&val)) {  printf("    NumGlobalParams: %i\n",val);
       num=val;
       for(i=0;i<num;i++) {
@@ -111,6 +112,7 @@ void test_info_w(char *libpath) {
 	    printf("        RealValue: %d %s (%p -> %d)\n",val,str,addr,ptrval);
       }
     }
+    fflush(stdout);
     if(bmlw_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,(void *)&val)) {   printf("    NumTrackParams: %i\n",val);
       num=val;
       for(i=0;i<num;i++) {
@@ -144,6 +146,7 @@ void test_info_w(char *libpath) {
 	    printf("        RealValue: %d %s (%p -> %d)\n",val,str,addr,ptrval);
       }
     }
+    fflush(stdout);
     if(bmlw_get_machine_info(bm,BM_PROP_NUM_ATTRIBUTES,(void *)&val)) {     printf("    NumAttributes: %i\n",val);
       num=val;
       for(i=0;i<num;i++) {
@@ -198,6 +201,7 @@ void test_info_n(char *libpath) {
     }
     if(bmln_get_machine_info(bm,BM_PROP_MIN_TRACKS,(void *)&val))           printf("    MinTracks: %i\n",val);
     if(bmln_get_machine_info(bm,BM_PROP_MAX_TRACKS,(void *)&val))           printf("    MaxTracks: %i\n",val);
+    fflush(stdout);
     if(bmln_get_machine_info(bm,BM_PROP_NUM_GLOBAL_PARAMS,(void *)&val)) {  printf("    NumGlobalParams: %i\n",val);
       num=val;
       for(i=0;i<num;i++) {
@@ -231,6 +235,7 @@ void test_info_n(char *libpath) {
 	    printf("        RealValue: %d %s (%p -> %d)\n",val,str,addr,ptrval);
       }
     }
+    fflush(stdout);
     if(bmln_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,(void *)&val)) {   printf("    NumTrackParams: %i\n",val);
       num=val;
       for(i=0;i<num;i++) {
@@ -249,7 +254,7 @@ void test_info_n(char *libpath) {
            bmln_get_track_parameter_info(bm,i,BM_PARA_NO_VALUE,(void *)&noval) &&
            bmln_get_track_parameter_info(bm,i,BM_PARA_DEF_VALUE,(void *)&val))    printf("        Value: %d .. %d .. %d [%d]\n",mival,val,maval,noval);
         val=bmln_get_track_parameter_value(bm,0,i);
-		addr=bmln_get_track_parameter_location(bm,0,i);
+        addr=bmln_get_track_parameter_location(bm,0,i);
 	    str=(char *)bmln_describe_track_value(bm,i,val);
 		switch(type) {
 		  case 0: //PT_NOTE:
@@ -264,6 +269,7 @@ void test_info_n(char *libpath) {
 	    printf("        RealValue: %d %s (%p -> %d)\n",val,str,addr,ptrval);
       }
     }
+    fflush(stdout);
     if(bmln_get_machine_info(bm,BM_PROP_NUM_ATTRIBUTES,(void *)&val)) {     printf("    NumAttributes: %i\n",val);
       num=val;
       for(i=0;i<num;i++) {

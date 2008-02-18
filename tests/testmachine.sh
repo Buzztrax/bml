@@ -37,7 +37,7 @@ m_fail=0;
 trap "sig_segv=1" SIGSEGV
 trap "sig_int=1" INT
 touch testmachine.failtmp
-rm testmachine.body.html
+rm -f testmachine.body.html
 touch testmachine.body.html
 
 # run test loop
@@ -58,20 +58,44 @@ for machine in $machine_glob ; do
     echo "okay : $machine";
     m_okay=$((m_okay+1))
     mv "$log_name" "$log_name".okay
-    tablecolor="#EEFFEE"
+    tablecolor="#E0FFE0"
+    tableresult="okay"
   else
     echo "fail : $machine";
     m_fail=$((m_fail+1))
     mv "$log_name" "$log_name".fail
-    tablecolor="#FFEEEE"
+    tablecolor="#FFE0E0"
+    tableresult="fail"
     reason=`tail -n1 "$log_name".fail | strings`;
     echo "$reason :: $name" >>testmachine.failtmp
   fi
   cat testmachine.log | iconv >testmachine.tmp -fWINDOWS-1250 -tUTF-8 -c
-  fieldShortName=`egrep -o "Short Name: .*$" testmachine.tmp | sed -e 's/Short Name: "\(.*\)"/\1/'`
-  fieldAuthor=`egrep -o "Author: .*$" testmachine.tmp | sed -e 's/Author: "\(.*\)"/\1/'`
-  fieldVersion=`egrep -o "Version: .*$" testmachine.tmp | sed -e 's/Version: "\(.*\)"/\1/'`
-  echo >>testmachine.body.html "<tr bgcolor=\"$tablecolor\"><td>$fieldShortName</td><td>$fieldAuthor</td><td>$fieldVersion</td></tr>"
+  fieldShortName=`egrep -o "Short Name: .*$" testmachine.tmp | sed -e 's/Short Name: "\(.*\)"$/\1/'`
+  fieldAuthor=`egrep -o "Author: .*$" testmachine.tmp | sed -e 's/Author: "\(.*\)"$/\1/'`
+  fieldType=`egrep -o "^    Type: . -> \"MT_.*$" testmachine.tmp | sed -e 's/^\ *Type: . -> "\(.*\)"$/\1/'`
+  fieldVersion=`egrep -o "Version: .*$" testmachine.tmp | sed -e 's/Version: \(.*\)$/\1/'`
+  fieldFlags=`egrep -o "^    Flags: .*$" testmachine.tmp | sed -e 's/^\ *Flags: \(.*\)$/\1/'`
+  fieldMinTracks=`egrep -o "MinTracks: .*$" testmachine.tmp | sed -e 's/MinTracks: \(.*\)$/\1/'`
+  fieldMaxTracks=`egrep -o "MaxTracks: .*$" testmachine.tmp | sed -e 's/MaxTracks: \(.*\)$/\1/'`
+  fieldNumGlobalParams=`egrep -o "NumGlobalParams: .*$" testmachine.tmp | sed -e 's/NumGlobalParams: \(.*\)$/\1/'`
+  fieldNumTrackParams=`egrep -o "NumTrackParams: .*$" testmachine.tmp | sed -e 's/NumTrackParams: \(.*\)$/\1/'`
+  fieldNumAttributes=`egrep -o "NumAttributes: .*$" testmachine.tmp | sed -e 's/NumAttributes: \(.*\)$/\1/'`
+  cat >>testmachine.body.html <<END_OF_HTML
+      <tr bgcolor="$tablecolor">
+        <td><a href="$log_name.$tableresult">$tableresult</a></td>
+        <td>$name</td>
+        <td>$fieldShortName</td>
+        <td>$fieldAuthor</td>
+        <td>$fieldType</td>
+        <td>$fieldVersion</td>
+        <td>$fieldFlags</td>
+        <td>$fieldMinTracks</td>
+        <td>$fieldMaxTracks</td>
+        <td>$fieldNumGlobalParams</td>
+        <td>$fieldNumTrackParams</td>
+        <td>$fieldNumAttributes</td>
+      </tr>
+END_OF_HTML
 done
 
 # cleanup and report
@@ -80,11 +104,35 @@ rm testmachine.log testmachine.tmp
 sort testmachine.failtmp >testmachine.fails
 rm testmachine.failtmp
 
-echo >testmachine.html "<html><head><script src=\"sorttable.js\"></script><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body>"
-echo >>testmachine.html "<table class=\"sortable\" border=1 cellspacing=0>"
-echo >>testmachine.html "<tr><th>Name</th><th>Author</th><th>API Version</th></tr>"
+cat >testmachine.html <<END_OF_HTML
+<html>
+  <head>
+    <script src="sorttable.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <table class="sortable" border="1" cellspacing="0">
+      <tr>
+        <th>Res.</th>
+        <th>Plugin Lib.</th>
+        <th>Name</th>
+        <th>Author</th>
+        <th>Type</th>
+        <th>API Ver.</th>
+        <th>Flags</th>
+        <th>Min Tracks</th>
+        <th>Max Tracks</th>
+        <th># Global Params</th>
+        <th># Track Params</th>
+        <th># Attributes</th>
+      </tr>
+END_OF_HTML
 cat >>testmachine.html testmachine.body.html
-echo >>testmachine.html "</table></body></html>"
+cat >>testmachine.html <<END_OF_HTML
+    </table>
+  </body>
+</html>
+END_OF_HTML
 rm testmachine.body.html
 
 m_all=$((m_fail+m_okay))
