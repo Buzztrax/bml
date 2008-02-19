@@ -120,7 +120,7 @@ extern "C" DE void bm_free(BuzzMachine *bm) {
     }
 }
 
-#define BM_INIT_PARAMS_FIRST 1
+//#define BM_INIT_PARAMS_FIRST 1
 #define BM_INIT_ATTRIBUTES_CHANGED_FIRST 1
 
 extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data) {
@@ -146,7 +146,6 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
     }
     // initialise track parameters
     if((bm->machine_info->minTracks>0) && (bm->machine_info->maxTracks>0)) {
-        wNumberOfTracks=bm->machine_info->minTracks;
         DBG3(" need to initialize %d track params for tracks: %d...%d\n",bm->machine_info->numTrackParameters,bm->machine_info->minTracks,bm->machine_info->maxTracks);
         for(j=0;j<bm->machine_info->maxTracks;j++) {
             for(i=0;i<bm->machine_info->numTrackParameters;i++) {
@@ -188,6 +187,17 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
     }
 #endif
 
+    // call SetNumTracks
+    DBG1("  CMachineInterface::SetNumTracks(%d)\n",bm->machine_info->minTracks);
+    try {
+        // calling this without the '-1' crashes: Automaton Parametric EQ.dll
+        //bm->machine_iface->SetNumTracks(bm->machine_info->minTracks-1);
+        bm->machine_iface->SetNumTracks(bm->machine_info->minTracks);
+    }
+    catch (std::exception& e) { DBG1("-> exeption: %s\n",e.what()); }
+    catch(...) { DBG(" -> exeption\n"); }
+    DBG("  CMachineInterface::SetNumTracks() called\n");
+
 #ifndef BM_INIT_PARAMS_FIRST  /* params_later */
     // initialise global parameters (DefValue or NoValue, Buzz seems to use NoValue)
     for(i=0;i<bm->machine_info->numGlobalParameters;i++) {
@@ -199,26 +209,8 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
         }
     }
     DBG("  global parameters initialized\n");
-#endif
-#ifndef BM_INIT_PARAMS_FIRST /* params_later */
     // initialise track parameters
     if((bm->machine_info->minTracks>0) && (bm->machine_info->maxTracks>0)) {
-        wNumberOfTracks=bm->machine_info->minTracks;
-#endif
-        if(wNumberOfTracks) {
-            // call SetNumTracks
-            DBG1("  CMachineInterface::SetNumTracks(%d)\n",wNumberOfTracks);
-            try {
-                // calling this without the '-1' crashes: Automaton Parametric EQ.dll
-                //bm->machine_iface->SetNumTracks(wNumberOfTracks-1);
-                bm->machine_iface->SetNumTracks(wNumberOfTracks);
-            }
-            catch (std::exception& e) { DBG1("-> exeption: %s\n",e.what()); }
-            catch(...) { DBG(" -> exeption\n"); }
-            DBG("  CMachineInterface::SetNumTracks() called\n");
-        }
-
-#ifndef BM_INIT_PARAMS_FIRST
         DBG3(" need to initialize %d track params for tracks: %d...%d\n",bm->machine_info->numTrackParameters,bm->machine_info->minTracks,bm->machine_info->maxTracks);
         for(j=0;j<bm->machine_info->maxTracks;j++) {
             for(i=0;i<bm->machine_info->numTrackParameters;i++) {
