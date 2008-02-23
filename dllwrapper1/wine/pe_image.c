@@ -70,6 +70,7 @@ extern void* LookupExternalByName(const char* library, const char* name);
 
 static void dump_exports( HMODULE hModule )
 {
+#if 0
   char		*Module;
   int		i, j;
   u_short	*ordinal;
@@ -87,7 +88,6 @@ static void dump_exports( HMODULE hModule )
   TRACE("*******EXPORT DATA*******\n");
   TRACE("Module name is %s, %ld functions, %ld names\n",
         Module, pe_exports->NumberOfFunctions, pe_exports->NumberOfNames);
-
   ordinal=(u_short*) RVA(pe_exports->AddressOfNameOrdinals);
   functions=function=(u_long*) RVA(pe_exports->AddressOfFunctions);
   name=(u_char**) RVA(pe_exports->AddressOfNames);
@@ -95,22 +95,23 @@ static void dump_exports( HMODULE hModule )
   TRACE(" Ord    RVA     Addr   Name\n" );
   for (i=0;i<pe_exports->NumberOfFunctions;i++, function++)
   {
-      if (!*function) continue;
-      if (TRACE_ON(win32))
-      {
-	DPRINTF( "%4ld %08lx %p", i + pe_exports->Base, *function, RVA(*function) );
-
-	for (j = 0; j < pe_exports->NumberOfNames; j++)
-          if (ordinal[j] == i)
-          {
-              DPRINTF( "  %s", (char*)RVA(name[j]) );
-              break;
-          }
-	if ((*function >= rva_start) && (*function <= rva_end))
-	  DPRINTF(" (forwarded -> %s)", (char *)RVA(*function));
-	DPRINTF("\n");
-      }
+    if (!*function) continue;
+    if (TRACE_ON(win32))
+    {
+      DPRINTF( "%4ld %08lx %p", i + pe_exports->Base, *function, RVA(*function) );
+  
+      for (j = 0; j < pe_exports->NumberOfNames; j++)
+        if (ordinal[j] == i)
+        {
+            DPRINTF( "  %s", (char*)RVA(name[j]) );
+            break;
+        }
+      if ((*function >= rva_start) && (*function <= rva_end))
+        DPRINTF(" (forwarded -> %s)", (char *)RVA(*function));
+      DPRINTF("\n");
+    }
   }
+#endif
 }
 
 /* Look up the specified function or ordinal in the exportlist:
@@ -124,7 +125,7 @@ static void dump_exports( HMODULE hModule )
 FARPROC PE_FindExportedFunction(
 	WINE_MODREF *wm,
 	LPCSTR funcName,
-        WIN_BOOL snoop )
+    WIN_BOOL snoop )
 {
 	u_short				* ordinals;
 	u_long				* function;
@@ -137,9 +138,9 @@ FARPROC PE_FindExportedFunction(
 	char				* forward;
 
 	if (HIWORD(funcName))
-		TRACE("(%s)\n",funcName);
+		TRACE("FindExportedFunction(%s)\n",funcName);
 	else
-		TRACE("(%d)\n",(int)funcName);
+		TRACE("FindExportedFunction(%d)\n",(int)funcName);
 	if (!exports) {
 		/* Not a fatal problem, some apps do
 		 * GetProcAddress(0,"RegisterPenApp") which triggers this
@@ -158,89 +159,88 @@ FARPROC PE_FindExportedFunction(
 		.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].Size;
 
 	if (HIWORD(funcName))
+    {
+        int min = 0, max = exports->NumberOfNames - 1;
+        while (min <= max)
         {
-
-            int min = 0, max = exports->NumberOfNames - 1;
-            while (min <= max)
+            int res, pos = (min + max) / 2;
+            ename = RVA(name[pos]);
+            if (!(res = strcmp((char *)ename, funcName )))
             {
-                int res, pos = (min + max) / 2;
-                ename = RVA(name[pos]);
-                if (!(res = strcmp((char *)ename, funcName )))
-                {
-                    ordinal = ordinals[pos];
-                    goto found;
-                }
-                if (res > 0) max = pos - 1;
-                else min = pos + 1;
+                ordinal = ordinals[pos];
+                goto found;
             }
+            if (res > 0) max = pos - 1;
+            else min = pos + 1;
+        }
 
+        for (i = 0; i < exports->NumberOfNames; i++)
+        {
+            ename = RVA(name[i]);
+            if (!strcmp((char *)ename, funcName ))
+            {
+                ERR( "%s.%s required a linear search\n", wm->modname, funcName );
+                ordinal = ordinals[i];
+                goto found;
+            }
+        }
+        return NULL;
+	}
+    else
+    {
+        ordinal = LOWORD(funcName) - exports->Base;
+        if (snoop && name)
+        {
             for (i = 0; i < exports->NumberOfNames; i++)
-            {
-                ename = RVA(name[i]);
-                if (!strcmp((char *)ename, funcName ))
+                if (ordinals[i] == ordinal)
                 {
-		    ERR( "%s.%s required a linear search\n", wm->modname, funcName );
-                    ordinal = ordinals[i];
-                    goto found;
+                    ename = RVA(name[i]);
+                    break;
                 }
-            }
-            return NULL;
-	}
-        else
-        {
-            ordinal = LOWORD(funcName) - exports->Base;
-            if (snoop && name)
-            {
-                for (i = 0; i < exports->NumberOfNames; i++)
-                    if (ordinals[i] == ordinal)
-                    {
-                        ename = RVA(name[i]);
-                        break;
-                    }
-            }
+        }
 	}
 
- found:
-        if (ordinal >= exports->NumberOfFunctions)
+found:
+    if (ordinal >= exports->NumberOfFunctions)
+    {
+        TRACE("	ordinal %ld out of range!\n", ordinal + exports->Base );
+        return NULL;
+    }
+    addr = function[ordinal];
+    if (!addr) return NULL;
+    if ((addr < rva_start) || (addr >= rva_end))
+    {
+        FARPROC proc = RVA(addr);
+        if (snoop)
         {
-            TRACE("	ordinal %ld out of range!\n", ordinal + exports->Base );
-            return NULL;
+            if (!ename) ename = (u_char *)"@";
+            //proc = SNOOP_GetProcAddress(wm->module,ename,ordinal,proc);
+            TRACE("SNOOP_GetProcAddress n/a\n");
         }
-        addr = function[ordinal];
-        if (!addr) return NULL;
-        if ((addr < rva_start) || (addr >= rva_end))
-        {
-            FARPROC proc = RVA(addr);
-            if (snoop)
-            {
-                if (!ename) ename = (u_char *)"@";
-                //proc = SNOOP_GetProcAddress(wm->module,ename,ordinal,proc);
-		        TRACE("SNOOP_GetProcAddress n/a\n");
-            }
-            return proc;
-        }
-        else
-        {
-            WINE_MODREF *wm;
-            char *forward = RVA(addr);
-		    char module[256];
-		    char *end = strchr(forward, '.');
+        return proc;
+    }
+    else
+    {
+        WINE_MODREF *wm;
+        char *forward = RVA(addr);
+        char module[256];
+        char *end = strchr(forward, '.');
 
-                TRACE("getting next module name from '%s'\n",forward);
+        TRACE("getting next module name from '%s'\n",forward);
 
 		if (!end) return NULL;
-                if (end - forward >= sizeof(module)) {
-                        WARN("need to enlarge buffer from %d to %ld\n",sizeof(module),(long)(end - forward));
-                        return NULL;
-                }
-                memcpy( module, forward, end - forward );
+        if (end - forward >= sizeof(module)) {
+                WARN("need to enlarge buffer from %d to %ld\n",sizeof(module),(long)(end - forward));
+                return NULL;
+        }
+        memcpy( module, forward, end - forward );
 		module[end-forward] = 0;
-                TRACE("calling FindModule(%s)\n",module);
-                if (!(wm = MODULE_FindModule( module )))
-                {
-                    ERR("module not found for forward '%s'\n", forward );
-                    return NULL;
-                }
+        TRACE("calling FindModule(%s)\n",module);
+        if (!(wm = MODULE_FindModule( module )))
+        {
+            ERR("module not found for forward '%s'\n", forward );
+            return NULL;
+        }
 		return MODULE_GetProcAddress( wm->module, end + 1, snoop );
 	}
 }
@@ -347,10 +347,13 @@ static int calc_vma_size( HMODULE hModule )
     int i,vma_size = 0;
     IMAGE_SECTION_HEADER *pe_seg = PE_SECTIONS(hModule);
 
+    /*
     TRACE("Dump of segment table\n");
     TRACE("   Name    VSz  Vaddr     SzRaw   Fileadr  *Reloc *Lineum #Reloc #Linum Char\n");
+    */
     for (i = 0; i< PE_HEADER(hModule)->FileHeader.NumberOfSections; i++)
     {
+        /*
         TRACE("%8s: %4.4lx %8.8lx %8.8lx %8.8lx %8.8lx %8.8lx %4.4x %4.4x %8.8lx\n",
                       pe_seg->Name,
                       pe_seg->Misc.VirtualSize,
@@ -362,6 +365,7 @@ static int calc_vma_size( HMODULE hModule )
                       pe_seg->NumberOfRelocations,
                       pe_seg->NumberOfLinenumbers,
                       pe_seg->Characteristics);
+        */
         vma_size=max(vma_size, pe_seg->VirtualAddress+pe_seg->SizeOfRawData);
         vma_size=max(vma_size, pe_seg->VirtualAddress+pe_seg->Misc.VirtualSize);
         pe_seg++;
@@ -383,14 +387,16 @@ static void do_relocations( unsigned int load_addr, IMAGE_BASE_RELOCATION *r )
 		char *page = (char*) RVA(r->VirtualAddress);
 		int count = (r->SizeOfBlock - 8)/2;
 		int i;
+        
+        /*
 		TRACE_(fixup)("%x relocations for page %lx\n",
 			count, r->VirtualAddress);
-
+        */
 		for(i=0;i<count;i++)
 		{
 			int offset = r->TypeOffset[i] & 0xFFF;
 			int type = r->TypeOffset[i] >> 12;
-//			TRACE_(fixup)("patching %x type %x\n", offset, type);
+            //TRACE_(fixup)("patching %x type %x\n", offset, type);
 			switch(type)
 			{
 			case IMAGE_REL_BASED_ABSOLUTE: break;
@@ -633,15 +639,16 @@ HMODULE PE_LoadImage( int handle, LPCSTR filename, WORD *version )
     for (i = 0; i < nt->FileHeader.NumberOfSections; i++, pe_sec++)
     {
         if (!pe_sec->SizeOfRawData || !pe_sec->PointerToRawData) continue;
+        /*
         TRACE("%s: mmaping section %s at %p off %lx size %lx/%lx\n",
               filename, pe_sec->Name, (void*)RVA(pe_sec->VirtualAddress),
               pe_sec->PointerToRawData, pe_sec->SizeOfRawData, pe_sec->Misc.VirtualSize );
+        */
         if ((void*)FILE_dommap( unix_handle, (void*)RVA(pe_sec->VirtualAddress),
                          0, pe_sec->SizeOfRawData, 0, pe_sec->PointerToRawData,
                          PROT_EXEC | PROT_WRITE | PROT_READ,
                          MAP_PRIVATE | MAP_FIXED ) != (void*)RVA(pe_sec->VirtualAddress))
         {
-
             ERR_(win32)( "Critical Error: failed to map PE section to necessary address.\n");
             goto error;
         }
@@ -839,7 +846,7 @@ WINE_MODREF *PE_LoadLibraryExA (LPCSTR name, DWORD flags)
 	hFile=open(filename, O_RDONLY);
 	if(hFile==-1)
     {
-        TRACE("did not found module '%s'\n", name);
+        //TRACE("  did not found module '%s'\n", name);
         /* do case insensitive search on dir */
         char *dirname = ".", *libname = filename;
         char *last_delim = strrchr(filename,'/');
@@ -869,7 +876,7 @@ WINE_MODREF *PE_LoadLibraryExA (LPCSTR name, DWORD flags)
                     else {
                         strncpy(filename, dp->d_name, sizeof(filename));
                     }
-                    TRACE("found module with '%s'\n", filename);
+                    TRACE("  found module with '%s'\n", filename);
                     hFile=open(filename, O_RDONLY);
                     break;
                 }

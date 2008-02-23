@@ -125,7 +125,6 @@ extern "C" DE void bm_free(BuzzMachine *bm) {
 
 extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data) {
     int i,j;
-    int wNumberOfTracks=0;
 
     DBG2("  bm_init(bm,%ld,%p)\n",blob_size,blob_data);
 
@@ -345,17 +344,12 @@ extern "C" DE BuzzMachine *bm_new(char *bm_file_name) {
     if((bm->machine_info->Version & 0xff) < 15) {
       // @todo: we need to pass a CMachine as first arg
       bm->callbacks=(CMICallbacks *)new BuzzMachineCallbacksPre12(bm->machine,bm->machine_iface,bm->machine_info);
-      DBG2("  old callback instance created (size=%d, addr=%p)\n",sizeof(BuzzMachineCallbacksPre12),bm->callbacks);
-	  DBG1("  &callback->GetWave()     =%p\n",&BuzzMachineCallbacksPre12::GetWave);
-      DBG1("  &callback->GetWaveLevel()=%p\n",&BuzzMachineCallbacksPre12::GetWaveLevel);
-      DBG1("  &callback->MessageBox()  =%p\n",&BuzzMachineCallbacksPre12::MessageBox);
-      DBG1("  &callback->Lock()        =%p\n",&BuzzMachineCallbacksPre12::Lock);
-      DBG1("  &callback->Unlock()      =%p\n",&BuzzMachineCallbacksPre12::Unlock);
+      DBG("  old callback instance created\n");
     }
     else {
       // @todo: we need to pass a CMachine as first arg
       bm->callbacks=(CMICallbacks *)new BuzzMachineCallbacks(bm->machine,bm->machine_iface,bm->machine_info);
-      DBG1("  callback instance created (size=%d)\n",sizeof(BuzzMachineCallbacks));
+      DBG("  callback instance created\n");
     }
 
     bm->machine_iface->pMasterInfo=&master_info;

@@ -12,11 +12,11 @@
 # analyze results
 #
 # search for unk_XXX -> unknown symbols
-#  grep -Hn "unk_" *.fail
+#  grep -Hn "unk_" testmachine/*.fail | sort | uniq
 # search for FIXME -> unimplemented buzz host entries
-#  grep -Hn "FIXME" *.fail
+#  grep -Hn "FIXME" testmachine/*.fail
 # search for "wine/module: Win32 LoadLibrary failed to load:"
-#  grep -ho "wine/module: Win32 LoadLibrary failed to load:.*" *.fail | sort | uniq
+#  grep -ho "wine/module: Win32 LoadLibrary failed to load:.*" testmachine/*.fail | sort | uniq
 # stats
 #  ls -1 testmachine/*.okay | wc -l
 #  ls -1 testmachine/*.fail | wc -l

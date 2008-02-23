@@ -540,17 +540,17 @@ static HMODULE WINAPI expGetModuleHandleA(const char* name)
     HMODULE result;
     if(!name)
 #ifdef QTX
-	result=1;
+    	result=1;
 #else
-	result=0;
+	    result=0;
 #endif
     else
     {
         TRACE("calling FindModule(%s)\n",name);
-	wm=MODULE_FindModule(name);
-	if(wm==0)result=0;
-	else
-	    result=(HMODULE)(wm->module);
+        wm=MODULE_FindModule(name);
+        if(wm==0)result=0;
+        else
+          result=(HMODULE)(wm->module);
     }
     if(!result)
     {
@@ -1239,6 +1239,16 @@ static int WINAPI expVirtualFree(void* v1, int v2, int v3)
     int result = VirtualFree(v1,v2,v3);
     dbgprintf("VirtualFree(%p, %d, %d) => %d\n",v1,v2,v3, result);
     return result;
+}
+
+static SIZE_T WINAPI expVirtualQuery(void *lpAddress, LPMEMORY_BASIC_INFORMATION lpBuffer, SIZE_T dwLength)
+{
+  if(!lpBuffer || !dwLength) return 0;
+  
+  // create fake info to keep FSM::PhatMan happy
+  lpBuffer->BaseAddress=lpBuffer->AllocationBase=lpAddress;
+  lpBuffer->RegionSize=4;
+  return sizeof(MEMORY_BASIC_INFORMATION);
 }
 
 /* we're building a table of critical sections. cs_win pointer uses the DLL
@@ -2097,6 +2107,16 @@ static HRSRC WINAPI expFindResourceA(HMODULE module, char* name, char* type)
     dbgprintf("FindResourceA(module 0x%x, name %p(%s), type %p(%s)) => 0x%x\n",
 	module, name, HIWORD(name) ? name : "UNICODE", type, HIWORD(type) ? type : "UNICODE", result);
     return result;
+}
+
+static HRSRC WINAPI expFindResourceExA(HMODULE module, char* type, char* name, WORD lang)
+{
+    HRSRC result;
+
+    result=FindResourceExA(module, type, name, lang);
+    dbgprintf("FindResourceExA(module 0x%x, type %p(%s), name %p(%s), lang %d) => 0x%x\n",
+	module, name, HIWORD(name) ? name : "UNICODE", type, HIWORD(type) ? type : "UNICODE", lang, result);
+    return result;  
 }
 
 extern HRSRC WINAPI LoadResource(HMODULE, HRSRC);
@@ -4868,6 +4888,7 @@ struct exports exp_kernel32[]=
     FF(GetProcessHeap, -1)
     FF(VirtualAlloc, -1)
     FF(VirtualFree, -1)
+    FF(VirtualQuery, -1)
     FF(InitializeCriticalSection, -1)
     FF(EnterCriticalSection, -1)
     FF(LeaveCriticalSection, -1)
@@ -4900,6 +4921,7 @@ struct exports exp_kernel32[]=
     FF(LoadResource, -1)
     FF(ReleaseSemaphore, -1)
     FF(FindResourceA, -1)
+    FF(FindResourceExA, -1)
     FF(LockResource, -1)
     FF(FreeResource, -1)
     FF(SizeofResource, -1)

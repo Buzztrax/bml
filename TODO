@@ -12,7 +12,26 @@ modify tests/testmachine.h
 eventually improve scrolling:
   http://www.litotes.demon.co.uk/example_scripts/tableScroll.html
 result should go to a given directory (use date-time when not provided)
-  
+
+= unemulated used libs =
+wine/module: Win32 LoadLibrary failed to load: COMCTL32.dll
+wine/module: Win32 LoadLibrary failed to load: DSOUND.dll
+wine/module: Win32 LoadLibrary failed to load: GDI32.dll
+wine/module: Win32 LoadLibrary failed to load: KERNEL32.dll
+wine/module: Win32 LoadLibrary failed to load: MSVCRT.dll
+wine/module: Win32 LoadLibrary failed to load: OLEAUT32.dll
+wine/module: Win32 LoadLibrary failed to load: OLEPRO32.DLL
+wine/module: Win32 LoadLibrary failed to load: SHELL32.dll
+wine/module: Win32 LoadLibrary failed to load: SHLWAPI.dll
+wine/module: Win32 LoadLibrary failed to load: USER32.dll
+wine/module: Win32 LoadLibrary failed to load: WINMM.dll
+wine/module: Win32 LoadLibrary failed to load: WINSPOOL.DRV
+wine/module: Win32 LoadLibrary failed to load: comdlg32.dll
+wine/module: Win32 LoadLibrary failed to load: kernel32.dll
+wine/module: Win32 LoadLibrary failed to load: msvcrt.dll
+wine/module: Win32 LoadLibrary failed to load: ole32.dll
+wine/module: Win32 LoadLibrary failed to load: oledlg.dll
+
 = missing window function entries =
 unk__malloc_dbg
 from MSVCRTD.dll which I can't find
@@ -27,6 +46,9 @@ kernel32.dll ntdll.dll
 msvcp50.dll  msvcp60.dll MFC42.DLL  MSVCRT.DLL
 
 = known not working machines =
+2008.02.22 : Of 532 machine(s) 448 machine(s) worked and 84 machine(s) failed.
+2008.02.23 : Of 532 machine(s) 453 machine(s) worked and 79 machine(s) failed.
+
 == Generators ==
 Geonik's PrimiFun.dll
   Called unk__CxxThrowException
@@ -35,15 +57,19 @@ Geonik's PrimiFun.dll
   http://source.winehq.org/source/dlls/msvcrt/cppexcept.h
   - the unk__ is gone (empty impl), but it segfaults. may be we need a full impl
 
+Rout 808.dll
+Rout 909.dll 
+  unk_FindResourceExA
+
+
 == Effects ==
 Arguelles TruePan
-FSM Infector
+FSM PhatMan
+  Called unk_VirtualQuery
+  BuzzMachineCallbacks::MessageBoxA (txt="this pointer is sick - kill Oskari")
 Jeskola Raverb
   BuzzMachineCallbacks::GetEnvSize (wave=-96185375,env=0)
 Sonic Verb
-
-FSM PhatMan
-  Called unk_VirtualQuery
 
 cheapo spread.dll
   hangs

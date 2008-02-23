@@ -1,3 +1,16 @@
+2008-02-23  Stefan Kost  <ensonic@users.sf.net>
+
+	* TODO:
+	* dllwrapper1/wine/module.c:
+	* dllwrapper1/wine/pe_image.c:
+	* dllwrapper1/wine/win32.c:
+	* src/BuzzMachineLoader.dll:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.cpp:
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	* tests/testmachine.sh:
+	  Tune logging to be a bit less verbose. Implement more wrapped API, got
+	  more machines working.
+
 2008-02-19  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:

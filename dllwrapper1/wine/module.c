@@ -363,7 +363,7 @@ static WIN_BOOL MODULE_FreeLibrary( WINE_MODREF *wm )
 HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 {
 	WINE_MODREF *wm = 0;
-	char* listpath[] = { "", "", WIN32_PATH, "/usr/local/lib/win32", WIN32_LIB_PATH, 0 };
+	char* listpath[] = { "", "", WIN32_PATH, "/usr/local/lib/win32", WIN32_LIB_PATH, NULL };
 	char path[512];
 	char checked[2000];
 	int i = -1;
@@ -374,7 +374,7 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 		SetLastError(ERROR_INVALID_PARAMETER);
 		return 0;
 	}
-        TRACE("calling FindModule(%s)\n",libname);
+    TRACE("calling FindModule(%s)\n",libname);
 
 	wm=MODULE_FindModule(libname);
 	if(wm) return wm->module;
@@ -390,12 +390,12 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 
 	    if (i < 2)
 	    {
-		if (i == 0)
-		    /* check just original file name */
-		    strncpy(path, libname, sizeof(path) - 1);
-                else
-		    /* check default user path */
-		    strncpy(path, win32_def_path, sizeof(path) - 2);
+          if (i == 0)
+              /* check just original file name */
+              strncpy(path, libname, sizeof(path) - 1);
+          else
+              /* check default user path */
+              strncpy(path, win32_def_path, sizeof(path) - 2);
 	    }
 	    else if (strcmp(win32_def_path, listpath[i]))
             /* path from the list */
@@ -415,11 +415,10 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 
 	    if (!wm)
 	    {
-		if (checked[0])
-		    strcat(checked, ", ");
-		strcat(checked, path);
-                checked[1500] = 0;
-
+            if (checked[0])
+                strcat(checked, ", ");
+            strcat(checked, path);
+            checked[1999] = 0;
 	    }
 	}
 	if ( wm )
@@ -439,110 +438,110 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 	if (!wm)
 	    TRACE("wine/module: Win32 LoadLibrary failed to load: %s\n", libname);
 
-        // remove a few divs in the VP codecs that make trouble
-        if (strstr(libname,"vp5vfw.dll") && wm)
+    // remove a few divs in the VP codecs that make trouble
+    if (strstr(libname,"vp5vfw.dll") && wm)
+    {
+      int i;
+      if (PE_FindExportedFunction(wm, "DriverProc", TRUE)==(void*)0x10003930) {
+        for (i=0;i<3;i++) ((char*)0x10004e86)[i]=0x90;
+        for (i=0;i<3;i++) ((char*)0x10005a23)[i]=0x90;
+        for (i=0;i<3;i++) ((char*)0x10005bff)[i]=0x90;
+      } else {
+        printf("wine/module: Unsupported VP5 version\n");
+        return 0;
+      }
+    }
+
+    if (strstr(libname,"vp6vfw.dll") && wm)
+    {
+      int i;
+      if (PE_FindExportedFunction(wm, "DriverProc", TRUE)==(void*)0x10003ef0) {
+        // looks like VP 6.1.0.2
+        for (i=0;i<6;i++) ((char*)0x10007268)[i]=0x90;
+        for (i=0;i<6;i++) ((char*)0x10007e83)[i]=0x90;
+        for (i=0;i<6;i++) ((char*)0x1000806a)[i]=0x90;
+      } else if (PE_FindExportedFunction(wm, "DriverProc", TRUE)==(void*)0x10004120) {
+        // looks like VP 6.2.0.10
+        for (i=0;i<6;i++) ((char*)0x10007688)[i]=0x90;
+        for (i=0;i<6;i++) ((char*)0x100082c3)[i]=0x90;
+        for (i=0;i<6;i++) ((char*)0x100084aa)[i]=0x90;
+      } else if (PE_FindExportedFunction(wm, "DriverProc", TRUE)==(void*)0x10003e70) {
+        // looks like VP 6.0.7.3
+        for (i=0;i<6;i++) ((char*)0x10007559)[i]=0x90;
+        for (i=0;i<6;i++) ((char*)0x100081c3)[i]=0x90;
+        for (i=0;i<6;i++) ((char*)0x1000839e)[i]=0x90;
+      } else {
+        printf("wine/module: Unsupported VP6 version\n");
+        return 0;
+      }
+    }
+
+    if (strstr(libname,"QuickTime.qts") && wm)
+    {
+        void** ptr;
+        void *dispatch_addr;
+        int i;
+
+        //dispatch_addr = GetProcAddress(wm->module, "theQuickTimeDispatcher", TRUE);
+        dispatch_addr = PE_FindExportedFunction(wm, "theQuickTimeDispatcher", TRUE);
+        if (dispatch_addr == (void *)0x62924c30)
         {
-          int i;
-          if (PE_FindExportedFunction(wm, "DriverProc", TRUE)==(void*)0x10003930) {
-            for (i=0;i<3;i++) ((char*)0x10004e86)[i]=0x90;
-            for (i=0;i<3;i++) ((char*)0x10005a23)[i]=0x90;
-            for (i=0;i<3;i++) ((char*)0x10005bff)[i]=0x90;
-          } else {
-            printf("wine/module: Unsupported VP5 version\n");
-            return 0;
-          }
-        }
-
-        if (strstr(libname,"vp6vfw.dll") && wm)
-        {
-          int i;
-          if (PE_FindExportedFunction(wm, "DriverProc", TRUE)==(void*)0x10003ef0) {
-            // looks like VP 6.1.0.2
-            for (i=0;i<6;i++) ((char*)0x10007268)[i]=0x90;
-            for (i=0;i<6;i++) ((char*)0x10007e83)[i]=0x90;
-            for (i=0;i<6;i++) ((char*)0x1000806a)[i]=0x90;
-          } else if (PE_FindExportedFunction(wm, "DriverProc", TRUE)==(void*)0x10004120) {
-            // looks like VP 6.2.0.10
-            for (i=0;i<6;i++) ((char*)0x10007688)[i]=0x90;
-            for (i=0;i<6;i++) ((char*)0x100082c3)[i]=0x90;
-            for (i=0;i<6;i++) ((char*)0x100084aa)[i]=0x90;
-          } else if (PE_FindExportedFunction(wm, "DriverProc", TRUE)==(void*)0x10003e70) {
-            // looks like VP 6.0.7.3
-            for (i=0;i<6;i++) ((char*)0x10007559)[i]=0x90;
-            for (i=0;i<6;i++) ((char*)0x100081c3)[i]=0x90;
-            for (i=0;i<6;i++) ((char*)0x1000839e)[i]=0x90;
-          } else {
-            printf("wine/module: Unsupported VP6 version\n");
-            return 0;
-          }
-        }
-
-	if (strstr(libname,"QuickTime.qts") && wm)
-	{
-	    void** ptr;
-	    void *dispatch_addr;
-	    int i;
-
-//	    dispatch_addr = GetProcAddress(wm->module, "theQuickTimeDispatcher", TRUE);
-	    dispatch_addr = PE_FindExportedFunction(wm, "theQuickTimeDispatcher", TRUE);
-	    if (dispatch_addr == (void *)0x62924c30)
-	    {
-	        printf ("wine/module: QuickTime5 DLLs found\n");
-		ptr = (void **)0x62b75ca4; // dispatch_ptr
-	        for (i=0;i<5;i++)  ((char*)0x6299e842)[i]=0x90; // make_new_region ?
-	        for (i=0;i<28;i++) ((char*)0x6299e86d)[i]=0x90; // call__call_CreateCompatibleDC ?
-		for (i=0;i<5;i++)  ((char*)0x6299e898)[i]=0x90; // jmp_to_call_loadbitmap ?
-	        for (i=0;i<9;i++)  ((char*)0x6299e8ac)[i]=0x90; // call__calls_OLE_shit ?
-	        for (i=0;i<106;i++) ((char*)0x62a61b10)[i]=0x90; // disable threads
+            printf ("wine/module: QuickTime5 DLLs found\n");
+        ptr = (void **)0x62b75ca4; // dispatch_ptr
+            for (i=0;i<5;i++)  ((char*)0x6299e842)[i]=0x90; // make_new_region ?
+            for (i=0;i<28;i++) ((char*)0x6299e86d)[i]=0x90; // call__call_CreateCompatibleDC ?
+        for (i=0;i<5;i++)  ((char*)0x6299e898)[i]=0x90; // jmp_to_call_loadbitmap ?
+            for (i=0;i<9;i++)  ((char*)0x6299e8ac)[i]=0x90; // call__calls_OLE_shit ?
+            for (i=0;i<106;i++) ((char*)0x62a61b10)[i]=0x90; // disable threads
 #if 0
-		/* CreateThread callers */
-		for (i=0;i<5;i++) ((char*)0x629487c5)[i]=0x90;
-		for (i=0;i<5;i++) ((char*)0x6294b275)[i]=0x90;
-		for (i=0;i<5;i++) ((char*)0x629a24b1)[i]=0x90;
-		for (i=0;i<5;i++) ((char*)0x629afc5a)[i]=0x90;
-		for (i=0;i<5;i++) ((char*)0x62af799c)[i]=0x90;
-		for (i=0;i<5;i++) ((char*)0x62af7efe)[i]=0x90;
-		for (i=0;i<5;i++) ((char*)0x62afa33e)[i]=0x90;
+        /* CreateThread callers */
+        for (i=0;i<5;i++) ((char*)0x629487c5)[i]=0x90;
+        for (i=0;i<5;i++) ((char*)0x6294b275)[i]=0x90;
+        for (i=0;i<5;i++) ((char*)0x629a24b1)[i]=0x90;
+        for (i=0;i<5;i++) ((char*)0x629afc5a)[i]=0x90;
+        for (i=0;i<5;i++) ((char*)0x62af799c)[i]=0x90;
+        for (i=0;i<5;i++) ((char*)0x62af7efe)[i]=0x90;
+        for (i=0;i<5;i++) ((char*)0x62afa33e)[i]=0x90;
 #endif
 
 #if 0
-		/* TerminateQTML fix */
-		for (i=0;i<47;i++) ((char*)0x62afa3b8)[i]=0x90; // terminate thread
-		for (i=0;i<47;i++) ((char*)0x62af7f78)[i]=0x90; // terminate thread
-		for (i=0;i<77;i++) ((char*)0x629a13d5)[i]=0x90;
-		((char *)0x6288e0ae)[0] = 0xc3; // font/dc remover
-		for (i=0;i<24;i++) ((char*)0x6287a1ad)[i]=0x90; // destroy window
+        /* TerminateQTML fix */
+        for (i=0;i<47;i++) ((char*)0x62afa3b8)[i]=0x90; // terminate thread
+        for (i=0;i<47;i++) ((char*)0x62af7f78)[i]=0x90; // terminate thread
+        for (i=0;i<77;i++) ((char*)0x629a13d5)[i]=0x90;
+        ((char *)0x6288e0ae)[0] = 0xc3; // font/dc remover
+        for (i=0;i<24;i++) ((char*)0x6287a1ad)[i]=0x90; // destroy window
 #endif
-	    } else if (dispatch_addr == (void *)0x6693b330)
-	    {
-	        printf ("wine/module: QuickTime6 DLLs found\n");
-		ptr = (void **)0x66bb9524; // dispatcher_ptr
-		for (i=0;i<5;i++)  ((char *)0x66a730cc)[i]=0x90; // make_new_region
-		for (i=0;i<28;i++) ((char *)0x66a730f7)[i]=0x90; // call__call_CreateCompatibleDC
-		for (i=0;i<5;i++)  ((char *)0x66a73122)[i]=0x90; // jmp_to_call_loadbitmap
-		for (i=0;i<9;i++)  ((char *)0x66a73131)[i]=0x90; // call__calls_OLE_shit
-		for (i=0;i<96;i++) ((char *)0x66aac852)[i]=0x90; // disable threads
-	    } else if (dispatch_addr == (void *)0x6693c3e0)
-	    {
-    		printf ("wine/module: QuickTime6.3 DLLs found\n");
-		ptr = (void **)0x66bca01c; // dispatcher_ptr
-		for (i=0;i<5;i++)  ((char *)0x66a68f6c)[i]=0x90; // make_new_region
-		for (i=0;i<28;i++) ((char *)0x66a68f97)[i]=0x90; // call__call_CreateCompatibleDC
-		for (i=0;i<5;i++)  ((char *)0x66a68fc2)[i]=0x90; // jmp_to_call_loadbitmap
-		for (i=0;i<9;i++)  ((char *)0x66a68fd1)[i]=0x90; // call__calls_OLE_shit
-		for (i=0;i<96;i++) ((char *)0x66ab4722)[i]=0x90; // disable threads
-	    } else
-	    {
-	        printf ("wine/module: Unsupported QuickTime version (%p)\n",
-			dispatch_addr);
-		return 0;
-	    }
+        } else if (dispatch_addr == (void *)0x6693b330)
+        {
+            printf ("wine/module: QuickTime6 DLLs found\n");
+        ptr = (void **)0x66bb9524; // dispatcher_ptr
+        for (i=0;i<5;i++)  ((char *)0x66a730cc)[i]=0x90; // make_new_region
+        for (i=0;i<28;i++) ((char *)0x66a730f7)[i]=0x90; // call__call_CreateCompatibleDC
+        for (i=0;i<5;i++)  ((char *)0x66a73122)[i]=0x90; // jmp_to_call_loadbitmap
+        for (i=0;i<9;i++)  ((char *)0x66a73131)[i]=0x90; // call__calls_OLE_shit
+        for (i=0;i<96;i++) ((char *)0x66aac852)[i]=0x90; // disable threads
+        } else if (dispatch_addr == (void *)0x6693c3e0)
+        {
+            printf ("wine/module: QuickTime6.3 DLLs found\n");
+        ptr = (void **)0x66bca01c; // dispatcher_ptr
+        for (i=0;i<5;i++)  ((char *)0x66a68f6c)[i]=0x90; // make_new_region
+        for (i=0;i<28;i++) ((char *)0x66a68f97)[i]=0x90; // call__call_CreateCompatibleDC
+        for (i=0;i<5;i++)  ((char *)0x66a68fc2)[i]=0x90; // jmp_to_call_loadbitmap
+        for (i=0;i<9;i++)  ((char *)0x66a68fd1)[i]=0x90; // call__calls_OLE_shit
+        for (i=0;i<96;i++) ((char *)0x66ab4722)[i]=0x90; // disable threads
+        } else
+        {
+            printf ("wine/module: Unsupported QuickTime version (%p)\n",
+            dispatch_addr);
+        return 0;
+        }
 
-	    printf ("wine/module: QuickTime.qts patched!!! old entry=%p\n",ptr[0]);
+        printf ("wine/module: QuickTime.qts patched!!! old entry=%p\n",ptr[0]);
 
 #ifdef EMU_QTX_API
-	    wrapper_target=ptr[0];
-	    ptr[0]=wrapper;
+        wrapper_target=ptr[0];
+        ptr[0]=wrapper;
 #endif
 	}
 
@@ -963,19 +962,13 @@ FARPROC MODULE_GetProcAddress(
 	WIN_BOOL snoop )
 {
     WINE_MODREF	*wm = MODULE32_LookupHMODULE( hModule );
-//    WINE_MODREF *wm=local_wm;
+    //WINE_MODREF *wm=local_wm;
     FARPROC	retproc;
 
-#ifdef DEBUG_QTX_API
     if (HIWORD(function))
-	fprintf(stderr,"XXX GetProcAddress(%08lx,%s)\n",(DWORD)hModule,function);
+      TRACE("GetProcAddress(%08lx,%s)\n",(DWORD)hModule,function);
     else
-	fprintf(stderr,"XXX GetProcAddress(%08lx,%p)\n",(DWORD)hModule,function);
-#endif
-
-//	TRACE_(win32)("(%08lx,%s)\n",(DWORD)hModule,function);
-//    else
-//	TRACE_(win32)("(%08lx,%p)\n",(DWORD)hModule,function);
+      TRACE("GetProcAddress(%08lx,%p)\n",(DWORD)hModule,function);
 
     if (!wm) {
     	SetLastError(ERROR_INVALID_HANDLE);
@@ -1000,7 +993,7 @@ FARPROC MODULE_GetProcAddress(
     }
 
 #ifdef EMU_QTX_API
-    if (HIWORD(function) && retproc){
+    if (HIWORD(function) && retproc) {
 
 #ifdef DEBUG_QTX_API
 #define DECL_COMPONENT(sname,name,type) \
