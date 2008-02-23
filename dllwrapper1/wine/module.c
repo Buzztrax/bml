@@ -304,10 +304,10 @@ static WINE_MODREF *MODULE_LoadLibraryExA( LPCSTR libname, HFILE hfile, DWORD fl
 	DWORD err = GetLastError();
 	WINE_MODREF *pwm;
 	/* int i; -- not used */
-//	module_loadorder_t *plo;
+    //module_loadorder_t *plo;
 
 	SetLastError( ERROR_FILE_NOT_FOUND );
-	TRACE("Trying native dll '%s'\n", libname);
+	//TRACE("Trying native dll '%s'\n", libname);
 	pwm = PE_LoadLibraryExA(libname, flags);
 #ifdef HAVE_LIBDL
 	if(!pwm)
@@ -316,8 +316,6 @@ static WINE_MODREF *MODULE_LoadLibraryExA( LPCSTR libname, HFILE hfile, DWORD fl
 	    pwm=(WINE_MODREF*)ELFDLL_LoadLibraryExA(libname, flags);
 	}
 #endif
-//		printf("0x%08x\n", pwm);
-//		break;
 	if(pwm)
 	{
 		/* Initialize DLL just loaded */
@@ -330,8 +328,7 @@ static WINE_MODREF *MODULE_LoadLibraryExA( LPCSTR libname, HFILE hfile, DWORD fl
 		return pwm;
 	}
 
-
-	TRACE("Failed to load module '%s'; error=0x%08lx, \n", libname, GetLastError());
+	//TRACE("Failed to load module '%s'; error=0x%08lx, \n", libname, GetLastError());
 	return NULL;
 }
 
@@ -410,7 +407,7 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 	    }
 	    path[511] = 0;
 
-		TRACE("trying to load module '%s'\n", path);
+		//TRACE("trying to load module '%s'\n", path);
 	    wm = MODULE_LoadLibraryExA( path, hfile, flags );
 
 	    if (!wm)

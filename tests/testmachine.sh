@@ -16,7 +16,7 @@
 # search for FIXME -> unimplemented buzz host entries
 #  grep -Hn "FIXME" testmachine/*.fail
 # search for "wine/module: Win32 LoadLibrary failed to load:"
-#  grep -ho "wine/module: Win32 LoadLibrary failed to load:.*" testmachine/*.fail | sort | uniq
+#  grep -ho "wine/module: Win32 LoadLibrary failed to load:.*" testmachine/*.fail | sort -f | uniq -ic
 # stats
 #  ls -1 testmachine/*.okay | wc -l
 #  ls -1 testmachine/*.fail | wc -l

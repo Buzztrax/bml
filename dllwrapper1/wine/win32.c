@@ -4840,8 +4840,20 @@ static double exp_CIsinh(void)
 static void exp_CxxThrowException( void *object, void *type )
 {
   dbgprintf("_CxxThrowException\n");
+
+#if 0
+//we don't have RaiseException() :/
+#define CXX_FRAME_MAGIC    0x19930520
+#define CXX_EXCEPTION      0xe06d7363
+  DWORD args[3];
+  args[0] = CXX_FRAME_MAGIC;
+  args[1] = (DWORD)object;
+  args[2] = (DWORD)type;
+  RaiseException(CXX_EXCEPTION, EH_NONCONTINUABLE, 3, args);
+#endif
 }
 */
+
 
 struct exports
 {

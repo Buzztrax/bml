@@ -330,6 +330,17 @@ extern "C" DE BuzzMachine *bm_new(char *bm_file_name) {
         fflush(stdout);
     }
     */
+    //-- apply fixes
+    if(!bm->machine_info->minTracks) {
+      if(bm->machine_info->numTrackParameters) {
+        DBG("!! buggy machine, numTrackParams>0, but minTracks=0\n");
+        bm->machine_info->numTrackParameters=0;
+      }
+      if(bm->machine_info->maxTracks) {
+        DBG("!! buggy machine, maxTracks>0, but minTracks=0\n");
+        bm->machine_info->maxTracks=0;
+      }
+    }
 
     // call CreateMachine
     bm->machine_iface=CreateMachine();
@@ -355,8 +366,6 @@ extern "C" DE BuzzMachine *bm_new(char *bm_file_name) {
     bm->machine_iface->pMasterInfo=&master_info;
     bm->machine_iface->pCB=bm->callbacks;
 
-    //bm_init(bm,0,NULL);
-
     return(bm);
 }
 
@@ -370,18 +379,18 @@ extern "C" DE int bm_get_machine_info(BuzzMachine *bm,BuzzMachineProperty key,vo
     ival=(int *)value;
     sval=(const char **)value;
     switch(key) {
-        case BM_PROP_TYPE:                *ival=bm->machine_info->Type;break;
-        case BM_PROP_VERSION:            *ival=bm->machine_info->Version;break;
-        case BM_PROP_FLAGS:                *ival=bm->machine_info->Flags;break;
+        case BM_PROP_TYPE:              *ival=bm->machine_info->Type;break;
+        case BM_PROP_VERSION:           *ival=bm->machine_info->Version;break;
+        case BM_PROP_FLAGS:             *ival=bm->machine_info->Flags;break;
         case BM_PROP_MIN_TRACKS:        *ival=bm->machine_info->minTracks;break;
         case BM_PROP_MAX_TRACKS:        *ival=bm->machine_info->maxTracks;break;
-        case BM_PROP_NUM_GLOBAL_PARAMS:    *ival=bm->machine_info->numGlobalParameters;break;
-        case BM_PROP_NUM_TRACK_PARAMS:    *ival=bm->machine_info->numTrackParameters;break;
+        case BM_PROP_NUM_GLOBAL_PARAMS: *ival=bm->machine_info->numGlobalParameters;break;
+        case BM_PROP_NUM_TRACK_PARAMS:  *ival=bm->machine_info->numTrackParameters;break;
         case BM_PROP_NUM_ATTRIBUTES:    *ival=bm->machine_info->numAttributes;break;
-        case BM_PROP_NAME:                *sval=bm->machine_info->Name;break;
+        case BM_PROP_NAME:              *sval=bm->machine_info->Name;break;
         case BM_PROP_SHORT_NAME:        *sval=bm->machine_info->ShortName;break;
         case BM_PROP_AUTHOR:            *sval=bm->machine_info->Author;break;
-        case BM_PROP_COMMANDS:            *sval=bm->machine_info->Commands;break;
+        case BM_PROP_COMMANDS:          *sval=bm->machine_info->Commands;break;
         case BM_PROP_DLL_NAME:          *sval=bm->lib_name;break;
         default: ret=FALSE;
     }
@@ -596,6 +605,7 @@ extern "C" DE void bm_set_attribute_value(BuzzMachine *bm,int index,int value) {
 
 extern "C" DE void bm_attributes_changed(BuzzMachine *bm) {
     // call AttributesChanged
+    // FIXME: should we call this always?
     if(bm->machine_info->numAttributes>0) {
         try {
             bm->machine_iface->AttributesChanged();

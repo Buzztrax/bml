@@ -215,7 +215,7 @@ found:
         {
             if (!ename) ename = (u_char *)"@";
             //proc = SNOOP_GetProcAddress(wm->module,ename,ordinal,proc);
-            TRACE("SNOOP_GetProcAddress n/a\n");
+            //TRACE("SNOOP_GetProcAddress n/a\n");
         }
         return proc;
     }
@@ -261,9 +261,7 @@ static DWORD fixup_imports( WINE_MODREF *wm )
         modname = "<unknown>";
 
 
-    TRACE("Dumping imports list\n");
-
-
+    //TRACE("Dumping imports list\n");
     pe_imp = pem->pe_import;
     if (!pe_imp) return 0;
 
@@ -272,11 +270,11 @@ static DWORD fixup_imports( WINE_MODREF *wm )
      * switch the detection off for them.
      */
     for (i = 0; pe_imp->Name ; pe_imp++) {
-	if (!i && !pe_imp->u.Characteristics)
-		characteristics_detection = 0;
-	if (characteristics_detection && !pe_imp->u.Characteristics)
-		break;
-	i++;
+      if (!i && !pe_imp->u.Characteristics)
+          characteristics_detection = 0;
+      if (characteristics_detection && !pe_imp->u.Characteristics)
+          break;
+      i++;
     }
     if (!i) return 0;
 
@@ -290,54 +288,48 @@ static DWORD fixup_imports( WINE_MODREF *wm )
 
     for (i = 0, pe_imp = pem->pe_import; pe_imp->Name ; pe_imp++) {
     	/* WINE_MODREF		*wmImp; -- unused */
-	IMAGE_IMPORT_BY_NAME	*pe_name;
-	PIMAGE_THUNK_DATA	import_list,thunk_list;
- 	char			*name = (char *) RVA(pe_imp->Name);
-
-	if (characteristics_detection && !pe_imp->u.Characteristics)
-		break;
-
-    //#warning FIXME: here we should fill imports
-    TRACE("Loading imports for %s\n", name);
-
-	if (pe_imp->u.OriginalFirstThunk != 0) {
-	    TRACE("Microsoft style imports used\n");
-	    import_list =(PIMAGE_THUNK_DATA) RVA(pe_imp->u.OriginalFirstThunk);
-	    thunk_list = (PIMAGE_THUNK_DATA) RVA(pe_imp->FirstThunk);
-
-	    while (import_list->u1.Ordinal) {
-		if (IMAGE_SNAP_BY_ORDINAL(import_list->u1.Ordinal)) {
-		    int ordinal = IMAGE_ORDINAL(import_list->u1.Ordinal);
-
-//		    TRACE("--- Ordinal %s,%d\n", name, ordinal);
-
-		    thunk_list->u1.Function=LookupExternal(name, ordinal);
-		} else {
-		    pe_name = (PIMAGE_IMPORT_BY_NAME)RVA(import_list->u1.AddressOfData);
-//		    TRACE("--- %s %s.%d\n", pe_name->Name, name, pe_name->Hint);
-		    thunk_list->u1.Function=LookupExternalByName(name, (const char*)pe_name->Name);
-		}
-		import_list++;
-		thunk_list++;
-	    }
-	} else {
-	    TRACE("Borland style imports used\n");
-	    thunk_list = (PIMAGE_THUNK_DATA) RVA(pe_imp->FirstThunk);
-	    while (thunk_list->u1.Ordinal) {
-		if (IMAGE_SNAP_BY_ORDINAL(thunk_list->u1.Ordinal)) {
-
-		    int ordinal = IMAGE_ORDINAL(thunk_list->u1.Ordinal);
-
-		    TRACE("--- Ordinal %s.%d\n",name,ordinal);
-		    thunk_list->u1.Function=LookupExternal(name, ordinal);
-		} else {
-		    pe_name=(PIMAGE_IMPORT_BY_NAME) RVA(thunk_list->u1.AddressOfData);
-		    TRACE("--- %s %s.%d\n", pe_name->Name,name,pe_name->Hint);
-		    thunk_list->u1.Function=LookupExternalByName(name, (const char*)pe_name->Name);
-		}
-		thunk_list++;
-	    }
-	}
+        IMAGE_IMPORT_BY_NAME	*pe_name;
+        PIMAGE_THUNK_DATA	import_list,thunk_list;
+        char			*name = (char *) RVA(pe_imp->Name);
+    
+        if (characteristics_detection && !pe_imp->u.Characteristics)
+            break;
+    
+        if (pe_imp->u.OriginalFirstThunk != 0) {
+            TRACE("Loading Microsoft style imports for %s\n", name);
+            import_list =(PIMAGE_THUNK_DATA) RVA(pe_imp->u.OriginalFirstThunk);
+            thunk_list = (PIMAGE_THUNK_DATA) RVA(pe_imp->FirstThunk);
+    
+            while (import_list->u1.Ordinal) {
+                if (IMAGE_SNAP_BY_ORDINAL(import_list->u1.Ordinal)) {
+                    int ordinal = IMAGE_ORDINAL(import_list->u1.Ordinal);
+                    //TRACE("--- Ordinal %s,%d\n", name, ordinal);
+        
+                    thunk_list->u1.Function=LookupExternal(name, ordinal);
+                } else {
+                    pe_name = (PIMAGE_IMPORT_BY_NAME)RVA(import_list->u1.AddressOfData);
+                    //TRACE("--- %s %s.%d\n", pe_name->Name, name, pe_name->Hint);
+                    thunk_list->u1.Function=LookupExternalByName(name, (const char*)pe_name->Name);
+                }
+                import_list++;
+                thunk_list++;
+            }
+        } else {
+            TRACE("Loading Borland style imports for %s\n", name);
+            thunk_list = (PIMAGE_THUNK_DATA) RVA(pe_imp->FirstThunk);
+            while (thunk_list->u1.Ordinal) {
+                if (IMAGE_SNAP_BY_ORDINAL(thunk_list->u1.Ordinal)) {
+                    int ordinal = IMAGE_ORDINAL(thunk_list->u1.Ordinal);
+                    //TRACE("--- Ordinal %s.%d\n",name,ordinal);
+                    thunk_list->u1.Function=LookupExternal(name, ordinal);
+                } else {
+                    pe_name=(PIMAGE_IMPORT_BY_NAME) RVA(thunk_list->u1.AddressOfData);
+                    //TRACE("--- %s %s.%d\n", pe_name->Name,name,pe_name->Hint);
+                    thunk_list->u1.Function=LookupExternalByName(name, (const char*)pe_name->Name);
+                }
+                thunk_list++;
+            }
+        }
     }
     return 0;
 }

@@ -4,6 +4,18 @@
 	* dllwrapper1/wine/module.c:
 	* dllwrapper1/wine/pe_image.c:
 	* dllwrapper1/wine/win32.c:
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	* src/bmltest_info.c:
+	* tests/testmachine.sh:
+	  More logging tweaks. Added work arounds to get some borked machines
+	  working. Gather info about remaining issues.
+
+2008-02-23  Stefan Kost  <ensonic@users.sf.net>
+
+	* TODO:
+	* dllwrapper1/wine/module.c:
+	* dllwrapper1/wine/pe_image.c:
+	* dllwrapper1/wine/win32.c:
 	* src/BuzzMachineLoader.dll:
 	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.cpp:
 	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:

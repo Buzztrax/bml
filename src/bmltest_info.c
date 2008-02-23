@@ -46,7 +46,8 @@ void test_info_w(char *libpath) {
   // buzz machine handle
   void *bm;
   char *str;
-  int type,val,i,num,maval,mival,noval,ptrval=0;
+  int type,val,i,num,tracks;
+  int maval,mival,noval,ptrval=0;
  
   printf("%s(\"%s\")\n",__FUNCTION__,libpath);
   
@@ -77,9 +78,10 @@ void test_info_w(char *libpath) {
       //if(val&) puts("      ");
     }
     if(bmlw_get_machine_info(bm,BM_PROP_MIN_TRACKS,(void *)&val))           printf("    MinTracks: %i\n",val);
+    tracks=val;
     if(bmlw_get_machine_info(bm,BM_PROP_MAX_TRACKS,(void *)&val))           printf("    MaxTracks: %i\n",val);
     fflush(stdout);
-    if(bmlw_get_machine_info(bm,BM_PROP_NUM_GLOBAL_PARAMS,(void *)&val)) {  printf("    NumGlobalParams: %i\n",val);
+    if(bmlw_get_machine_info(bm,BM_PROP_NUM_GLOBAL_PARAMS,(void *)&val)) {  printf("    NumGlobalParams: %i\n",val);fflush(stdout);
       num=val;
       for(i=0;i<num;i++) {
         printf("      GlobalParam=%02i\n",i);
@@ -113,41 +115,46 @@ void test_info_w(char *libpath) {
       }
     }
     fflush(stdout);
-    if(bmlw_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,(void *)&val)) {   printf("    NumTrackParams: %i\n",val);
+    if(bmlw_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,(void *)&val)) {   printf("    NumTrackParams: %i\n",val);fflush(stdout);
       num=val;
-      for(i=0;i<num;i++) {
-        printf("      TrackParam=%02i\n",i);
-        if(bmlw_get_track_parameter_info(bm,i,BM_PARA_TYPE,(void *)&type))        printf("        Type: %i -> \"%s\"\n",type,((type<4)?parameter_types[type]:"unknown"));
-        if(bmlw_get_track_parameter_info(bm,i,BM_PARA_NAME,(void *)&str))         printf("        Name: \"%s\"\n",str);
-        if(bmlw_get_track_parameter_info(bm,i,BM_PARA_DESCRIPTION,(void *)&str))  printf("        Description: \"%s\"\n",str);
-        if(bmlw_get_track_parameter_info(bm,i,BM_PARA_FLAGS,(void *)&val)) {      printf("        Flags: 0x%x\n",val);
-          if(val&(1<<0)) puts("          MPF_WAVE");
-          if(val&(1<<1)) puts("          MPF_STATE");
-          if(val&(1<<2)) puts("          MPF_TICK_ON_EDIT");
-          //if(val&) puts("      ");
+      if(tracks) {
+        for(i=0;i<num;i++) {
+          printf("      TrackParam=%02i\n",i);
+          if(bmlw_get_track_parameter_info(bm,i,BM_PARA_TYPE,(void *)&type))        printf("        Type: %i -> \"%s\"\n",type,((type<4)?parameter_types[type]:"unknown"));
+          if(bmlw_get_track_parameter_info(bm,i,BM_PARA_NAME,(void *)&str))         printf("        Name: \"%s\"\n",str);
+          if(bmlw_get_track_parameter_info(bm,i,BM_PARA_DESCRIPTION,(void *)&str))  printf("        Description: \"%s\"\n",str);
+          if(bmlw_get_track_parameter_info(bm,i,BM_PARA_FLAGS,(void *)&val)) {      printf("        Flags: 0x%x\n",val);
+            if(val&(1<<0)) puts("          MPF_WAVE");
+            if(val&(1<<1)) puts("          MPF_STATE");
+            if(val&(1<<2)) puts("          MPF_TICK_ON_EDIT");
+            //if(val&) puts("      ");
+          }
+          if(bmlw_get_track_parameter_info(bm,i,BM_PARA_MIN_VALUE,(void *)&mival) &&
+             bmlw_get_track_parameter_info(bm,i,BM_PARA_MAX_VALUE,(void *)&maval) &&
+             bmlw_get_track_parameter_info(bm,i,BM_PARA_NO_VALUE,(void *)&noval) &&
+             bmlw_get_track_parameter_info(bm,i,BM_PARA_DEF_VALUE,(void *)&val))    printf("        Value: %d .. %d .. %d [%d]\n",mival,val,maval,noval);
+          val=bmlw_get_track_parameter_value(bm,0,i);
+          addr=bmlw_get_track_parameter_location(bm,0,i);
+          str=(char *)bmlw_describe_track_value(bm,i,val);
+          switch(type) {
+            case 0: //PT_NOTE:
+            case 1: //PT_SWITCH:
+            case 2: //PT_BYTE:
+              ptrval=(int)(*(char *)addr);
+              break;
+            case 3: //PT_WORD:
+              ptrval=(int)(*(short *)addr);
+              break;
+          }
+          printf("        RealValue: %d %s (%p -> %d)\n",val,str,addr,ptrval);
         }
-        if(bmlw_get_track_parameter_info(bm,i,BM_PARA_MIN_VALUE,(void *)&mival) &&
-           bmlw_get_track_parameter_info(bm,i,BM_PARA_MAX_VALUE,(void *)&maval) &&
-           bmlw_get_track_parameter_info(bm,i,BM_PARA_NO_VALUE,(void *)&noval) &&
-           bmlw_get_track_parameter_info(bm,i,BM_PARA_DEF_VALUE,(void *)&val))    printf("        Value: %d .. %d .. %d [%d]\n",mival,val,maval,noval);
-        val=bmlw_get_track_parameter_value(bm,0,i);
-		addr=bmlw_get_track_parameter_location(bm,0,i);
-	    str=(char *)bmlw_describe_track_value(bm,i,val);
-		switch(type) {
-		  case 0: //PT_NOTE:
-		  case 1: //PT_SWITCH:
-		  case 2: //PT_BYTE:
-			ptrval=(int)(*(char *)addr);
-			break;
-		  case 3: //PT_WORD:
-			ptrval=(int)(*(short *)addr);
-			break;
-		}
-	    printf("        RealValue: %d %s (%p -> %d)\n",val,str,addr,ptrval);
       }
+      else {
+        printf("      WARNING but tracks=0..0\n");fflush(stdout);
+      }        
     }
     fflush(stdout);
-    if(bmlw_get_machine_info(bm,BM_PROP_NUM_ATTRIBUTES,(void *)&val)) {     printf("    NumAttributes: %i\n",val);
+    if(bmlw_get_machine_info(bm,BM_PROP_NUM_ATTRIBUTES,(void *)&val)) {     printf("    NumAttributes: %i\n",val);fflush(stdout);
       num=val;
       for(i=0;i<num;i++) {
         printf("      Attribute=%02i\n",i);
@@ -169,7 +176,8 @@ void test_info_n(char *libpath) {
   // buzz machine handle
   void *bm;
   char *str;
-  int type,val,i,num,maval,mival,noval,ptrval=0;
+  int type,val,i,num,tracks;
+  int maval,mival,noval,ptrval=0;
  
   printf("%s(\"%s\")\n",__FUNCTION__,libpath);
   
@@ -200,9 +208,10 @@ void test_info_n(char *libpath) {
       //if(val&) puts("      ");
     }
     if(bmln_get_machine_info(bm,BM_PROP_MIN_TRACKS,(void *)&val))           printf("    MinTracks: %i\n",val);
+    tracks=val;
     if(bmln_get_machine_info(bm,BM_PROP_MAX_TRACKS,(void *)&val))           printf("    MaxTracks: %i\n",val);
     fflush(stdout);
-    if(bmln_get_machine_info(bm,BM_PROP_NUM_GLOBAL_PARAMS,(void *)&val)) {  printf("    NumGlobalParams: %i\n",val);
+    if(bmln_get_machine_info(bm,BM_PROP_NUM_GLOBAL_PARAMS,(void *)&val)) {  printf("    NumGlobalParams: %i\n",val);fflush(stdout);
       num=val;
       for(i=0;i<num;i++) {
         printf("      GlobalParam=%02i\n",i);
@@ -236,41 +245,46 @@ void test_info_n(char *libpath) {
       }
     }
     fflush(stdout);
-    if(bmln_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,(void *)&val)) {   printf("    NumTrackParams: %i\n",val);
+    if(bmln_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,(void *)&val)) {   printf("    NumTrackParams: %i\n",val);fflush(stdout);
       num=val;
-      for(i=0;i<num;i++) {
-        printf("      TrackParam=%02i\n",i);
-        if(bmln_get_track_parameter_info(bm,i,BM_PARA_TYPE,(void *)&type))        printf("        Type: %i -> \"%s\"\n",type,((type<4)?parameter_types[type]:"unknown"));
-        if(bmln_get_track_parameter_info(bm,i,BM_PARA_NAME,(void *)&str))         printf("        Name: \"%s\"\n",str);
-        if(bmln_get_track_parameter_info(bm,i,BM_PARA_DESCRIPTION,(void *)&str))  printf("        Description: \"%s\"\n",str);
-        if(bmln_get_track_parameter_info(bm,i,BM_PARA_FLAGS,(void *)&val)) {      printf("        Flags: 0x%x\n",val);
-          if(val&(1<<0)) puts("          MPF_WAVE");
-          if(val&(1<<1)) puts("          MPF_STATE");
-          if(val&(1<<2)) puts("          MPF_TICK_ON_EDIT");
-          //if(val&) puts("      ");
+      if(tracks) {
+        for(i=0;i<num;i++) {
+          printf("      TrackParam=%02i\n",i);
+          if(bmln_get_track_parameter_info(bm,i,BM_PARA_TYPE,(void *)&type))        printf("        Type: %i -> \"%s\"\n",type,((type<4)?parameter_types[type]:"unknown"));
+          if(bmln_get_track_parameter_info(bm,i,BM_PARA_NAME,(void *)&str))         printf("        Name: \"%s\"\n",str);
+          if(bmln_get_track_parameter_info(bm,i,BM_PARA_DESCRIPTION,(void *)&str))  printf("        Description: \"%s\"\n",str);
+          if(bmln_get_track_parameter_info(bm,i,BM_PARA_FLAGS,(void *)&val)) {      printf("        Flags: 0x%x\n",val);
+            if(val&(1<<0)) puts("          MPF_WAVE");
+            if(val&(1<<1)) puts("          MPF_STATE");
+            if(val&(1<<2)) puts("          MPF_TICK_ON_EDIT");
+            //if(val&) puts("      ");
+          }
+          if(bmln_get_track_parameter_info(bm,i,BM_PARA_MIN_VALUE,(void *)&mival) &&
+             bmln_get_track_parameter_info(bm,i,BM_PARA_MAX_VALUE,(void *)&maval) &&
+             bmln_get_track_parameter_info(bm,i,BM_PARA_NO_VALUE,(void *)&noval) &&
+             bmln_get_track_parameter_info(bm,i,BM_PARA_DEF_VALUE,(void *)&val))    printf("        Value: %d .. %d .. %d [%d]\n",mival,val,maval,noval);
+          val=bmln_get_track_parameter_value(bm,0,i);
+          addr=bmln_get_track_parameter_location(bm,0,i);
+          str=(char *)bmln_describe_track_value(bm,i,val);
+          switch(type) {
+            case 0: //PT_NOTE:
+            case 1: //PT_SWITCH:
+            case 2: //PT_BYTE:
+              ptrval=(int)(*(char *)addr);
+              break;
+            case 3: //PT_WORD:
+              ptrval=(int)(*(short *)addr);
+              break;
+          }
+          printf("        RealValue: %d %s (%p -> %d)\n",val,str,addr,ptrval);
         }
-        if(bmln_get_track_parameter_info(bm,i,BM_PARA_MIN_VALUE,(void *)&mival) &&
-           bmln_get_track_parameter_info(bm,i,BM_PARA_MAX_VALUE,(void *)&maval) &&
-           bmln_get_track_parameter_info(bm,i,BM_PARA_NO_VALUE,(void *)&noval) &&
-           bmln_get_track_parameter_info(bm,i,BM_PARA_DEF_VALUE,(void *)&val))    printf("        Value: %d .. %d .. %d [%d]\n",mival,val,maval,noval);
-        val=bmln_get_track_parameter_value(bm,0,i);
-        addr=bmln_get_track_parameter_location(bm,0,i);
-	    str=(char *)bmln_describe_track_value(bm,i,val);
-		switch(type) {
-		  case 0: //PT_NOTE:
-		  case 1: //PT_SWITCH:
-		  case 2: //PT_BYTE:
-			ptrval=(int)(*(char *)addr);
-			break;
-		  case 3: //PT_WORD:
-			ptrval=(int)(*(short *)addr);
-			break;
-		}
-	    printf("        RealValue: %d %s (%p -> %d)\n",val,str,addr,ptrval);
       }
+      else {
+        printf("      WARNING but tracks=0..0\n");fflush(stdout);
+      }        
     }
     fflush(stdout);
-    if(bmln_get_machine_info(bm,BM_PROP_NUM_ATTRIBUTES,(void *)&val)) {     printf("    NumAttributes: %i\n",val);
+    if(bmln_get_machine_info(bm,BM_PROP_NUM_ATTRIBUTES,(void *)&val)) {     printf("    NumAttributes: %i\n",val);fflush(stdout);
       num=val;
       for(i=0;i<num;i++) {
         printf("      Attribute=%02i\n",i);
