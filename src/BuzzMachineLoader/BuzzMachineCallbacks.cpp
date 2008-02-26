@@ -61,6 +61,7 @@ CWaveLevel const *BuzzMachineCallbacks::GetNearestWaveLevel(int const i, int con
     if((i==-1) && (note==-1)) {
         // the evil MDK hack that Buzz MDK machines rely upon
         if(!mdkHelper) {
+            DBG2("return the mdk helper\n");
             mdkHelper = new BuzzMDKHelper;
         }
         return((CWaveLevel *)mdkHelper);

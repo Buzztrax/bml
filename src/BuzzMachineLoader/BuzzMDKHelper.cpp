@@ -48,7 +48,7 @@ BuzzMDKHelper::~BuzzMDKHelper() {
 }
 
 void BuzzMDKHelper::AddInput(char const *szMachine, bool bStereo) {
-	printf("BuzzMDKHelper::%s(szMachine=%s,bStereo=%d)\n",__FUNCTION__,szMachine,bStereo);fflush(stdout);
+	DBG2("(szMachine=%s,bStereo=%d)\n",szMachine,bStereo);
 /*
 	if (szMachine != NULL)
 	{
@@ -60,7 +60,7 @@ void BuzzMDKHelper::AddInput(char const *szMachine, bool bStereo) {
 }
 
 void BuzzMDKHelper::DeleteInput(char const *szMachine) {
-	printf("BuzzMDKHelper::%s(szMachine=%s)\n",__FUNCTION__,szMachine);fflush(stdout);
+	DBG1("(szMachine=%s)\n",szMachine);
 /*
 	for (INPUTITERATOR i = Inputs.begin(); i != Inputs.end(); ++i)
 	{
@@ -76,7 +76,7 @@ void BuzzMDKHelper::DeleteInput(char const *szMachine) {
 }
 
 void BuzzMDKHelper::RenameInput(char const *szMachine, char const *szMachineNewName) {
-	printf("BuzzMDKHelper::%s(szMachine=%s,szMachineNewName=%s)\n",__FUNCTION__,szMachine,szMachineNewName);fflush(stdout);
+	DBG2("(szMachine=%s,szMachineNewName=%s)\n",szMachine,szMachineNewName);
 /*
 	for (INPUTITERATOR i = Inputs.begin(); i != Inputs.end(); ++i)
 	{
@@ -90,7 +90,7 @@ void BuzzMDKHelper::RenameInput(char const *szMachine, char const *szMachineNewN
 }
 
 void BuzzMDKHelper::SetInputChannels(char const *szMachine, bool bStereo) {
-	printf("BuzzMDKHelper::%s(szMachine=%s,bStereo=%d)\n",__FUNCTION__,szMachine,bStereo);fflush(stdout);
+	DBG2("(szMachine=%s,bStereo=%d)\n",szMachine,bStereo);
 /*
 	CMachine * pMachine = pmi->pCB->GetMachine(szMachine);
 	if (!pMachine)
@@ -126,7 +126,7 @@ void BuzzMDKHelper::SetInputChannels(char const *szMachine, bool bStereo) {
 }
 
 void BuzzMDKHelper::Input(float *psamples, int numsamples, float fAmp) {
-	printf("BuzzMDKHelper::%s(psamples=%p,numsamples=%d,fAmp=%f)\n",__FUNCTION__,psamples,numsamples,fAmp);fflush(stdout);
+	DBG3("(psamples=%p,numsamples=%d,fAmp=%f)\n",psamples,numsamples,fAmp);
 /*
 	if (InputIterator==NULL)
 	{
@@ -196,7 +196,7 @@ void BuzzMDKHelper::Input(float *psamples, int numsamples, float fAmp) {
 }
 
 bool BuzzMDKHelper::Work(float *psamples, int numsamples, int const wm) {
-	printf("BuzzMDKHelper::%s(psamples=%p,numsamples=%d,wm=%d)\n",__FUNCTION__,psamples,numsamples,wm);fflush(stdout);
+	DBG3("(psamples=%p,numsamples=%d,wm=%d)\n",psamples,numsamples,wm);
 /*
 	if ((wm & WM_READ) && HaveInput)
 	{
@@ -219,7 +219,7 @@ bool BuzzMDKHelper::Work(float *psamples, int numsamples, int const wm) {
 }
 
 bool BuzzMDKHelper::WorkMonoToStereo(float *pin, float *pout, int numsamples, int const wm) {
-	printf("BuzzMDKHelper::%s(pin=%p,pout=%p,numsamples=%d,wm=%d)\n",__FUNCTION__,pin,pout,numsamples,wm);fflush(stdout);
+	DBG4("(pin=%p,pout=%p,numsamples=%d,wm=%d)\n",pin,pout,numsamples,wm);
 /*
 	if ((wm & WM_READ) && HaveInput)
 	{
@@ -241,7 +241,7 @@ bool BuzzMDKHelper::WorkMonoToStereo(float *pin, float *pout, int numsamples, in
 }
 
 void BuzzMDKHelper::Init(CMachineDataInput * const pi) {
-	printf("BuzzMDKHelper::%s(pi=%p)\n",__FUNCTION__,pi);fflush(stdout);
+	DBG1("(pi=%p)\n",pi);
 /*
 	ThisMachine = pmi->pCB->GetThisMachine();
 	
@@ -263,18 +263,18 @@ void BuzzMDKHelper::Init(CMachineDataInput * const pi) {
 }
 
 void BuzzMDKHelper::Save(CMachineDataOutput * const po) {
-	printf("BuzzMDKHelper::%s(po=%p)\n",__FUNCTION__,po);fflush(stdout);
+	DBG1("(po=%p)\n",po);
 /*
 	pmi->MDKSave(po);
 */
 }
 
 void BuzzMDKHelper::SetOutputMode(bool bStereo) {
-	printf("BuzzMDKHelper::%s(bStereo=%d)\n",__FUNCTION__,bStereo);fflush(stdout);
+	DBG1("(bStereo=%d)\n",bStereo);
 /*
 //	if ( !(ThisMachine->cMachineInfo->Flags & MIF_MONO_TO_STEREO) )
 //	{
-//		// even MDK machines need to specify MIF_MONO_TO_STEREO if they 1are stereo!
+//		// even MDK machines need to specify MIF_MONO_TO_STEREO if they are stereo!
 //		// Otherwise SetOutputMode(true) will be ignored by Buzz
 //		bStereo = false;
 //		return;
@@ -288,7 +288,7 @@ void BuzzMDKHelper::SetOutputMode(bool bStereo) {
 }
 
 void BuzzMDKHelper::SetMode() {
-	printf("BuzzMDKHelper::%s()\n",__FUNCTION__);fflush(stdout);
+	DBG("()\n");
 /*
 	InputIterator = Inputs.begin();
 	HaveInput = 0;
@@ -320,7 +320,7 @@ void BuzzMDKHelper::SetMode() {
 }
 
 void BuzzMDKHelper::MidiControlChange(const int ctrl, const int channel, const int value ) {
-	printf("BuzzMDKHelper::%s(ctrl=%d,channel=%d,value=%d)\n",__FUNCTION__,ctrl,channel,value);fflush(stdout);
+	DBG3("(ctrl=%d,channel=%d,value=%d)\n",ctrl,channel,value);
 /*
 	if( pInnerEx != NULL )
 		pInnerEx->MidiControlChange( ctrl, channel, value );
