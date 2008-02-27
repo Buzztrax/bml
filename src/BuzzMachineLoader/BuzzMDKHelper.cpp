@@ -39,6 +39,7 @@
 
 #include "MachineInterface.h"
 #include "BuzzMDKHelper.h"
+#include "debug.h"
 
 BuzzMDKHelper::BuzzMDKHelper(void) {
 }
