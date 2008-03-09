@@ -1,3 +1,7 @@
+0.3.0 a tale of ice and darkness (09.Mar.2008)
+================================================================================
+Support for native machines. Better emulation. Can be build on 64bit x86.
+
 0.2.0 sunrise release (03.May.2007)
 ================================================================================
 Configure improvements and some compatibility fixes.

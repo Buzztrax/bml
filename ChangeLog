@@ -1,3 +1,9 @@
+2008-03-09  Stefan Kost  <ensonic@users.sf.net>
+
+	* NEWS:
+	* configure.ac:
+	  Prepare the release.
+
 2008-02-27  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader/BuzzMDKHelper.cpp:
