@@ -25,7 +25,7 @@ libbuzzmachineloader_la_SOURCES = \
     resample.h \
     windows_compat.h
 
-libbuzzmachineloader_la_CXXFLAGS = $(BML_CFLAGS)
+libbuzzmachineloader_la_CXXFLAGS = $(BML_CXXFLAGS)
 libbuzzmachineloader_la_LDFLAGS = -lm -lpthread -ldl
 
              

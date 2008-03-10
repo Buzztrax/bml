@@ -179,9 +179,7 @@ class CMachineInfo;
 class CMICallbacks
 {
 public:
-#ifndef _MSC_VER
-  virtual ~CMICallbacks() {}
-#endif
+//	virtual ~CMICallbacks() {}
 	virtual CWaveInfo const *GetWave(int const i);
 	virtual CWaveLevel const *GetWaveLevel(int const i, int const level);
 	virtual void MessageBox(char const *txt);
@@ -270,9 +268,7 @@ public:
 class CLibInterface
 {
 public:
-#ifndef _MSC_VER
-  virtual ~CLibInterface() {}
-#endif
+//	virtual ~CLibInterface() {}
 	virtual void GetInstrumentList(CMachineDataOutput *pout) {}			
 	
 	// make some space to vtable so this interface can be extended later 
@@ -338,9 +334,7 @@ public:
 class CMachineDataInput
 {
 public:
-#ifndef _MSC_VER
-  virtual ~CMachineDataInput() {}
-#endif
+//	virtual ~CMachineDataInput() {}
 	virtual void Read(void *pbuf, int const numbytes);
 
 	void Read(int &d) { Read(&d, sizeof(int)); }
@@ -358,9 +352,7 @@ public:
 class CMachineDataOutput
 {
 public:
-#ifndef _MSC_VER
-  virtual ~CMachineDataOutput() {}
-#endif
+//	virtual ~CMachineDataOutput() {}
 	virtual void Write(void *pbuf, int const numbytes);
 
 	void Write(int d) { Write(&d, sizeof(int)); }
@@ -434,9 +426,7 @@ public:
 class CMachineInterfaceEx
 {
 public:
-#ifndef _MSC_VER
-  virtual ~CMachineInterfaceEx() {}
-#endif
+//	virtual ~CMachineInterfaceEx() {}
 	virtual char const *DescribeParam(int const param) { return NULL; }		// use this to dynamically change name of parameter
 	virtual bool SetInstrument(char const *name) { return false; }
 

@@ -98,10 +98,14 @@ AM_CONDITIONAL(USE_DLLWRAPPER1, true)
 #AC_DEFINE(USE_DLLWRAPPER2, [0], [use the libfst dll wrapper])
 AM_CONDITIONAL(USE_DLLWRAPPER2, false)
 
+# Compilation and Linker flags
 BML_CFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS $ARCH_CFLAGS"
+# the -Wno-non-virtual-dtor is needed to suppress : virtual methods with no virtual destructor
+BML_CXXFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS $ARCH_CFLAGS -Wno-non-virtual-dtor"
 BML_CASFLAGS="$ARCH_CASFLAGS"
 BML_LIBS="$COVERAGE_LIBS"
 AC_SUBST(BML_CFLAGS)
+AC_SUBST(BML_CXXFLAGS)
 AC_SUBST(BML_CASFLAGS)
 AC_SUBST(BML_LIBS)
 

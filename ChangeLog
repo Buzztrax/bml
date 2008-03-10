@@ -1,3 +1,11 @@
+2008-03-10  Stefan Kost  <ensonic@users.sf.net>
+
+	* configure.ac:
+	* src/BuzzMachineLoader/MachineInterface.h:
+	* src/BuzzMachineLoader/Makefile.am:
+	  Revert ABI breake in machineinterface. Use CXXFLAGS to supress warning
+	  instead.
+
 2008-03-09  Stefan Kost  <ensonic@users.sf.net>
 
 	* NEWS:
