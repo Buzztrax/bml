@@ -965,8 +965,10 @@ WIN_BOOL PE_InitDLL( WINE_MODREF *wm, DWORD type, LPVOID lpReserved )
     ) {
 	DLLENTRYPROC entry ;
 	entry = (void*)PE_FindExportedFunction(wm, "DllMain", 0);
-	if(entry==NULL)
+	if(entry==NULL) {
+	    TRACE("no DllMain, check optional\n");
 	    entry = (void*)RVA_PTR( wm->module,OptionalHeader.AddressOfEntryPoint );
+	}
 
 	TRACE_(relay)("CallTo32(entryproc=%p,module=%08x,type=%ld,res=%p)\n",
                        entry, wm->module, type, lpReserved );
@@ -992,7 +994,7 @@ WIN_BOOL PE_InitDLL( WINE_MODREF *wm, DWORD type, LPVOID lpReserved )
 	extend_stack_for_dll_alloca();
         retv = entry( wm->module, type, lpReserved );
     }
-    TRACE("retv=%d",retv);
+    TRACE("retv=%d\n",retv);
     return retv;
 }
 

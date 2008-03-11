@@ -59,6 +59,7 @@ msvcp50.dll  msvcp60.dll MFC42.DLL  MSVCRT.DLL
 
 == Generators ==
 Geonik's PrimiFun.dll
+  if we have MFC42.DLL -> Called unk_GetConsoleMode
 m4wii.dll
   Called unk__CxxThrowException
   http://www.winehq.org/pipermail/wine-patches/2002-October/003917.html
@@ -66,6 +67,8 @@ m4wii.dll
   http://source.winehq.org/source/dlls/msvcrt/cppexcept.h
   If we wrap this localy, the unk__ is gone (empty impl), but it segfaults.
   Maybe we need a full impl.
+Jeskola Bass 2.dll
+  buzzmachinecallbackspre12.cpp:105:BuzzMachineCallbacksPre12::MidiOut (dev=1,data=136987296)
 
 Ruff SPECCY II.dll
 HD Percussive_FM.dll
@@ -75,8 +78,11 @@ HD Percussive_FM.dll
 Arguelles TruePan
 Jeskola Raverb
   BuzzMachineCallbacks::GetEnvSize (wave=-96185375,env=0)
+  buzzmachinecallbackspre12.cpp:112:BuzzMachineCallbacksPre12::GetOscillatorTable (waveform=-128840458)
 Sonic Verb
-
+  buzzmachinecallbacks.cpp:199:BuzzMachineCallbacks::GetEnvPoint (wave=-1,env=-1,i=-1076278224,&x,&y,&flags)
+  buzzmachinecallbacks.cpp:276:BuzzMachineCallbacks::SetSequenceData (row=-1217504548,ppat=B7A5B3C4)
+FSM Infector
 cheapo spread.dll
   hangs
 Ynzn's Remote Compressor.dll
