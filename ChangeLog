@@ -1,3 +1,13 @@
+2008-03-11  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader.dll:
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	* src/BuzzMachineLoader/BuzzMDKHelper.cpp:
+	* src/BuzzMachineLoader/BuzzMDKHelper.h:
+	* src/BuzzMachineLoader/CMachine.h:
+	  Remove try{} catch. Always call AttributesChanged during init.
+	  A bit of MDK work.
+
 2008-03-10  Stefan Kost  <ensonic@users.sf.net>
 
 	* configure.ac:

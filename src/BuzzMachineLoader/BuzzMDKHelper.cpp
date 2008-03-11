@@ -199,7 +199,7 @@ void BuzzMDKHelper::Input(float *psamples, int numsamples, float fAmp) {
 bool BuzzMDKHelper::Work(float *psamples, int numsamples, int const wm) {
 	DBG3("(psamples=%p,numsamples=%d,wm=%d)\n",psamples,numsamples,wm);
 /*
-	if ((wm & WM_READ) && HaveInput)
+    if ((wm & WM_READ) && HaveInput)
 	{
 		Copy(psamples, Buffer, numsamples);
 	}
@@ -211,12 +211,12 @@ bool BuzzMDKHelper::Work(float *psamples, int numsamples, int const wm) {
 
 	bool bOutputValid = pmi->MDKWork(psamples, numsamples, wm);
 
-	InputIterator = Inputs.begin();
+    InputIterator = Inputs.begin();
 	HaveInput = 0;
 
 	return bOutputValid;
 */
-	return(true);
+    return true;
 }
 
 bool BuzzMDKHelper::WorkMonoToStereo(float *pin, float *pout, int numsamples, int const wm) {
@@ -244,21 +244,22 @@ bool BuzzMDKHelper::WorkMonoToStereo(float *pin, float *pout, int numsamples, in
 void BuzzMDKHelper::Init(CMachineDataInput * const pi) {
 	DBG1("(pi=%p)\n",pi);
 /*
-	ThisMachine = pmi->pCB->GetThisMachine();
-	
+    ThisMachine = pmi->pCB->GetThisMachine();
+
 	numChannels = 1;
 
-	Inputs.clear();
+    Inputs.clear();
 	InputIterator = Inputs.begin();
 	HaveInput = 0;
 	MachineWantsChannels = 1;
 
-	// Buzz seems to store a dummy initial byte here - maybe
+    // Buzz seems to store a dummy initial byte here - maybe
 	// some kind of version tag?
 	byte byDummy;
 	pi->Read(byDummy);
 
 	pmi->MDKInit(pi);
+
 	pInnerEx = pmi->GetEx();
 */
 }

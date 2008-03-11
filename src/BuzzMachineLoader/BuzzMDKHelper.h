@@ -29,6 +29,7 @@ extern "C" {
 #endif
 
 class BuzzMDKHelper {
+private:
 public:
 	BuzzMDKHelper(void);
 	virtual ~BuzzMDKHelper();
@@ -46,6 +47,10 @@ public:
 	virtual void MidiControlChange(int const ctrl, int const channel, int const value);
 
 public:
+private:
+    CMachine *ThisMachine;
+    int numChannels;
+    float Buffer[2*8192];
 };
 
 #ifdef __cplusplus

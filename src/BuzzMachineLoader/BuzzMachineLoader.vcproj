@@ -190,6 +190,9 @@
 				RelativePath=".\bw.h">
 			</File>
 			<File
+				RelativePath=".\CMachine.h">
+			</File>
+			<File
 				RelativePath=".\debug.h">
 			</File>
 			<File

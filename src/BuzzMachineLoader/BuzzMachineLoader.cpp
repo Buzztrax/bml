@@ -38,7 +38,7 @@
 #include "BuzzMachineCallbacks.h"
 #include "BuzzMachineCallbacksPre12.h"
 #include "MachineDataImpl.h"
-//#include "BuzzMachine.h"
+#include "CMachine.h"
 #include "BuzzMachineLoader.h"
 #include "dsplib.h"
 
@@ -167,34 +167,22 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
     }
    
     // call Init
-    try {
-        bm->machine_iface->Init(pcmdii);
-    }
-    catch (std::exception& e) { DBG1("-> exeption: %s\n",e.what()); }
-    catch(...) { DBG(" -> exeption\n"); }
+	bm->machine_iface->Init(pcmdii);
     DBG("  CMachineInterface::Init() called\n");
 
 #ifdef BM_INIT_ATTRIBUTES_CHANGED_FIRST
-    // call AttributesChanged
-    if(bm->machine_info->numAttributes>0) {
-        try {
-            bm->machine_iface->AttributesChanged();
-        }
-        catch (std::exception& e) { DBG1("-> exeption: %s\n",e.what()); }
-        catch(...) { DBG(" -> exeption\n"); }
+    // call AttributesChanged always
+    //if(bm->machine_info->numAttributes>0) {
+		bm->machine_iface->AttributesChanged();
         DBG("  CMachineInterface::AttributesChanged() called\n");
-    }
+    //}
 #endif
 
     // call SetNumTracks
     DBG1("  CMachineInterface::SetNumTracks(%d)\n",bm->machine_info->minTracks);
-    try {
-        // calling this without the '-1' crashes: Automaton Parametric EQ.dll
-        //bm->machine_iface->SetNumTracks(bm->machine_info->minTracks-1);
-        bm->machine_iface->SetNumTracks(bm->machine_info->minTracks);
-    }
-    catch (std::exception& e) { DBG1("-> exeption: %s\n",e.what()); }
-    catch(...) { DBG(" -> exeption\n"); }
+	// calling this without the '-1' crashes: Automaton Parametric EQ.dll
+	//bm->machine_iface->SetNumTracks(bm->machine_info->minTracks-1);
+	bm->machine_iface->SetNumTracks(bm->machine_info->minTracks);
     DBG("  CMachineInterface::SetNumTracks() called\n");
 
 #ifndef BM_INIT_PARAMS_FIRST  /* params_later */
@@ -226,15 +214,11 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
 #endif
 
 #ifndef BM_INIT_ATTRIBUTES_CHANGED_FIRST
-    // call AttributesChanged
-    if(bm->machine_info->numAttributes>0) {
-        try {
-            bm->machine_iface->AttributesChanged();
-        }
-        catch (std::exception& e) { DBG1("-> exeption: %s\n",e.what()); }
-        catch(...) { DBG(" -> exeption\n"); }
+    // call AttributesChanged always
+    //if(bm->machine_info->numAttributes>0) {
+		bm->machine_iface->AttributesChanged();
         DBG("  CMachineInterface::AttributesChanged() called\n");
-    }
+    //}
 #endif
 
     /* we've given the machine the initial global- and track-parameters,
@@ -244,11 +228,7 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
      * - tick AFTER AttributesChanged, and after we've set initial track and
      *   global data for machine)
      */
-    try {
-        bm->machine_iface->Tick();
-    }
-    catch (std::exception& e) { DBG1("-> exeption: %s\n",e.what()); }
-    catch(...) { DBG(" -> exeption\n"); }
+	bm->machine_iface->Tick();
     DBG("  CMachineInterface::Tick() called\n");
 
     if(bm->machine_info->Flags&MIF_USES_LIB_INTERFACE) {
@@ -346,19 +326,15 @@ extern "C" DE BuzzMachine *bm_new(char *bm_file_name) {
     bm->machine_iface=CreateMachine();
     DBG("  CreateMachine() called\n");
 
-    /* @todo: we need to create a CMachine object
-     * bm->machine=new BuzzMachineXXX(bm->machine_iface,bm->machine_info)
-     */
-    bm->machine=NULL;
+    /* we need to create a CMachine object */
+    bm->machine=new CMachine(bm->machine_iface,bm->machine_info);
 
     DBG1("  mi-version 0x%04x\n",bm->machine_info->Version);
     if((bm->machine_info->Version & 0xff) < 15) {
-      // @todo: we need to pass a CMachine as first arg
       bm->callbacks=(CMICallbacks *)new BuzzMachineCallbacksPre12(bm->machine,bm->machine_iface,bm->machine_info);
       DBG("  old callback instance created\n");
     }
     else {
-      // @todo: we need to pass a CMachine as first arg
       bm->callbacks=(CMICallbacks *)new BuzzMachineCallbacks(bm->machine,bm->machine_iface,bm->machine_info);
       DBG("  callback instance created\n");
     }
@@ -607,11 +583,7 @@ extern "C" DE void bm_attributes_changed(BuzzMachine *bm) {
     // call AttributesChanged
     // FIXME: should we call this always?
     if(bm->machine_info->numAttributes>0) {
-        try {
-            bm->machine_iface->AttributesChanged();
-        }
-        catch (std::exception& e) { DBG1("-> exeption: %s\n",e.what()); }
-        catch(...) { DBG(" -> exeption\n"); }
+		bm->machine_iface->AttributesChanged();
         DBG("  CMachineInterface::AttributesChanged() called\n");
     }
 }
@@ -629,44 +601,28 @@ extern "C" DE void bm_tick(BuzzMachine *bm) {
 extern "C" DE bool bm_work(BuzzMachine *bm,float *psamples, int numsamples, int const mode) {
     bool res=0;
 
-    try {
-        res=bm->machine_iface->Work(psamples,numsamples,mode);
-    }
-    catch (std::exception& e) { DBG1("-> exeption: %s\n",e.what()); }
-    catch(...) { DBG(" -> exeption\n"); }
+	res=bm->machine_iface->Work(psamples,numsamples,mode);
     return(res);
 }
 
 extern "C" DE bool bm_work_m2s(BuzzMachine *bm, float *pin, float *pout, int numsamples, int const mode) {
     bool res=0;
 
-    try {
-        res=bm->machine_iface->WorkMonoToStereo(pin,pout,numsamples,mode);
-    }
-    catch (std::exception& e) { DBG1("-> exeption: %s\n",e.what()); }
-    catch(...) { DBG(" -> exeption\n"); }
+	res=bm->machine_iface->WorkMonoToStereo(pin,pout,numsamples,mode);
     return(res);
 }
 
 extern "C" DE void bm_stop(BuzzMachine *bm) {
-    try {
-        bm->machine_iface->Stop();
-    }
-    catch (std::exception& e) { DBG1("-> exeption: %s\n",e.what()); }
-    catch(...) { DBG(" -> exeption\n"); }
+	bm->machine_iface->Stop();
 }
 
 /*
 virtual void Command(int const i) {}
 */
 extern "C" DE void bm_set_num_tracks(BuzzMachine *bm, int num) {
-    try {
-        DBG1("(num=%d)\n",num);
-        bm->machine_iface->SetNumTracks(num);
-        // we don't need to initialize the track params, as the max-num of tracks is already initialized in bm_init()
-    }
-    catch (std::exception& e) { DBG1("-> exeption: %s\n",e.what()); }
-    catch(...) { DBG(" -> exeption\n"); }
+	DBG1("(num=%d)\n",num);
+	bm->machine_iface->SetNumTracks(num);
+	// we don't need to initialize the track params, as the max-num of tracks is already initialized in bm_init()
 }
 
 /*
@@ -679,13 +635,8 @@ extern "C" DE char const *bm_describe_global_value(BuzzMachine *bm, int const pa
 
     if(!(param<bm->machine_info->numGlobalParameters)) return(empty);
 
-    try {
-        DBG2("(param=%d,value=%d)\n",param,value);
-        return(bm->machine_iface->DescribeValue(param,value));
-    }
-    catch (std::exception& e) { DBG1("-> exeption: %s\n",e.what()); }
-    catch(...) { DBG(" -> exeption\n"); }
-    return(empty);
+	DBG2("(param=%d,value=%d)\n",param,value);
+	return(bm->machine_iface->DescribeValue(param,value));
 }
 
 extern "C" DE char const *bm_describe_track_value(BuzzMachine *bm, int const param,int const value) {
@@ -693,11 +644,7 @@ extern "C" DE char const *bm_describe_track_value(BuzzMachine *bm, int const par
 
     if(!(param<bm->machine_info->numTrackParameters)) return(empty);
 
-    try {
-        DBG2("(param=%d,value=%d)\n",param,value);
-        return(bm->machine_iface->DescribeValue(bm->machine_info->numGlobalParameters+param,value));
-    }
-    catch (std::exception& e) { DBG1("-> exeption: %s\n",e.what()); }
-    catch(...) { DBG(" -> exeption\n"); }
-    return(empty);
+	DBG2("(param=%d,value=%d)\n",param,value);
+	return(bm->machine_iface->DescribeValue(bm->machine_info->numGlobalParameters+param,value));
 }
+
