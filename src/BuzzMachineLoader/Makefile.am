@@ -3,8 +3,6 @@
 lib_LTLIBRARIES = libbuzzmachineloader.la
 
 libbuzzmachineloader_la_SOURCES = \
-    BuzzMDKHelper.cpp \
-    BuzzMDKHelper.h \
     BuzzMachine.h \
     BuzzMachineCallbacks.cpp \
     BuzzMachineCallbacks.h \
@@ -13,17 +11,24 @@ libbuzzmachineloader_la_SOURCES = \
     BuzzMachineLoader.cpp \
     BuzzMachineLoader.h \
     BuzzMachineVirtualCallbacks.cpp \
+	CMachine.h \
     MachineDataImpl.cpp \
     MachineDataImpl.h \
     MachineInterface.h \
     OscTable.cpp \
     OscTable.h \
+	mdk.h \
+	mdkimp.cpp \
+	mdkimp.h \
     bw.h \
     debug.cpp \
     debug.h \
     dsplib.h \
     resample.h \
     windows_compat.h
+
+#    BuzzMDKHelper.cpp
+#    BuzzMDKHelper.h
 
 libbuzzmachineloader_la_CXXFLAGS = $(BML_CXXFLAGS)
 libbuzzmachineloader_la_LDFLAGS = -lm -lpthread -ldl

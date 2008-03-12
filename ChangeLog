@@ -1,5 +1,17 @@
 2008-03-12  Stefan Kost  <ensonic@users.sf.net>
 
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.cpp:
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.h:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.cpp:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.h:
+	* src/BuzzMachineLoader/Makefile.am:
+	* src/BuzzMachineLoader/mdk.h:
+	* src/BuzzMachineLoader/mdkimp.cpp:
+	* src/BuzzMachineLoader/mdkimp.h:
+	  Add and use mdk implementation.
+
+2008-03-12  Stefan Kost  <ensonic@users.sf.net>
+
 	* TODO:
 	  Update test findings.
 
@@ -21,7 +33,7 @@
 	* configure.ac:
 	* src/BuzzMachineLoader/MachineInterface.h:
 	* src/BuzzMachineLoader/Makefile.am:
-	  Revert ABI breake in machineinterface. Use CXXFLAGS to supress warning
+	  Revert ABI breakage in machineinterface. Use CXXFLAGS to supress warning
 	  instead.
 
 2008-03-09  Stefan Kost  <ensonic@users.sf.net>
