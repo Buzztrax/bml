@@ -1,3 +1,12 @@
+2008-03-13  Stefan Kost  <ensonic@users.sf.net>
+
+	* README:
+	* src/BuzzMachineLoader/mdk.h:
+	  Formatting.
+
+	* src/bmltest_process.c:
+	  Some comments about creating testdata.
+
 2008-03-12  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader/BuzzMachineCallbacks.cpp:

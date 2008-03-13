@@ -6,14 +6,16 @@ is about. Buzztard is free software and distributed under the LGPL.
 
 = intro =
 The libbml is a library that loads buzz machines from the windows music
-composer buzz, so that Linux apps can use them.
+composer Buzz, so that Linux apps can use them.
 This lib is either using the libavifile wrapper or the libfst one.
 See original README in README.libfst for the latter.
 
 = building =
-Please note that this library only works on x86 systems. On 64bit systems you
-can build a 32 bit binary by running 
-CFLAGS="-m32" CASFLAGS="-m32" make
+Please note that loading the windows dlls only works on x86 systems. On 64bit
+systems you can build a 32 bit binary by running 
+  CFLAGS="-m32" CASFLAGS="-m32" make
+If one build on a non x86 system, the library can only support native
+buzzmachines (see buzzmachines module in same svn).
 .
 = machines =
 Export the path we you have the machine, e.g.:
@@ -35,12 +37,6 @@ Next copy the machines. You can e.g. just copy the whole Gear folder to
 buzztard-prefix/lib as well.
 You might need to fix some machine names (e.g. names with '?' in them).
 
-## new ## wine configuration
-wineprefixcreate
-mkdir -p ~/.wine/drive_c/windows/system32
-cp <windows>/mfc42.dll ~/.wine/drive_c/windows/system32/
-regsvr32 ~/.wine/drive_c/windows/system32/mfc42.dll
-
 = usage =
 For testing, create a folder 'machines' and put some original buzz machines
 in there. After building invoke :
@@ -52,6 +48,3 @@ machines.
 == /dev/zero needs to be executable ==
 make sure your /dev/zero is executable (needed for mmap() )
 
-== multithreading ==
-before calling lib code in multithreaded environments we should call:
-Check_FS_Segment();

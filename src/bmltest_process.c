@@ -32,6 +32,10 @@
  * aplay -fS16_LE -r44100 output1.raw
  *
  * plot [0:] [-35000:35000] 'output1.raw' binary format="%short" using 1 with lines
+ *
+ * create test-data:
+ * gst-launch filesrc location=/usr/share/sounds/info.wav ! decodebin ! filesink location=input1.raw
+ * dd count=10 if=/dev/zero of=input2.raw
  */
 
 #include "config.h"
