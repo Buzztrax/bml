@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include <windows.h>
 #else
-#include "windows_compat.h"
+#include "windef.h"
 #endif
 #include <stdio.h>
 #include "MachineInterface.h"

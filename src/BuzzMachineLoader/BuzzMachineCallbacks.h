@@ -72,6 +72,11 @@ public:
         defaultWaveLevel.SamplesPerSec=0;
         mdkHelper=NULL;
     }
+    ~BuzzMachineCallbacks() {
+      if (mdkHelper) {
+        delete mdkHelper;
+      }
+    }
 
     CWaveInfo const *GetWave(int const i);
     CWaveLevel const *GetWaveLevel(int const i, int const level);

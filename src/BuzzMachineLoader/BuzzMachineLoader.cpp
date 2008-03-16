@@ -26,7 +26,7 @@
 #include "stdafx.h"
 #include <windows.h>
 #else
-#include "windows_compat.h"
+#include "windef.h"
 #include <dlfcn.h>
 #endif
 #include <stdio.h>
@@ -112,7 +112,7 @@ extern "C" DE void bm_free(BuzzMachine *bm) {
 #ifdef WIN32
             FreeLibrary(bm->h);
 #else
-            dlclose(bm->h);
+            dlclose((void *)(bm->h));
 #endif
             DBG("  dll unloaded\n");
         }
@@ -169,6 +169,11 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
     // call Init
 	bm->machine_iface->Init(pcmdii);
     DBG("  CMachineInterface::Init() called\n");
+    {
+      bm->mdkHelper = (CMDKImplementation*)bm->callbacks->GetNearestWaveLevel(-1,-1);
+      DBG1("  numInputChannels=%d\n",bm->mdkHelper->numChannels);
+      // if numChannels=0, its not a mdk-machine and numChannels=1
+    }
 
 #ifdef BM_INIT_ATTRIBUTES_CHANGED_FIRST
     // call AttributesChanged always
@@ -245,7 +250,7 @@ extern "C" DE BuzzMachine *bm_new(char *bm_file_name) {
 #ifdef WIN32
     bm->h=LoadLibraryA(bm_file_name);
 #else
-    bm->h=dlopen(bm_file_name,RTLD_LAZY);
+    bm->h=(HMODULE)dlopen(bm_file_name,RTLD_LAZY);
 #endif
     if(!bm->h) {
 #ifdef WIN32
@@ -264,8 +269,8 @@ extern "C" DE BuzzMachine *bm_new(char *bm_file_name) {
     GetInfo      =(GetInfoPtr      )GetProcAddress(bm->h,"GetInfo");
     CreateMachine=(CreateMachinePtr)GetProcAddress(bm->h,"CreateMachine");
 #else
-    GetInfo      =(GetInfoPtr      )dlsym(bm->h,"GetInfo");
-    CreateMachine=(CreateMachinePtr)dlsym(bm->h,"CreateMachine");
+    GetInfo      =(GetInfoPtr      )dlsym((void *)(bm->h),"GetInfo");
+    CreateMachine=(CreateMachinePtr)dlsym((void *)(bm->h),"CreateMachine");
 #endif
     if(!GetInfo) {
         DBG("  failed to connect to GetInfo method\n");
@@ -355,19 +360,21 @@ extern "C" DE int bm_get_machine_info(BuzzMachine *bm,BuzzMachineProperty key,vo
     ival=(int *)value;
     sval=(const char **)value;
     switch(key) {
-        case BM_PROP_TYPE:              *ival=bm->machine_info->Type;break;
-        case BM_PROP_VERSION:           *ival=bm->machine_info->Version;break;
-        case BM_PROP_FLAGS:             *ival=bm->machine_info->Flags;break;
-        case BM_PROP_MIN_TRACKS:        *ival=bm->machine_info->minTracks;break;
-        case BM_PROP_MAX_TRACKS:        *ival=bm->machine_info->maxTracks;break;
-        case BM_PROP_NUM_GLOBAL_PARAMS: *ival=bm->machine_info->numGlobalParameters;break;
-        case BM_PROP_NUM_TRACK_PARAMS:  *ival=bm->machine_info->numTrackParameters;break;
-        case BM_PROP_NUM_ATTRIBUTES:    *ival=bm->machine_info->numAttributes;break;
-        case BM_PROP_NAME:              *sval=bm->machine_info->Name;break;
-        case BM_PROP_SHORT_NAME:        *sval=bm->machine_info->ShortName;break;
-        case BM_PROP_AUTHOR:            *sval=bm->machine_info->Author;break;
-        case BM_PROP_COMMANDS:          *sval=bm->machine_info->Commands;break;
-        case BM_PROP_DLL_NAME:          *sval=bm->lib_name;break;
+        case BM_PROP_TYPE:                *ival=bm->machine_info->Type;break;
+        case BM_PROP_VERSION:             *ival=bm->machine_info->Version;break;
+        case BM_PROP_FLAGS:               *ival=bm->machine_info->Flags;break;
+        case BM_PROP_MIN_TRACKS:          *ival=bm->machine_info->minTracks;break;
+        case BM_PROP_MAX_TRACKS:          *ival=bm->machine_info->maxTracks;break;
+        case BM_PROP_NUM_GLOBAL_PARAMS:   *ival=bm->machine_info->numGlobalParameters;break;
+        case BM_PROP_NUM_TRACK_PARAMS:    *ival=bm->machine_info->numTrackParameters;break;
+        case BM_PROP_NUM_ATTRIBUTES:      *ival=bm->machine_info->numAttributes;break;
+        case BM_PROP_NAME:                *sval=bm->machine_info->Name;break;
+        case BM_PROP_SHORT_NAME:          *sval=bm->machine_info->ShortName;break;
+        case BM_PROP_AUTHOR:              *sval=bm->machine_info->Author;break;
+        case BM_PROP_COMMANDS:            *sval=bm->machine_info->Commands;break;
+        case BM_PROP_DLL_NAME:            *sval=bm->lib_name;break;
+        case BM_PROP_NUM_INPUT_CHANNELS:  *ival=(bm->mdkHelper->numChannels)?bm->mdkHelper->numChannels:1;break;
+        case BM_PROP_NUM_OUTPUT_CHANNELS: *ival=(bm->mdkHelper->numChannels==2)?2:((bm->machine_info->Flags&MIF_MONO_TO_STEREO)?2:1);break;
         default: ret=FALSE;
     }
     return(ret);

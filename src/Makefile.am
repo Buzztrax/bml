@@ -6,13 +6,13 @@ lib_LTLIBRARIES = libbml.la
 
 INCLUDES = \
 	-I$(top_srcdir)/dllwrapper1/wine \
-	-I$(top_srcdir)/buzz \
+	-I$(top_srcdir)/src/BuzzMachineLoader \
 	-I$(top_srcdir)/src \
 	$(BML_CFLAGS)
 
 libbmldir = $(includedir)/libbml
 libbml_la_SOURCES = bml.c
-libbml_HEADERS = bml.h ../buzz/BuzzMachineLoader.h
+libbml_HEADERS = bml.h ./BuzzMachineLoader/BuzzMachineLoader.h
 
 if USE_DLLWRAPPER1
 libbml_la_LIBADD =$(BASE_DEPS_LIBS) \

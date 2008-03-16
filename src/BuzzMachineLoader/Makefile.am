@@ -33,4 +33,6 @@ libbuzzmachineloader_la_SOURCES = \
 libbuzzmachineloader_la_CXXFLAGS = $(BML_CXXFLAGS)
 libbuzzmachineloader_la_LDFLAGS = -lm -lpthread -ldl
 
-             
+INCLUDES = \
+	-I$(top_srcdir)/dllwrapper1/wine
+    

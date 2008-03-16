@@ -33,7 +33,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <BuzzMachineLoader.h>
+#include "BuzzMachineLoader.h"
 
 #ifndef FALSE
 #define FALSE 0
@@ -41,8 +41,6 @@
 #ifndef TRUE
 #define TRUE (!FALSE)
 #endif
-
-typedef void BuzzMachine;
 
 //#ifdef __cplusplus
 //extern "C" {

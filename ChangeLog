@@ -1,3 +1,23 @@
+2008-03-16  Stefan Kost  <ensonic@users.sf.net>
+
+	* TODO:
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.cpp:
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.h:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.cpp:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.h:
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	* src/BuzzMachineLoader/BuzzMachineLoader.h:
+	* src/BuzzMachineLoader/BuzzMachineVirtualCallbacks.cpp:
+	* src/BuzzMachineLoader/MachineDataImpl.h:
+	* src/BuzzMachineLoader/Makefile.am:
+	* src/BuzzMachineLoader/mdkimp.cpp:
+	* src/BuzzMachineLoader/windows_compat.h:
+	* src/Makefile.am:
+	* src/bml.h:
+	* src/bmltest_info.c:
+	  Cleanup the repository. Fix some build scenarios. Export channel
+	  configuration.
+
 2008-03-13  Stefan Kost  <ensonic@users.sf.net>
 
 	* README:

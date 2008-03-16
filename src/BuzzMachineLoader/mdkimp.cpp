@@ -203,18 +203,13 @@ void CMDKImplementation::Input(float *psamples, int numsamples, float amp)
 {
 	assert(InputIterator != Inputs.end());
 
-	if (InputIterator == Inputs.end())
-	{
-		pmi->pCB->MessageBox("mdk ping");
-	}
-
 	if (psamples == NULL)
 	{ 
 		InputIterator++;
 		return;
 	}
 
-
+    DBG2("numChannels=%d, HaveInput=%d",numChannels,HaveInput);
 	if (numChannels == 1)
 	{
 		if (HaveInput == 0)
@@ -272,6 +267,9 @@ bool CMDKImplementation::Work(float *psamples, int numsamples, int const mode)
 
 bool CMDKImplementation::WorkMonoToStereo(float *pin, float *pout, int numsamples, int const mode)
 {
+    DBG5("(%p,%p,%d,%d), HaveInput=%d\n",pin,pout,numsamples,mode,HaveInput);
+
+    // fill pout from mdkBuffer
 	if ((mode & WM_READ) && HaveInput)
 		DSP_Copy(pout, Buffer, 2*numsamples);
 

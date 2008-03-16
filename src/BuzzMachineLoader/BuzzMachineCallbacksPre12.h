@@ -41,6 +41,7 @@ private:
     CMDKImplementation *mdkHelper;
     // static float ... does not work?
     float auxBuffer[2*BMC_AUXBUFFER_SIZE]; // gah, inefficient, because BuzzMachineCallbacks objects could all share same aux buffer
+public:
 
 public:
     BuzzMachineCallbacksPre12() {
@@ -66,6 +67,11 @@ public:
         defaultWaveLevel.RootNote=0;
         defaultWaveLevel.SamplesPerSec=0;
         mdkHelper=NULL;
+    }  
+    ~BuzzMachineCallbacksPre12() {
+      if (mdkHelper) {
+        delete mdkHelper;
+      }
     }
 
     CWaveInfo const *GetWave(int const i);

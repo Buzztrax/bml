@@ -29,7 +29,7 @@ extern "C" {
 #ifdef WIN32
 #include <windows.h>
 #else
-#include "windows_compat.h"
+#include "windef.h"
 #endif
 
 
@@ -47,6 +47,7 @@ public:
 	CMachineInfo *machine_info;
 	CMachineInterface *machine_iface;
 	CMachine *machine;
+    CMDKImplementation *mdkHelper;
 	//callbacks->machine_ex;
 	//CMachineInterfaceEx *machine_ex;
 };
@@ -67,7 +68,9 @@ typedef enum {
 	BM_PROP_SHORT_NAME,
 	BM_PROP_AUTHOR,
 	BM_PROP_COMMANDS,
-	BM_PROP_DLL_NAME
+	BM_PROP_DLL_NAME,
+    BM_PROP_NUM_INPUT_CHANNELS,
+    BM_PROP_NUM_OUTPUT_CHANNELS
 } BuzzMachineProperty;
 
 typedef enum {

@@ -53,6 +53,17 @@ kernel32.dll ntdll.dll
 == seems safe ==
 msvcp50.dll  msvcp60.dll MFC42.DLL  MSVCRT.DLL
 
+= buzz emulation =
+== mdk machine ==
+* we need to do ::AddInput() and ::DeleteInput to get input-mixing working
+ (even though we would always just give one input).
+* before we call WorkXXX() we need to call
+  MachineInterfaceEx::Input(float *psamples, int numsamples, float amp)
+  
+other-sources/buzz-sources/__BUZZ1PLAYER__NOT_FOR_PUBLIC!/CMachine.cpp
+* stereo output MIF_DOES_INPUT_MIXING machines will get stereo input
+* bm->callbacks->mdkHelper->numChannels
+
 = known not working machines =
 2008.02.22 : Of 532 machine(s) 448 machine(s) worked and 84 machine(s) failed.
 2008.02.23 : Of 533 machine(s) 457 machine(s) worked and 76 machine(s) failed.

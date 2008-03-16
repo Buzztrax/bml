@@ -80,6 +80,8 @@ void test_info_w(char *libpath) {
     if(bmlw_get_machine_info(bm,BM_PROP_MIN_TRACKS,(void *)&val))           printf("    MinTracks: %i\n",val);
     tracks=val;
     if(bmlw_get_machine_info(bm,BM_PROP_MAX_TRACKS,(void *)&val))           printf("    MaxTracks: %i\n",val);
+    if(bmlw_get_machine_info(bm,BM_PROP_NUM_INPUT_CHANNELS,(void *)&val))   printf("    InputChannels: %d\n",val);
+    if(bmlw_get_machine_info(bm,BM_PROP_NUM_OUTPUT_CHANNELS,(void *)&val))  printf("    OutputChannels: %d\n",val);
     fflush(stdout);
     if(bmlw_get_machine_info(bm,BM_PROP_NUM_GLOBAL_PARAMS,(void *)&val)) {  printf("    NumGlobalParams: %i\n",val);fflush(stdout);
       num=val;
@@ -210,7 +212,9 @@ void test_info_n(char *libpath) {
     if(bmln_get_machine_info(bm,BM_PROP_MIN_TRACKS,(void *)&val))           printf("    MinTracks: %i\n",val);
     tracks=val;
     if(bmln_get_machine_info(bm,BM_PROP_MAX_TRACKS,(void *)&val))           printf("    MaxTracks: %i\n",val);
-    fflush(stdout);
+    if(bmln_get_machine_info(bm,BM_PROP_NUM_INPUT_CHANNELS,(void *)&val))   printf("    InputChannels: %d\n",val);
+    if(bmln_get_machine_info(bm,BM_PROP_NUM_OUTPUT_CHANNELS,(void *)&val))  printf("    OutputChannels: %d\n",val);
+    fflush(stdout);   
     if(bmln_get_machine_info(bm,BM_PROP_NUM_GLOBAL_PARAMS,(void *)&val)) {  printf("    NumGlobalParams: %i\n",val);fflush(stdout);
       num=val;
       for(i=0;i<num;i++) {
