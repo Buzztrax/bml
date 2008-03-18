@@ -26,20 +26,13 @@
 extern "C" {
 #endif
 
-#ifdef WIN32
-#include <windows.h>
-#else
-#include "windef.h"
-#endif
-
-
 // our high level instance handle
 #ifdef BUZZ_MACHINE_LOADER
 
 class BuzzMachine {
 public:
 	// library handle
-	HMODULE h;
+	void *h;
 	char *lib_name;
 	// callback instance
 	CMICallbacks *callbacks;

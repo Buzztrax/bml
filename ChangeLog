@@ -1,3 +1,14 @@
+2008-03-18  Stefan Kost  <ensonic@users.sf.net>
+
+	* dllwrapper1/wine/Makefile.am:
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	* src/BuzzMachineLoader/BuzzMachineLoader.h:
+	* src/BuzzMachineLoader/Makefile.am:
+	  More build fixes (don't pull win compat header in installed header).
+
+	* tests/testmachine.sh:
+	  Add the stereo fields.
+
 2008-03-16  Stefan Kost  <ensonic@users.sf.net>
 
 	* TODO:

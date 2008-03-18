@@ -77,6 +77,8 @@ for machine in $machine_glob ; do
   fieldFlags=`egrep -o "^    Flags: .*$" testmachine.tmp | sed -e 's/^\ *Flags: \(.*\)$/\1/'`
   fieldMinTracks=`egrep -o "MinTracks: .*$" testmachine.tmp | sed -e 's/MinTracks: \(.*\)$/\1/'`
   fieldMaxTracks=`egrep -o "MaxTracks: .*$" testmachine.tmp | sed -e 's/MaxTracks: \(.*\)$/\1/'`
+  fieldInputChannels=`egrep -o "InputChannels: .*$" testmachine.tmp | sed -e 's/InputChannels: \(.*\)$/\1/'`
+  fieldOutputChannels=`egrep -o "OutputChannels: .*$" testmachine.tmp | sed -e 's/OutputChannels: \(.*\)$/\1/'`
   fieldNumGlobalParams=`egrep -o "NumGlobalParams: .*$" testmachine.tmp | sed -e 's/NumGlobalParams: \(.*\)$/\1/'`
   fieldNumTrackParams=`egrep -o "NumTrackParams: .*$" testmachine.tmp | sed -e 's/NumTrackParams: \(.*\)$/\1/'`
   fieldNumAttributes=`egrep -o "NumAttributes: .*$" testmachine.tmp | sed -e 's/NumAttributes: \(.*\)$/\1/'`
@@ -91,6 +93,8 @@ for machine in $machine_glob ; do
         <td>$fieldFlags</td>
         <td>$fieldMinTracks</td>
         <td>$fieldMaxTracks</td>
+        <td>$fieldInputChannels</td>
+        <td>$fieldOutputChannels</td>
         <td>$fieldNumGlobalParams</td>
         <td>$fieldNumTrackParams</td>
         <td>$fieldNumAttributes</td>
@@ -120,11 +124,13 @@ cat >testmachine.html <<END_OF_HTML
         <th>Type</th>
         <th>API Ver.</th>
         <th>Flags</th>
-        <th>Min Tracks</th>
-        <th>Max Tracks</th>
-        <th># Global Params</th>
-        <th># Track Params</th>
-        <th># Attributes</th>
+        <th>Min Trk.</th>
+        <th>Max Trk.</th>
+        <th>Input Ch.</th>
+        <th>Output Ch.</th>
+        <th>Global Par.</th>
+        <th>Track Par.</th>
+        <th>Attr.</th>
       </tr>
 END_OF_HTML
 cat >>testmachine.html testmachine.body.html

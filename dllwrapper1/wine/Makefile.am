@@ -20,7 +20,7 @@ libloader_la_SOURCES = \
 	vfl.c \
 	stubs.s \
 	wrapper.S
-	
+
 libloader_la_CFLAGS = $(BML_CFLAGS)
 libloader_la_CASFLAGS = $(BML_CASFLAGS)
 

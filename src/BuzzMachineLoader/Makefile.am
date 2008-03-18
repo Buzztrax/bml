@@ -24,11 +24,7 @@ libbuzzmachineloader_la_SOURCES = \
     debug.cpp \
     debug.h \
     dsplib.h \
-    resample.h \
-    windows_compat.h
-
-#    BuzzMDKHelper.cpp
-#    BuzzMDKHelper.h
+    resample.h
 
 libbuzzmachineloader_la_CXXFLAGS = $(BML_CXXFLAGS)
 libbuzzmachineloader_la_LDFLAGS = -lm -lpthread -ldl

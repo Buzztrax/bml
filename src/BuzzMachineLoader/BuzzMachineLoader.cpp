@@ -110,9 +110,9 @@ extern "C" DE void bm_free(BuzzMachine *bm) {
         }
         if(bm->h) {
 #ifdef WIN32
-            FreeLibrary(bm->h);
+            FreeLibrary((HMODULE)(bm->h));
 #else
-            dlclose((void *)(bm->h));
+            dlclose(bm->h);
 #endif
             DBG("  dll unloaded\n");
         }
@@ -248,9 +248,9 @@ extern "C" DE BuzzMachine *bm_new(char *bm_file_name) {
     CreateMachinePtr CreateMachine=NULL;
 
 #ifdef WIN32
-    bm->h=LoadLibraryA(bm_file_name);
+    bm->h=(void*)LoadLibraryA(bm_file_name);
 #else
-    bm->h=(HMODULE)dlopen(bm_file_name,RTLD_LAZY);
+    bm->h=dlopen(bm_file_name,RTLD_LAZY);
 #endif
     if(!bm->h) {
 #ifdef WIN32
@@ -266,11 +266,11 @@ extern "C" DE BuzzMachine *bm_new(char *bm_file_name) {
 
     //-- get the two dll entries
 #ifdef WIN32
-    GetInfo      =(GetInfoPtr      )GetProcAddress(bm->h,"GetInfo");
-    CreateMachine=(CreateMachinePtr)GetProcAddress(bm->h,"CreateMachine");
+    GetInfo      =(GetInfoPtr      )GetProcAddress((HMODULE)(bm->h),"GetInfo");
+    CreateMachine=(CreateMachinePtr)GetProcAddress((HMODULE)(bm->h),"CreateMachine");
 #else
-    GetInfo      =(GetInfoPtr      )dlsym((void *)(bm->h),"GetInfo");
-    CreateMachine=(CreateMachinePtr)dlsym((void *)(bm->h),"CreateMachine");
+    GetInfo      =(GetInfoPtr      )dlsym(bm->h,"GetInfo");
+    CreateMachine=(CreateMachinePtr)dlsym(bm->h,"CreateMachine");
 #endif
     if(!GetInfo) {
         DBG("  failed to connect to GetInfo method\n");
@@ -287,34 +287,7 @@ extern "C" DE BuzzMachine *bm_new(char *bm_file_name) {
     //-- call GetInfo
     bm->machine_info=GetInfo();
     DBG("  GetInfo() called\n");
-    /* DEBUG
-    {
-        char *machine_info_types[]={"MT_MASTER","MT_GENERATOR","MT_EFFECT" };
-        printf("BML::"__FUNCTION__"  machine_info is %p\n",bm->machine_info);
-        printf("BML::"__FUNCTION__"    Type: %i -> %s\n",bm->machine_info->Type,((bm->machine_info->Type<3)?machine_info_types[bm->machine_info->Type]:"unknown"));
-        printf("BML::"__FUNCTION__"    Version: %i\n",bm->machine_info->Version);
-        printf("BML::"__FUNCTION__"    Flags: %i\n",bm->machine_info->Flags);
-        if(bm->machine_info->Flags&MIF_MONO_TO_STEREO)     puts("BML::"__FUNCTION__"      MIF_MONO_TO_STEREO");
-        if(bm->machine_info->Flags&MIF_PLAYS_WAVES)        puts("BML::"__FUNCTION__"      MIF_PLAYS_WAVES");
-        if(bm->machine_info->Flags&MIF_USES_LIB_INTERFACE) puts("BML::"__FUNCTION__"      MIF_USES_LIB_INTERFACE");
-        if(bm->machine_info->Flags&MIF_USES_INSTRUMENTS)   puts("BML::"__FUNCTION__"      MIF_USES_INSTRUMENTS");
-        if(bm->machine_info->Flags&MIF_DOES_INPUT_MIXING)  puts("BML::"__FUNCTION__"      MIF_DOES_INPUT_MIXING");
-        if(bm->machine_info->Flags&MIF_NO_OUTPUT)          puts("BML::"__FUNCTION__"      MIF_NO_OUTPUT");
-        if(bm->machine_info->Flags&MIF_CONTROL_MACHINE)    puts("BML::"__FUNCTION__"      MIF_CONTROL_MACHINE");
-        if(bm->machine_info->Flags&MIF_INTERNAL_AUX)       puts("BML::"__FUNCTION__"      MIF_INTERNAL_AUX");
-        //if(bm->machine_info->Flags&) puts("BML::"__FUNCTION__"      ");
-        printf("BML::"__FUNCTION__"    minTracks: %i\n",bm->machine_info->minTracks);
-        printf("BML::"__FUNCTION__"    maxTracks: %i\n",bm->machine_info->maxTracks);
-        printf("BML::"__FUNCTION__"    numGlobalParameters: %i\n",bm->machine_info->numGlobalParameters);
-        printf("BML::"__FUNCTION__"    numTrackParameters: %i\n",bm->machine_info->numTrackParameters);
-        printf("BML::"__FUNCTION__"    numAttributes: %i\n",bm->machine_info->numAttributes);
-        printf("BML::"__FUNCTION__"    Name: %s\n",bm->machine_info->Name);
-        printf("BML::"__FUNCTION__"    ShortName: %s\n",bm->machine_info->ShortName);
-        printf("BML::"__FUNCTION__"    Author: %s\n",bm->machine_info->Author);
-        printf("BML::"__FUNCTION__"    Commands: %s\n",bm->machine_info->Commands);
-        fflush(stdout);
-    }
-    */
+
     //-- apply fixes
     if(!bm->machine_info->minTracks) {
       if(bm->machine_info->numTrackParameters) {
