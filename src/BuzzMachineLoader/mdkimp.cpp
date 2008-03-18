@@ -57,7 +57,6 @@ void DSP_Copy(float *pout, float const *pin, dword const n, float const a)
 
 	double const amp = a;	// copy a to fpu stack 
 
-
 	if (n >= UNROLL)
 	{
 		int c = n / UNROLL;
@@ -275,6 +274,7 @@ bool CMDKImplementation::WorkMonoToStereo(float *pin, float *pout, int numsample
 
 	bool ret = pmi->MDKWorkStereo(pout, numsamples, mode);
 
+    // we don't use that right now
 	InputIterator = Inputs.begin();
 	HaveInput = 0;
 	
