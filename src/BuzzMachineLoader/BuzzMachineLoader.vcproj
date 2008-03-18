@@ -140,13 +140,13 @@
 				RelativePath=".\BuzzMachineVirtualCallbacks.cpp">
 			</File>
 			<File
-				RelativePath=".\BuzzMDKHelper.cpp">
-			</File>
-			<File
 				RelativePath=".\debug.cpp">
 			</File>
 			<File
 				RelativePath=".\MachineDataImpl.cpp">
+			</File>
+			<File
+				RelativePath=".\mdkimp.cpp">
 			</File>
 			<File
 				RelativePath=".\OscTable.cpp">
@@ -184,9 +184,6 @@
 				RelativePath=".\BuzzMachineLoader.h">
 			</File>
 			<File
-				RelativePath=".\BuzzMDKHelper.h">
-			</File>
-			<File
 				RelativePath=".\bw.h">
 			</File>
 			<File
@@ -203,6 +200,12 @@
 			</File>
 			<File
 				RelativePath=".\MachineInterface.h">
+			</File>
+			<File
+				RelativePath=".\mdk.h">
+			</File>
+			<File
+				RelativePath=".\mdkimp.h">
 			</File>
 			<File
 				RelativePath=".\OscTable.h">
