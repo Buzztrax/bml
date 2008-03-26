@@ -50,6 +50,8 @@
 #include <stdarg.h>
 #include <string.h>
 
+//#include <fpu_control.h>
+
 #include "bml.h"
 
 // like MachineInterface.h::MAX_BUFFER_LENGTH
@@ -59,6 +61,16 @@
 void test_process_w(char *libpath,const char *infilename,const char *outfilename) {
   // buzz machine handle
   void *bm;
+
+  /*  
+  {
+    fpu_control_t cw=0x27F;
+    //_FPU_GETCW(cw);
+    //cw&=~_FPU_EXTENDED;
+    //cw|=_FPU_DOUBLE;
+    _FPU_SETCW(cw);
+  }
+  */
  
   printf("%s(\"%s\")\n",__FUNCTION__,libpath);
   

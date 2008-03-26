@@ -1,3 +1,11 @@
+2008-03-26  Stefan Kost  <ensonic@users.sf.net>
+
+	* NEWS:
+	  Updated NEWS:
+
+	* src/bmltest_process.c:
+	  fpu experiments.
+
 2008-03-18  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader.dll:
