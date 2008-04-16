@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.1 2005-05-18 12:53:45 ensonic Exp $
+## $Id$
 
 if USE_DLLWRAPPER1
 DLLWRAPPER=dllwrapper1

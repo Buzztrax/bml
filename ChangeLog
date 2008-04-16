@@ -1,3 +1,36 @@
+2008-04-16  Stefan Kost  <ensonic@users.sf.net>
+
+	* Makefile.am:
+	* README:
+	* TODO:
+	* autogen.sh:
+	* configure.ac:
+	* dllwrapper1/wine/ldt_keeper.c:
+	* dllwrapper2/lib.h:
+	* src/BuzzMachineLoader/BuzzMDKHelper.cpp:
+	* src/BuzzMachineLoader/BuzzMDKHelper.h:
+	* src/BuzzMachineLoader/BuzzMachine.h:
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.cpp:
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.h:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.cpp:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.h:
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	* src/BuzzMachineLoader/BuzzMachineLoader.h:
+	* src/BuzzMachineLoader/BuzzMachineVirtualCallbacks.cpp:
+	* src/BuzzMachineLoader/Makefile.am:
+	* src/BuzzMachineLoader/OscTable.cpp:
+	* src/BuzzMachineLoader/OscTable.h:
+	* src/BuzzMachineLoader/debug.cpp:
+	* src/BuzzMachineLoader/debug.h:
+	* src/Makefile.am:
+	* src/bml.c:
+	* src/bml.h:
+	* src/bmltest_info.c:
+	* src/bmltest_process.c:
+	* tests/bt-cfg.sh.in:
+	* tests/testmachine.sh:
+	  Svn property tuning.
+
 2008-03-26  Stefan Kost  <ensonic@users.sf.net>
 
 	* configure.ac:

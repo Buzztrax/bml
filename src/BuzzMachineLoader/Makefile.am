@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.2 2007-11-10 19:06:37 ensonic Exp $
+## $Id$
 
 lib_LTLIBRARIES = libbuzzmachineloader.la
 

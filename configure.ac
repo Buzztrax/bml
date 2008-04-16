@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 1.16 2007-11-10 19:06:37 ensonic Exp $
+dnl $Id$
 
 dnl Initialise the autoconf/automake tool
 AC_PREREQ(2.59)

@@ -1,4 +1,4 @@
-/* $Id: BuzzMachineLoader.cpp,v 1.4 2007-12-03 19:05:05 ensonic Exp $
+/* $Id$
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>

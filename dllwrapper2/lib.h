@@ -1,4 +1,4 @@
-/* $Id: lib.h,v 1.1 2005-05-18 12:47:25 ensonic Exp $
+/* $Id$
  */
 
 #ifndef LIB_H

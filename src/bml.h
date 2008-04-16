@@ -1,4 +1,4 @@
-/* $Id: bml.h,v 1.11 2007-10-31 18:02:07 ensonic Exp $
+/* $Id$
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>

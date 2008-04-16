@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.9 2007-11-21 07:22:22 ensonic Exp $
+## $Id$
 
 SUBDIRS = . BuzzMachineLoader
 

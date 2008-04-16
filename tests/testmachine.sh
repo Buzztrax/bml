@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: testmachine.sh,v 1.1 2007-05-13 17:17:05 ensonic Exp $
+# $Id$
 # iterates over the given directory and tries all buzz machines
 #
 # if elements hang, they can be skipped by pressing ctrl-c

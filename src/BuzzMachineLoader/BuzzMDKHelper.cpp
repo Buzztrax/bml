@@ -1,4 +1,4 @@
-/* $Id: BuzzMDKHelper.cpp,v 1.1 2007-10-31 18:02:06 ensonic Exp $
+/* $Id$
  *
  * Buzz Machine Loader
  * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
