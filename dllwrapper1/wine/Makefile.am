@@ -2,6 +2,12 @@ noinst_LTLIBRARIES = libloader.la
 
 CCAS = $(CC)
 
+if HAVE_X86_64
+STUBS=stubs64.s
+else
+STUBS=stubs.s
+endif
+
 %.o: %.s
 	$(CC) -c $< -o $@
 
@@ -18,7 +24,7 @@ libloader_la_SOURCES = \
 	elfdll.c \
 	afl.c \
 	vfl.c \
-	stubs.s \
+	$(STUBS) \
 	wrapper.S
 
 libloader_la_CFLAGS = $(BML_CFLAGS)

@@ -1,5 +1,13 @@
 2008-04-19  Stefan Kost  <ensonic@users.sf.net>
 
+	* configure.ac:
+	* dllwrapper1/wine/Makefile.am:
+	* dllwrapper1/wine/stubs64.s:
+	  Made 64bit variant. Disable -m32 and try to build 64bit version on
+	  64bit platforms.
+
+2008-04-19  Stefan Kost  <ensonic@users.sf.net>
+
 	* src/BuzzMachineLoader/Makefile.am:
 	  Change LDFLAGS to LIBADD and add -lstdc++.
 
