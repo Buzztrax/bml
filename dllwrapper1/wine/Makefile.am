@@ -3,7 +3,7 @@ noinst_LTLIBRARIES = libloader.la
 CCAS = $(CC)
 
 #%.o: %.s
-#	$(CC) -c $< -o $@
+#	$(CCAS) -c $< -o $@
 
 libloader_la_SOURCES = \
 	ldt_keeper.c \
@@ -18,11 +18,11 @@ libloader_la_SOURCES = \
 	elfdll.c \
 	afl.c \
 	vfl.c \
-	$(STUBS) \
+	stubs.s \
 	wrapper.S
 
-libloader_la_CFLAGS = $(BML_CFLAGS)
-libloader_la_CCASFLAGS = $(BML_CCASFLAGS)
+libloader_la_CFLAGS = $(BML_CFLAGS) $(ARCH_CFLAGS)
+libloader_la_CCASFLAGS = $(ARCH_CCASFLAGS)
 
 noinst_HEADERS = \
 	avifmt.h \

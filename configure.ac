@@ -23,7 +23,7 @@ AM_PROG_CC_STDC
 
 dnl check target cpu architecture
 ARCH_CFLAGS=""
-ARCH_CASFLAGS=""
+ARCH_CCASFLAGS=""
 case "x${host_cpu}" in
   xi?86 | k?)
     HAVE_X86=yes
@@ -33,7 +33,7 @@ case "x${host_cpu}" in
     HAVE_X86=yes
     AC_DEFINE(HAVE_X86, 1, [Defined if host is x86])
     ARCH_CFLAGS="-m32"
-    ARCH_CASFLAGS="-m32"
+    ARCH_CCASFLAGS="-m32"
     ;;
 esac
 
@@ -99,15 +99,15 @@ AM_CONDITIONAL(USE_DLLWRAPPER1, true)
 AM_CONDITIONAL(USE_DLLWRAPPER2, false)
 
 # Compilation and Linker flags
-BML_CFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS $ARCH_CFLAGS"
+BML_CFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS"
 # the -Wno-non-virtual-dtor is needed to suppress : virtual methods with no virtual destructor
-BML_CXXFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS $ARCH_CFLAGS -Wno-non-virtual-dtor"
-BML_CCASFLAGS="$ARCH_CASFLAGS"
+BML_CXXFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS -Wno-non-virtual-dtor"
 BML_LIBS="$COVERAGE_LIBS"
 AC_SUBST(BML_CFLAGS)
 AC_SUBST(BML_CXXFLAGS)
-AC_SUBST(BML_CCASFLAGS)
 AC_SUBST(BML_LIBS)
+AC_SUBST(ARCH_CFLAGS)
+AC_SUBST(ARCH_CCASFLAGS)
 
 AC_CONFIG_FILES( \
   Makefile \

@@ -1,5 +1,12 @@
 2008-04-19  Stefan Kost  <ensonic@users.sf.net>
 
+	* configure.ac:
+	* dllwrapper1/wine/Makefile.am:
+	* src/Makefile.am:
+	  Only use ARCH flags for bml part.
+
+2008-04-19  Stefan Kost  <ensonic@users.sf.net>
+
 	* README:
 	  More notes to the 64bit issues.
 	
