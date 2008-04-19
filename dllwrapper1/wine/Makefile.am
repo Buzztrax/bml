@@ -2,14 +2,8 @@ noinst_LTLIBRARIES = libloader.la
 
 CCAS = $(CC)
 
-if HAVE_X86_64
-STUBS=stubs64.s
-else
-STUBS=stubs.s
-endif
-
-%.o: %.s
-	$(CC) -c $< -o $@
+#%.o: %.s
+#	$(CC) -c $< -o $@
 
 libloader_la_SOURCES = \
 	ldt_keeper.c \
@@ -28,7 +22,7 @@ libloader_la_SOURCES = \
 	wrapper.S
 
 libloader_la_CFLAGS = $(BML_CFLAGS)
-libloader_la_CASFLAGS = $(BML_CASFLAGS)
+libloader_la_CCASFLAGS = $(BML_CCASFLAGS)
 
 noinst_HEADERS = \
 	avifmt.h \

@@ -11,9 +11,7 @@ This lib is either using the libavifile wrapper or the libfst one.
 See original README in README.libfst for the latter.
 
 = building =
-Please note that loading the windows dlls only works on x86 systems. On 64bit
-systems you can build a 32 bit binary by running 
-  CFLAGS="-m32" CASFLAGS="-m32" make
+Please note that loading the windows dlls only works on x86 systems.
 If one build on a non x86 system, the library can only support native
 buzzmachines (see buzzmachines module in same svn).
 .
@@ -47,4 +45,6 @@ machines.
 = problems =
 == /dev/zero needs to be executable ==
 make sure your /dev/zero is executable (needed for mmap() )
+== 64 bit builds ==
+http://www.x86-64.org/documentation/assembly.html
 

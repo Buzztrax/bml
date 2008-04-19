@@ -315,7 +315,7 @@ ldt_fs_t* Setup_LDT_Keeper(void)
         }
         *(void**)((char*)ldt_fs->fs_seg+0x18) = ldt_fs->fs_seg;
         memset (&array, 0, sizeof (array));
-        array.base_addr=(int)ldt_fs->fs_seg;
+        array.base_addr=(unsigned long)ldt_fs->fs_seg;
         array.entry_number=TEB_SEL_IDX;
         array.limit=getpagesize()-1;
         array.seg_32bit=1;

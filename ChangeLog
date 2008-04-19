@@ -1,5 +1,17 @@
 2008-04-19  Stefan Kost  <ensonic@users.sf.net>
 
+	* README:
+	  More notes to the 64bit issues.
+	
+	* configure.ac:
+	* dllwrapper1/wine/Makefile.am:
+	  Revert last change and fix asflags.
+	
+	* dllwrapper1/wine/ldt_keeper.c:
+	  Fix one cast warning.
+
+2008-04-19  Stefan Kost  <ensonic@users.sf.net>
+
 	* configure.ac:
 	* dllwrapper1/wine/Makefile.am:
 	* dllwrapper1/wine/stubs64.s:

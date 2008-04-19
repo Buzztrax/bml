@@ -31,13 +31,11 @@ case "x${host_cpu}" in
     ;;
   xx86_64|xamd64)
     HAVE_X86=yes
-    HAVE_X86_64=yes
     AC_DEFINE(HAVE_X86, 1, [Defined if host is x86])
     ARCH_CFLAGS="-m32"
     ARCH_CASFLAGS="-m32"
     ;;
 esac
-AM_CONDITIONAL(HAVE_X86_64, test x$HAVE_X86_64 = xyes)
 
 dnl enable runtime debugging code
 AC_MSG_CHECKING(whether to enable runtime debugging code)
@@ -101,16 +99,14 @@ AM_CONDITIONAL(USE_DLLWRAPPER1, true)
 AM_CONDITIONAL(USE_DLLWRAPPER2, false)
 
 # Compilation and Linker flags
-#BML_CFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS $ARCH_CFLAGS"
-BML_CFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS"
+BML_CFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS $ARCH_CFLAGS"
 # the -Wno-non-virtual-dtor is needed to suppress : virtual methods with no virtual destructor
-#BML_CXXFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS $ARCH_CFLAGS -Wno-non-virtual-dtor"
-BML_CXXFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS -Wno-non-virtual-dtor"
-#BML_CASFLAGS="$ARCH_CASFLAGS"
+BML_CXXFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS $ARCH_CFLAGS -Wno-non-virtual-dtor"
+BML_CCASFLAGS="$ARCH_CASFLAGS"
 BML_LIBS="$COVERAGE_LIBS"
 AC_SUBST(BML_CFLAGS)
 AC_SUBST(BML_CXXFLAGS)
-#AC_SUBST(BML_CASFLAGS)
+AC_SUBST(BML_CCASFLAGS)
 AC_SUBST(BML_LIBS)
 
 AC_CONFIG_FILES( \
