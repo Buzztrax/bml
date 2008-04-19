@@ -27,15 +27,16 @@ ARCH_CCASFLAGS=""
 case "x${host_cpu}" in
   xi?86 | k?)
     HAVE_X86=yes
-    AC_DEFINE(HAVE_X86, 1, [Defined if host is x86])
     ;;
   xx86_64|xamd64)
-    HAVE_X86=yes
-    AC_DEFINE(HAVE_X86, 1, [Defined if host is x86])
-    ARCH_CFLAGS="-m32"
-    ARCH_CCASFLAGS="-m32"
+    HAVE_X86=no
+    #ARCH_CFLAGS="-m32"
+    #ARCH_CCASFLAGS="-m32"
     ;;
 esac
+if test x$HAVE_X86 = xyes; then
+  AC_DEFINE(HAVE_X86, 1, [Defined if host is x86])
+fi
 
 dnl enable runtime debugging code
 AC_MSG_CHECKING(whether to enable runtime debugging code)
@@ -93,7 +94,7 @@ AC_CHECK_DECL(sysi86,[
 ])
 
 AC_DEFINE(USE_DLLWRAPPER1, [1], [use the avifile dll wrapper])
-AM_CONDITIONAL(USE_DLLWRAPPER1, true)
+AM_CONDITIONAL(USE_DLLWRAPPER1, test x$HAVE_X86 = xyes)
 
 #AC_DEFINE(USE_DLLWRAPPER2, [0], [use the libfst dll wrapper])
 AM_CONDITIONAL(USE_DLLWRAPPER2, false)

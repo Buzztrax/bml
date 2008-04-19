@@ -1,3 +1,10 @@
+2008-04-20  Stefan Kost  <ensonic@users.sf.net>
+
+	* configure.ac:
+	* src/bmltest_info.c:
+	* src/bmltest_process.c:
+	  Disable nachine emu for 64bit.
+
 2008-04-19  Stefan Kost  <ensonic@users.sf.net>
 
 	* configure.ac:

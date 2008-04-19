@@ -314,7 +314,9 @@ int main( int argc, char **argv ) {
     char *lib_name;
     int sl;
 
+#ifdef HAVE_X86
     bmlw_set_master_info(120,4,44100);
+#endif
     bmln_set_master_info(120,4,44100);
     puts("  master info initialized");
 
