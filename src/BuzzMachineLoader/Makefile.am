@@ -11,15 +11,15 @@ libbuzzmachineloader_la_SOURCES = \
     BuzzMachineLoader.cpp \
     BuzzMachineLoader.h \
     BuzzMachineVirtualCallbacks.cpp \
-	CMachine.h \
+    CMachine.h \
     MachineDataImpl.cpp \
     MachineDataImpl.h \
     MachineInterface.h \
     OscTable.cpp \
     OscTable.h \
-	mdk.h \
-	mdkimp.cpp \
-	mdkimp.h \
+    mdk.h \
+    mdkimp.cpp \
+    mdkimp.h \
     bw.h \
     debug.cpp \
     debug.h \
@@ -27,7 +27,7 @@ libbuzzmachineloader_la_SOURCES = \
     resample.h
 
 libbuzzmachineloader_la_CXXFLAGS = $(BML_CXXFLAGS)
-libbuzzmachineloader_la_LDFLAGS = -lm -lpthread -ldl
+libbuzzmachineloader_la_LIBADD = -lm -lpthread -ldl -lstdc++
 
 INCLUDES = \
 	-I$(top_srcdir)/dllwrapper1/wine
