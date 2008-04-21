@@ -306,6 +306,17 @@ extern "C" DE BuzzMachine *bm_new(char *bm_file_name) {
 
     /* we need to create a CMachine object */
     bm->machine=new CMachine(bm->machine_iface,bm->machine_info);
+    
+    /* @todo: song object
+     * we need a CSong object that has
+     *   CSequence *sequence;
+     *   CWaveInfo waves[WAVE_MAX];
+     * and pass this to BuzzMachineCallbacks(...)
+     * We need api to modify:
+     *   bm_update_wavetable(bm, CWaveInfo *)
+     *     - replace waves[0...WAVE_MAX];
+     *   bm_update_sequence(bm,...)
+     */
 
     DBG1("  mi-version 0x%04x\n",bm->machine_info->Version);
     if((bm->machine_info->Version & 0xff) < 15) {

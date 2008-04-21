@@ -1,5 +1,17 @@
 2008-04-21  Stefan Kost  <ensonic@users.sf.net>
 
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.cpp:
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.h:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.cpp:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.h:
+	  Return default wavelevel for now. Add comment about auxbuffer size.
+	  Also lower it back to 1K.
+	
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	  Todo comments.
+
+2008-04-21  Stefan Kost  <ensonic@users.sf.net>
+
 	* src/BuzzMachineLoader/dsplib.h:
 	  No fastcall attribute on 64bit.
 

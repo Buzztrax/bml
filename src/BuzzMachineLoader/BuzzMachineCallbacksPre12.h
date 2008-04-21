@@ -26,9 +26,9 @@
 //#include "BuzzMDKHelper.h"
 #include "mdkimp.h"
 
-// where does this comes from ?
-//#define BMC_AUXBUFFER_SIZE 1024
-#define BMC_AUXBUFFER_SIZE 8192
+// should be MAX_BUFFER_LENGTH=256
+//#define BMC_AUXBUFFER_SIZE MAX_BUFFER_LENGTH
+#define BMC_AUXBUFFER_SIZE 1024
 
 class BuzzMachineCallbacksPre12 : public CMICallbacks
 {

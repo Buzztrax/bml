@@ -53,7 +53,7 @@ CWaveInfo const *BuzzMachineCallbacks::GetWave(int const i) {
 CWaveLevel const *BuzzMachineCallbacks::GetWaveLevel(int const i, int const level) {
     DBG2("(i=%d,level=%d)\n",i,level);
     FIXME;
-    return(NULL);
+    return(&defaultWaveLevel);
 }
 
 CWaveLevel const *BuzzMachineCallbacks::GetNearestWaveLevel(int const i, int const note) {
