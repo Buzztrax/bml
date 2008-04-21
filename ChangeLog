@@ -1,3 +1,8 @@
+2008-04-21  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader/dsplib.h:
+	  No fastcall attribute on 64bit.
+
 2008-04-20  Stefan Kost  <ensonic@users.sf.net>
 
 	* configure.ac:
