@@ -39,6 +39,7 @@
 #include "BuzzMachineCallbacksPre12.h"
 #include "MachineDataImpl.h"
 #include "CMachine.h"
+#include "CSong.h"
 #include "BuzzMachineLoader.h"
 #include "dsplib.h"
 
@@ -308,23 +309,20 @@ extern "C" DE BuzzMachine *bm_new(char *bm_file_name) {
     bm->machine=new CMachine(bm->machine_iface,bm->machine_info);
     
     /* @todo: song object
-     * we need a CSong object that has
-     *   CSequence *sequence;
-     *   CWaveInfo waves[WAVE_MAX];
-     * and pass this to BuzzMachineCallbacks(...)
-     * We need api to modify:
-     *   bm_update_wavetable(bm, CWaveInfo *)
-     *     - replace waves[0...WAVE_MAX];
-     *   bm_update_sequence(bm,...)
+     * We have the pointer when we create the machine, but they are only set if
+     * the machine needs them. Need to add api to set them later:
+     *   bm_set_wavetable(bm, gpointer)
+     *   bm_set_sequence(bm, gpointer)
      */
+    bm->song=new CSong();
 
     DBG1("  mi-version 0x%04x\n",bm->machine_info->Version);
     if((bm->machine_info->Version & 0xff) < 15) {
-      bm->callbacks=(CMICallbacks *)new BuzzMachineCallbacksPre12(bm->machine,bm->machine_iface,bm->machine_info);
+      bm->callbacks=(CMICallbacks *)new BuzzMachineCallbacksPre12(bm->machine,bm->machine_iface,bm->machine_info,bm->song);
       DBG("  old callback instance created\n");
     }
     else {
-      bm->callbacks=(CMICallbacks *)new BuzzMachineCallbacks(bm->machine,bm->machine_iface,bm->machine_info);
+      bm->callbacks=(CMICallbacks *)new BuzzMachineCallbacks(bm->machine,bm->machine_iface,bm->machine_info,bm->song);
       DBG("  callback instance created\n");
     }
 

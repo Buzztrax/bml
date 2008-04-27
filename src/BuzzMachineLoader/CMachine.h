@@ -22,32 +22,34 @@
 #include "MachineInterface.h"
 
 class CMachine {
-		// Jeskola Buzz compatible CMachine header.
-		// Some machines look up these by reading directly from zzub::metaplugin memory.
-		
-		char _placeholder[12];
-		char* _internal_name;           // 0x14: polac's VST reads this string, set to 0
-		char _placeholder2[52];
-		void* _internal_machine;        // pointer to CMachine*, scanned for by some plugins
-		void* _internal_machine_ex;     // 0x50: same as above, but is not scanned for
-		char _placeholder3[20];
-		char* _internal_globalState;    // 0x68: copy of machines global state
-		char* _internal_trackState;     // 0x6C: copy of machines track state
-		char _placeholder4[120];
-		int _internal_seqCommand;       // 0xE8: used by mooter, 0 = --, 1 = mute, 2 = thru
-		char _placeholder6[17];
-		bool hardMuted;                 // 0xFD: true when muted by user, used by mooter
-		// End of Buzz compatible header
-		CMachineInterface *machine_interface;
-		CMachineInfo *machine_info;
+    // Jeskola Buzz compatible CMachine header.
+    // Some machines look up these by reading directly from zzub::metaplugin memory.
+    
+    char _placeholder[12];
+    char* _internal_name;           // 0x14: polac's VST reads this string, set to 0
+    char _placeholder2[52];
+    void* _internal_machine;        // pointer to CMachine*, scanned for by some plugins
+    void* _internal_machine_ex;     // 0x50: same as above, but is not scanned for
+    char _placeholder3[20];
+    char* _internal_globalState;    // 0x68: copy of machines global state
+    char* _internal_trackState;     // 0x6C: copy of machines track state
+    char _placeholder4[120];
+    int _internal_seqCommand;       // 0xE8: used by mooter, 0 = --, 1 = mute, 2 = thru
+    char _placeholder6[17];
+    bool hardMuted;                 // 0xFD: true when muted by user, used by mooter
+    // End of Buzz compatible header
+    CMachineInterface *machine_interface;
+    CMachineInfo *machine_info;
 
 public:
-		CMachine() {
-		}
-		
-		CMachine(CMachineInterface *_machine_interface,CMachineInfo *_machine_info) {
-			machine_interface=_machine_interface;
-			machine_info=_machine_info;
-		}
+    CMachine() {
+      machine_interface=NULL;
+      machine_info=NULL;
+    }
+    
+    CMachine(CMachineInterface *_machine_interface,CMachineInfo *_machine_info) {
+        machine_interface=_machine_interface;
+        machine_info=_machine_info;
+    }
 };
 

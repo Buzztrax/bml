@@ -1,3 +1,14 @@
+2008-04-27  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.h:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.h:
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	* src/BuzzMachineLoader/BuzzMachineLoader.h:
+	* src/BuzzMachineLoader/CMachine.h:
+	* src/BuzzMachineLoader/CSong.h:
+	* src/BuzzMachineLoader/Makefile.am:
+	  Split sources and headers. Add CSong class needed fro wavtable.
+
 2008-04-21  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader/BuzzMachineCallbacks.cpp:

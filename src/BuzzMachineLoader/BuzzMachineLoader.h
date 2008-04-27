@@ -41,6 +41,7 @@ public:
 	CMachineInterface *machine_iface;
 	CMachine *machine;
     CMDKImplementation *mdkHelper;
+    CSong *song;
 	//callbacks->machine_ex;
 	//CMachineInterfaceEx *machine_ex;
 };
