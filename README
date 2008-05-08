@@ -42,6 +42,30 @@ in there. After building invoke :
 or alternatively run the testmachine.sh script to probe a whole directory with
 machines.
 
+= building the BuzzMachineLoader.dll =
+1) use MS developer studio
+2) CC=/usr/local/bin/i386-mingw32-gcc CXX=/usr/local/bin/i386-mingw32-g++ make
+   ^^^ does not work :/
+3) ./configure --host=i386-mingw32 ... 
+  cd src/BuzzMachineLoader
+  Makefile.am: changes
+  make
+  make BuzzMachineLoader.dll
+
+// when using fastcall
+BuzzMachineLoader.cpp:83: undefined reference to `@_Z8DSP_Initi@4'
+// normal symbol
+BuzzMachineLoader.cpp:83: undefined reference to `DSP_Init(int)'
+// name in lib
+> i386-mingw32-nm dsplib.lib | grep DSP_Init
+00000000 T ?DSP_Init@@YIXH@Z
+00000000 I __imp_?DSP_Init@@YIXH@Z
+
+http://sourceforge.net/project/shownotes.php?release_id=90402
+However, the --enable-stdcall-fixup feature (which is on by default) has not yet
+been extended to fastcall symbols. That is, an undefined symbol @foo@n will *not* 
+automatically be resolved to a defined symbol foo. 
+
 = problems =
 == /dev/zero needs to be executable ==
 make sure your /dev/zero is executable (needed for mmap() )

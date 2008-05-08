@@ -546,7 +546,7 @@ static HMODULE WINAPI expGetModuleHandleA(const char* name)
 #endif
     else
     {
-        TRACE("calling FindModule(%s)\n",name);
+        //TRACE("calling FindModule(%s)\n",name);
         wm=MODULE_FindModule(name);
         if(wm==0)result=0;
         else

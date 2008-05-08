@@ -235,7 +235,7 @@ found:
         }
         memcpy( module, forward, end - forward );
 		module[end-forward] = 0;
-        TRACE("calling FindModule(%s)\n",module);
+        //TRACE("calling FindModule(%s)\n",module);
         if (!(wm = MODULE_FindModule( module )))
         {
             ERR("module not found for forward '%s'\n", forward );

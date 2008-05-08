@@ -1,3 +1,17 @@
+2008-05-08  Stefan Kost  <ensonic@users.sf.net>
+
+	* README:
+	  Some info about cross compilations attempts.
+
+	* TODO:
+	  Update issue list.
+  
+	* dllwrapper1/wine/module.c:
+	* dllwrapper1/wine/pe_image.c:
+	* dllwrapper1/wine/win32.c:
+	  Cache unavailable libs and shortcut next loading attempts. Speeds up
+	  loading and make log reading easier.	
+
 2008-04-27  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader/BuzzMachineCallbacks.h:

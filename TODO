@@ -80,6 +80,8 @@ m4wii.dll
   Maybe we need a full impl.
 Jeskola Bass 2.dll
   buzzmachinecallbackspre12.cpp:105:BuzzMachineCallbacksPre12::MidiOut (dev=1,data=136987296)
+Jeskola Tracker.dll
+  Called unk__CxxThrowException
 
 Ruff SPECCY II.dll
 HD Percussive_FM.dll

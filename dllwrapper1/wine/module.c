@@ -363,7 +363,10 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 	char* listpath[] = { "", "", WIN32_PATH, "/usr/local/lib/win32", WIN32_LIB_PATH, NULL };
 	char path[512];
 	char checked[2000];
-	int i = -1;
+	int i;
+    static char *unavailable_lib_names[100];
+    static int unavailable_libs=0;
+    
 
 	checked[0] = 0;
 	if(!libname)
@@ -371,16 +374,24 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 		SetLastError(ERROR_INVALID_PARAMETER);
 		return 0;
 	}
-    TRACE("calling FindModule(%s)\n",libname);
 
+    /* see if this lib has already failed before */
+    for (i = 0; i < unavailable_libs; i++) {
+        if(!strcmp(unavailable_lib_names[i],libname)) {
+            return 0;
+        }
+    }
+
+    //TRACE("calling FindModule(%s)\n",libname);
 	wm=MODULE_FindModule(libname);
 	if(wm) return wm->module;
 
-//	if(fs_installed==0)
-//	    install_fs();
+    //if(fs_installed==0)
+    //    install_fs();
+    
+	TRACE("did not found module '%s'\n", libname);
 
-	TRACE("found module '%s'\n", libname);
-
+    i = -1;
 	while (wm == 0 && listpath[++i])
 	{
 	    memset (&path, 0, sizeof (path));
@@ -432,8 +443,16 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 		}
 	}
 
-	if (!wm)
+	if (!wm) {
+        if(unavailable_libs<100) {
+            unavailable_lib_names[unavailable_libs++]=strdup(libname);
+        }
+        else {
+            TRACE("more than 100 missing libs\n");
+        }
+        /* idealy we remember this */
 	    TRACE("wine/module: Win32 LoadLibrary failed to load: %s\n", libname);
+    }
 
     // remove a few divs in the VP codecs that make trouble
     if (strstr(libname,"vp5vfw.dll") && wm)
