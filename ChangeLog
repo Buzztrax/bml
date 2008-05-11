@@ -1,3 +1,18 @@
+2008-05-11  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.cpp:
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.h:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.cpp:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.h:
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	* src/BuzzMachineLoader/BuzzMachineLoader.h:
+	* src/BuzzMachineLoader/CSong.h:
+	* src/BuzzMachineLoader/Makefile.am:
+	* src/BuzzMachineLoader/dsplib.h:
+	* src/bml.c:
+	* src/bml.h:
+	  Call host callback if its available.
+
 2008-05-08  Stefan Kost  <ensonic@users.sf.net>
 
 	* README:

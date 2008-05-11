@@ -30,7 +30,7 @@
 //#define BMC_AUXBUFFER_SIZE MAX_BUFFER_LENGTH
 #define BMC_AUXBUFFER_SIZE 1024
 
-class CSong;
+typedef struct _CHostCallbacks CHostCallbacks;
 
 class BuzzMachineCallbacks : public CMICallbacks
 {
@@ -41,7 +41,7 @@ private:
     CWaveLevel defaultWaveLevel;/*={0,NULL,0,0,0,0};*/
     //BuzzMDKHelper *mdkHelper;
     CMDKImplementation *mdkHelper;
-    CSong *song;
+    CHostCallbacks **host_callbacks;
     // static float ... does not work?
     float auxBuffer[2*BMC_AUXBUFFER_SIZE]; // gah, inefficient, because BuzzMachineCallbacks objects could all share same aux buffer
 
@@ -61,9 +61,9 @@ public:
         defaultWaveLevel.RootNote=0;
         defaultWaveLevel.SamplesPerSec=0;
         mdkHelper=NULL;
-        song=NULL;
+        host_callbacks=NULL;
     }
-    BuzzMachineCallbacks(CMachine *_machine, CMachineInterface *_machine_interface,CMachineInfo *_machine_info,CSong *_song) {
+    BuzzMachineCallbacks(CMachine *_machine, CMachineInterface *_machine_interface,CMachineInfo *_machine_info,CHostCallbacks **_host_callbacks) {
         machine=_machine;
         machine_interface=_machine_interface;
         machine_ex=NULL;
@@ -75,7 +75,7 @@ public:
         defaultWaveLevel.RootNote=0;
         defaultWaveLevel.SamplesPerSec=0;
         mdkHelper=NULL;
-        song=_song;
+        host_callbacks=_host_callbacks;
     }
     ~BuzzMachineCallbacks() {
       if (mdkHelper) {

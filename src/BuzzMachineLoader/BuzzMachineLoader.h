@@ -26,9 +26,20 @@
 extern "C" {
 #endif
 
-// our high level instance handle
+typedef struct _CHostCallbacks CHostCallbacks;
+
+struct _CHostCallbacks {
+    void *user_data;
+    /* callbacks */
+    void const *(*GetWave)(CHostCallbacks *self, int const i);
+    void const *(*GetWaveLevel)(CHostCallbacks *self, int const i, int const level);
+    void const *(*GetNearestWaveLevel)(CHostCallbacks *self, int const i, int const note);
+    /* add more */
+};
+
 #ifdef BUZZ_MACHINE_LOADER
 
+// the high level instance handle
 class BuzzMachine {
 public:
 	// library handle
@@ -41,7 +52,7 @@ public:
 	CMachineInterface *machine_iface;
 	CMachine *machine;
     CMDKImplementation *mdkHelper;
-    CSong *song;
+    CHostCallbacks *host_callbacks;
 	//callbacks->machine_ex;
 	//CMachineInterfaceEx *machine_ex;
 };
@@ -84,42 +95,6 @@ typedef enum {
 	BM_ATTR_MAX_VALUE,
 	BM_ATTR_DEF_VALUE
 } BuzzMachineAttribute;
-
-#ifndef BUZZ_MACHINE_LOADER_CPP
-/*
-extern void   bm_set_master_info(long bpm, long tpb, long srat);
-extern BuzzMachine *bm_new(char *bm_file_name);
-extern void   bm_free(BuzzMachine *bm);
-extern void   bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data);
-
-extern int    bm_get_machine_info(BuzzMachine *bm, BuzzMachineProperty key, void *value);
-extern int    bm_get_global_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value);
-extern int    bm_get_track_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value);
-extern int    bm_get_attribute_info(BuzzMachine *bm,int index,BuzzMachineAttribute key,void *value);
-
-extern void * bm_get_track_parameter_location(BuzzMachine *bm,int track,int index);
-extern int    bm_get_track_parameter_value(BuzzMachine *bm,int track,int index);
-extern void   bm_set_track_parameter_value(BuzzMachine *bm,int track,int index,int value);
-
-extern void * bm_get_global_parameter_location(BuzzMachine *bm,int index);
-extern int    bm_get_global_parameter_value(BuzzMachine *bm,int index);
-extern void   bm_set_global_parameter_value(BuzzMachine *bm,int index,int value);
-
-extern void * bm_get_attribute_location(BuzzMachine *bm,int index);
-extern int    bm_get_attribute_value(BuzzMachine *bm,int index);
-extern void   bm_set_attribute_value(BuzzMachine *bm,int index,int value);
-extern void   bm_attributes_changed(BuzzMachine *bm);
-
-extern void   bm_tick(BuzzMachine *bm);
-extern bool   bm_work(BuzzMachine *bm,float *psamples, int numsamples, int const mode);
-extern bool   bm_work_m2s(BuzzMachine *bm,float *pin, float *pout, int numsamples, int const mode);
-extern void   bm_stop(BuzzMachine *bm);
-
-extern void bm_attributes_changed(BuzzMachine *bm);
-
-extern void   bm_set_num_tracks(BuzzMachine *bm, int num);
-*/
-#endif
 
 #ifdef __cplusplus
 }

@@ -18,7 +18,6 @@ noinst_HEADERS = \
     BuzzMachineCallbacksPre12.h \
     BuzzMachineLoader.h \
     CMachine.h \
-    CSong.h \
     MachineDataImpl.h \
     MachineInterface.h \
     OscTable.h \

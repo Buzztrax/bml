@@ -39,20 +39,21 @@
 #include "BuzzMachineLoader.h"
 #include "OscTable.h"
 
-/* WaveTable:
- *  we could pass the data from the linux side to the windows side,
- *  so that it can emulate the buzz API
- */
-
 CWaveInfo const *BuzzMachineCallbacks::GetWave(int const i) {
     DBG1("(i=%d)\n",i);
-    FIXME;
+
+    if(host_callbacks && *host_callbacks) {
+        return (CWaveInfo *)(*host_callbacks)->GetWave(*host_callbacks,i);
+    }
     return(NULL);
 }
 
 CWaveLevel const *BuzzMachineCallbacks::GetWaveLevel(int const i, int const level) {
     DBG2("(i=%d,level=%d)\n",i,level);
-    FIXME;
+
+    if(host_callbacks && *host_callbacks) {
+        return (CWaveLevel *)(*host_callbacks)->GetWaveLevel(*host_callbacks,i,level);
+    }
     return(&defaultWaveLevel);
 }
 
@@ -68,7 +69,10 @@ CWaveLevel const *BuzzMachineCallbacks::GetNearestWaveLevel(int const i, int con
         }
         return((CWaveLevel *)mdkHelper);
     }
-
+    
+    if(host_callbacks && *host_callbacks) {
+        return (CWaveLevel *)(*host_callbacks)->GetNearestWaveLevel(*host_callbacks,i,note);
+    }
     return(&defaultWaveLevel);
 }
 

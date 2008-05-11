@@ -39,7 +39,6 @@
 #include "BuzzMachineCallbacksPre12.h"
 #include "MachineDataImpl.h"
 #include "CMachine.h"
-#include "CSong.h"
 #include "BuzzMachineLoader.h"
 #include "dsplib.h"
 
@@ -305,24 +304,19 @@ extern "C" DE BuzzMachine *bm_new(char *bm_file_name) {
     bm->machine_iface=CreateMachine();
     DBG("  CreateMachine() called\n");
 
-    /* we need to create a CMachine object */
+    // we need to create a CMachine object
     bm->machine=new CMachine(bm->machine_iface,bm->machine_info);
     
-    /* @todo: song object
-     * We have the pointer when we create the machine, but they are only set if
-     * the machine needs them. Need to add api to set them later:
-     *   bm_set_wavetable(bm, gpointer)
-     *   bm_set_sequence(bm, gpointer)
-     */
-    bm->song=new CSong();
+    // not callbacks set by host so far
+    bm->host_callbacks = NULL;
 
     DBG1("  mi-version 0x%04x\n",bm->machine_info->Version);
     if((bm->machine_info->Version & 0xff) < 15) {
-      bm->callbacks=(CMICallbacks *)new BuzzMachineCallbacksPre12(bm->machine,bm->machine_iface,bm->machine_info,bm->song);
+      bm->callbacks=(CMICallbacks *)new BuzzMachineCallbacksPre12(bm->machine,bm->machine_iface,bm->machine_info,&bm->host_callbacks);
       DBG("  old callback instance created\n");
     }
     else {
-      bm->callbacks=(CMICallbacks *)new BuzzMachineCallbacks(bm->machine,bm->machine_iface,bm->machine_info,bm->song);
+      bm->callbacks=(CMICallbacks *)new BuzzMachineCallbacks(bm->machine,bm->machine_iface,bm->machine_info,&bm->host_callbacks);
       DBG("  callback instance created\n");
     }
 
@@ -635,5 +629,9 @@ extern "C" DE char const *bm_describe_track_value(BuzzMachine *bm, int const par
 
 	DBG2("(param=%d,value=%d)\n",param,value);
 	return(bm->machine_iface->DescribeValue(bm->machine_info->numGlobalParameters+param,value));
+}
+
+extern "C" DE void bm_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks) {
+    bm->host_callbacks=callbacks;
 }
 

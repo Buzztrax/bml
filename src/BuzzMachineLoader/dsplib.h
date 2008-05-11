@@ -98,11 +98,8 @@ DI bool DSP_BW_WorkStereo(CBWState &s, float *ps, dword const n, int const mode)
 #include "resample.h"
 
 DI void DSP_Resample(float *pout, int numsamples, CResamplerState &state, CResamplerParams const &params);
-         
 
 #undef DI
-
- 
 
 #endif
 

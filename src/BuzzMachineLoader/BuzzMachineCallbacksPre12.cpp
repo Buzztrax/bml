@@ -40,13 +40,19 @@
 
 CWaveInfo const *BuzzMachineCallbacksPre12::GetWave(int const i) {
     DBG1("(i=%d)\n",i);
-    FIXME;
+
+    if(host_callbacks && *host_callbacks) {
+        return (CWaveInfo *)(*host_callbacks)->GetWave(*host_callbacks,i);
+    }
     return(NULL);
 }
 
 CWaveLevel const *BuzzMachineCallbacksPre12::GetWaveLevel(int const i, int const level) {
     DBG2("(i=%d,level=%d)\n",i,level);
-    FIXME;
+
+    if(host_callbacks && *host_callbacks) {
+        return (CWaveLevel *)(*host_callbacks)->GetWaveLevel(*host_callbacks,i,level);
+    }
     return(&defaultWaveLevel);
 }
 
@@ -63,6 +69,9 @@ CWaveLevel const *BuzzMachineCallbacksPre12::GetNearestWaveLevel(int const i, in
         return((CWaveLevel *)mdkHelper);
     }
 
+    if(host_callbacks && *host_callbacks) {
+        return (CWaveLevel *)(*host_callbacks)->GetNearestWaveLevel(*host_callbacks,i,note);
+    }
     return(&defaultWaveLevel);
 }
 

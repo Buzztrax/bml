@@ -105,6 +105,8 @@ BMSetNumTracks BMLX(bmlw_set_num_tracks);
 BMDescribeGlobalValue BMLX(bmlw_describe_global_value);
 BMDescribeTrackValue BMLX(bmlw_describe_track_value);
 
+BMSetCallbacks BMLX(bmlw_set_callbacks);
+
 #endif /* HAVE_X86 */
 
 // native plugin API method pointers
@@ -142,6 +144,8 @@ BMSetNumTracks bmln_set_num_tracks;
 
 BMDescribeGlobalValue bmln_describe_global_value;
 BMDescribeTrackValue bmln_describe_track_value;
+
+BMSetCallbacks bmln_set_callbacks;
 
 #ifdef HAVE_X86
 // passthrough functions
@@ -373,6 +377,17 @@ const char *bmlw_describe_track_value(BuzzMachine *bm, int const param,int const
 	pthread_mutex_unlock(&ldt_mutex);
 	return(ret);
 }
+
+
+void bmlw_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks) {
+	pthread_mutex_lock(&ldt_mutex);
+	Check_FS_Segment(ldt_fs);
+    // @todo: remove after rebuild
+    if(BMLX(bmlw_set_callbacks)!=NULL)
+      BMLX(bmlw_set_callbacks(bm,callbacks));
+	pthread_mutex_unlock(&ldt_mutex);  
+}
+
 #endif /* HAVE_X86 */
 
 // wrapper management
@@ -436,7 +451,9 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
   if(!(BMLX(bmlw_describe_global_value)=(BMDescribeGlobalValue)GetSymbol(emu_dll,"bm_describe_global_value"))) { puts("bm_describe_global_value is missing");return(FALSE);}
   if(!(BMLX(bmlw_describe_track_value)=(BMDescribeTrackValue)GetSymbol(emu_dll,"bm_describe_track_value"))) { puts("bm_describe_track_value is missing");return(FALSE);}
 
-  // @todo more API entries
+  // @todo needs rebuild
+  if(!(BMLX(bmlw_set_callbacks)=(BMSetCallbacks)GetSymbol(emu_dll,"bm_set_callbacks"))) { puts("bm_set_callbacks is missing");/*return(FALSE);*/}
+
   TRACE("%s:   symbols connected\n",__FUNCTION__);
   BMLX(bmlw_set_logger(bml_logger));
 #endif /* HAVE_X86 */
@@ -482,8 +499,9 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
 
   if(!(bmln_describe_global_value=(BMDescribeGlobalValue)dlsym(emu_so,"bm_describe_global_value"))) { puts("bm_describe_global_value is missing");return(FALSE);}
   if(!(bmln_describe_track_value=(BMDescribeTrackValue)dlsym(emu_so,"bm_describe_track_value"))) { puts("bm_describe_track_value is missing");return(FALSE);}
- 
-  // @todo more API entries
+
+  if(!(bmln_set_callbacks=(BMSetCallbacks)dlsym(emu_so,"bm_set_callbacks"))) { puts("bm_set_callbacks is missing");return(FALSE);}
+
   TRACE("%s:   symbols connected\n",__FUNCTION__);
   bmln_set_logger(bml_logger);
   

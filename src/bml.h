@@ -48,9 +48,6 @@
 
 extern int bml_setup(void (*sighandler)(int,siginfo_t*,void*));
 extern void bml_finalize(void);
-#if 0
-extern char *bml_convertpath(char *inpath);
-#endif
 
 // dll passthrough API method pointer types
 typedef void (*BMSetMasterInfo)(long bpm, long tpb, long srat);
@@ -87,6 +84,8 @@ typedef void (*BMSetNumTracks)(BuzzMachine *bm, int num);
 typedef const char *(*BMDescribeGlobalValue)(BuzzMachine *bm, int const param,int const value);
 typedef const char *(*BMDescribeTrackValue)(BuzzMachine *bm, int const param,int const value);
 
+typedef void *(*BMSetCallbacks)(BuzzMachine *bm, CHostCallbacks *callbacks);
+
 // windows plugin API functions
 extern void bmlw_set_master_info(long bpm, long tpb, long srat);
 extern BuzzMachine *bmlw_new(char *bm_file_name);
@@ -122,6 +121,8 @@ extern void bmlw_set_num_tracks(BuzzMachine *bm, int num);
 extern const char *bmlw_describe_global_value(BuzzMachine *bm, int const param,int const value);
 extern const char *bmlw_describe_track_value(BuzzMachine *bm, int const param,int const value);
 
+extern void bmlw_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks);
+
 // native plugin API functions
 extern BMSetMasterInfo bmln_set_master_info;
 extern BMNew bmln_new;
@@ -156,6 +157,8 @@ extern BMSetNumTracks bmln_set_num_tracks;
 
 extern BMDescribeGlobalValue bmln_describe_global_value;
 extern BMDescribeTrackValue bmln_describe_track_value;
+
+extern BMSetCallbacks bmln_set_callbacks;
 
 //#ifdef __cplusplus
 //}
