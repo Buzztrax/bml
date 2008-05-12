@@ -79,10 +79,12 @@ extern "C" DE void bm_set_master_info(long bpm, long tpb, long srat) {
   master_info.SamplesPerTick=(int)((60*master_info.SamplesPerSec)/(master_info.BeatsPerMin*master_info.TicksPerBeat));
   master_info.PosInTick=0; /*master_info.SamplesPerTick-1;*/
   master_info.TicksPerSec=(float)master_info.SamplesPerSec/(float)master_info.SamplesPerTick;
-#ifdef WIN32
+#ifdef _MSC_VER
   DSP_Init(master_info.SamplesPerSec);
 #else
-  // todo:: this needs porting
+  /* todo: we need a dsplib rewrite and a way to link fastcall stuff from
+   * mingw-cross
+   */
 #endif
 }
 
