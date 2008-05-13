@@ -1,3 +1,8 @@
+2008-05-13  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader.dll:
+	  New version that calls host callbacks.
+
 2008-05-12  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
