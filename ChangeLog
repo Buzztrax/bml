@@ -1,3 +1,9 @@
+2008-05-28  Stefan Kost  <ensonic@users.sf.net>
+
+	* TODO:
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	  Valgrind fixes.
+
 2008-05-13  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader.dll:

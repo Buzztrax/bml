@@ -173,7 +173,7 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
     DBG("  CMachineInterface::Init() called\n");
     {
       bm->mdkHelper = (CMDKImplementation*)bm->callbacks->GetNearestWaveLevel(-1,-1);
-      DBG1("  numInputChannels=%d\n",bm->mdkHelper->numChannels);
+      DBG1("  numInputChannels=%d\n",(bm->mdkHelper)?bm->mdkHelper->numChannels:0);
       // if numChannels=0, its not a mdk-machine and numChannels=1
     }
 
@@ -351,8 +351,8 @@ extern "C" DE int bm_get_machine_info(BuzzMachine *bm,BuzzMachineProperty key,vo
         case BM_PROP_AUTHOR:              *sval=bm->machine_info->Author;break;
         case BM_PROP_COMMANDS:            *sval=bm->machine_info->Commands;break;
         case BM_PROP_DLL_NAME:            *sval=bm->lib_name;break;
-        case BM_PROP_NUM_INPUT_CHANNELS:  *ival=(bm->mdkHelper->numChannels)?bm->mdkHelper->numChannels:1;break;
-        case BM_PROP_NUM_OUTPUT_CHANNELS: *ival=(bm->mdkHelper->numChannels==2)?2:((bm->machine_info->Flags&MIF_MONO_TO_STEREO)?2:1);break;
+        case BM_PROP_NUM_INPUT_CHANNELS:  *ival=(bm->mdkHelper && bm->mdkHelper->numChannels)?bm->mdkHelper->numChannels:1;break;
+        case BM_PROP_NUM_OUTPUT_CHANNELS: *ival=(bm->mdkHelper && bm->mdkHelper->numChannels==2)?2:((bm->machine_info->Flags&MIF_MONO_TO_STEREO)?2:1);break;
         default: ret=FALSE;
     }
     return(ret);
@@ -620,8 +620,8 @@ extern "C" DE char const *bm_describe_global_value(BuzzMachine *bm, int const pa
 
     if(!(param<bm->machine_info->numGlobalParameters)) return(empty);
 
-	DBG2("(param=%d,value=%d)\n",param,value);
-	return(bm->machine_iface->DescribeValue(param,value));
+    //DBG2("(param=%d,value=%d)\n",param,value);
+    return(bm->machine_iface->DescribeValue(param,value));
 }
 
 extern "C" DE char const *bm_describe_track_value(BuzzMachine *bm, int const param,int const value) {
@@ -629,8 +629,8 @@ extern "C" DE char const *bm_describe_track_value(BuzzMachine *bm, int const par
 
     if(!(param<bm->machine_info->numTrackParameters)) return(empty);
 
-	DBG2("(param=%d,value=%d)\n",param,value);
-	return(bm->machine_iface->DescribeValue(bm->machine_info->numGlobalParameters+param,value));
+    //DBG2("(param=%d,value=%d)\n",param,value);
+    return(bm->machine_iface->DescribeValue(bm->machine_info->numGlobalParameters+param,value));
 }
 
 extern "C" DE void bm_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks) {
