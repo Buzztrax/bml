@@ -1,3 +1,8 @@
+2008-06-02  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/Makefile.am:
+	  Fix _LIBS var with wrong name.
+
 2008-05-28  Stefan Kost  <ensonic@users.sf.net>
 
 	* TODO:
