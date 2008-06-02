@@ -1,5 +1,10 @@
 2008-06-02  Stefan Kost  <ensonic@users.sf.net>
 
+	* dllwrapper1/wine/module.c:
+	  Comment out unused function.
+
+2008-06-02  Stefan Kost  <ensonic@users.sf.net>
+
 	* src/Makefile.am:
 	  Fix _LIBS var with wrong name.
 

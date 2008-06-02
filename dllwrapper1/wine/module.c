@@ -603,6 +603,7 @@ WIN_BOOL WINAPI FreeLibrary(HINSTANCE hLibModule)
  *
  * NOTE: Assumes that the process critical section is held!
  */
+#if 0
 static void MODULE_DecRefCount( WINE_MODREF *wm )
 {
     int i;
@@ -627,6 +628,7 @@ static void MODULE_DecRefCount( WINE_MODREF *wm )
         wm->flags &= ~WINE_MODREF_MARKER;
     }
 }
+#endif
 
 /***********************************************************************
  *           GetProcAddress   		(KERNEL32.257)
