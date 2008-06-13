@@ -1,3 +1,9 @@
+2008-06-13  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/dsplib/Makefile:
+	* src/dsplib/dsplib.cpp:
+	  Adding dsplib rewrite donated by zubb.
+
 2008-06-02  Stefan Kost  <ensonic@users.sf.net>
 
 	* dllwrapper1/wine/module.c:
