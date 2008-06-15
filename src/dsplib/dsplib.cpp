@@ -3,12 +3,22 @@
 
 #include <math.h>
 #include <stdio.h>
-#include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
-
+#ifdef WIN32
+#include "stdafx.h"
+#include <windows.h>
+typedef DWORD dword;
+#else
+#include "windef.h"
+#include <stdint.h>
 typedef uint32_t dword;
+#endif
 
-#define PI 3.141592654
+
+#ifndef M_PI
+#define M_PI 3.141592654
+#endif
 
 class CBWState
 {
@@ -54,7 +64,7 @@ void DSP_BW_Reset(CBWState &s)
 /* rbj */
 void DSP_BW_InitLowpass(CBWState &s, float const f)
 {
-	float w0 = 2.0 * PI * f / (float)sampleRate;
+	float w0 = 2.0 * M_PI * f / (float)sampleRate;
 	float alpha = sin(w0) / (2 * 1.0 / sqrt(2.0));
 
 	float b0 = (1 - cos(w0)) / 2.0;
@@ -81,7 +91,7 @@ void DSP_BW_InitLowpass(CBWState &s, float const f)
 /* rbj */
 void DSP_BW_InitHighpass(CBWState &s, float const f)
 {
-	float w0 = 2.0 * PI * f / (float)sampleRate;
+	float w0 = 2.0 * M_PI * f / (float)sampleRate;
 	float alpha = sin(w0) / (2 * 1.0 / sqrt(2.0));
 
 	float b0 =  (1 + cos(w0)) / 2.0;
@@ -172,6 +182,7 @@ bool DSP_BW_Work(CBWState &s, float *ps, dword const n, int const mode)
 
 		ps++;
 	}
+    return TRUE;
 }
 
 bool DSP_BW_WorkStereo(CBWState &s, float *ps, dword const n, int const mode)
@@ -226,6 +237,7 @@ bool DSP_BW_WorkStereo(CBWState &s, float *ps, dword const n, int const mode)
 
 		ps+=2;
 	}
+    return TRUE;
 }
 
 #if 0
