@@ -1,5 +1,12 @@
 2008-06-17  Stefan Kost  <ensonic@users.sf.net>
 
+	* Makefile.am:
+	* dllwrapper1/wine/Makefile.am:
+	* src/Makefile.am:
+	  Different workaround for Bug #1981932.
+
+2008-06-17  Stefan Kost  <ensonic@users.sf.net>
+
 	* dllwrapper1/wine/Makefile.am:
 	* src/Makefile.am:
 	  Workaround for Bug #1981932.
