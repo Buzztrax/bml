@@ -1,3 +1,8 @@
+## $Id$
+
+# https://sourceforge.net/tracker/?func=detail&atid=476037&aid=1981932&group_id=55124
+MAKEFLAGS = -j1
+
 noinst_LTLIBRARIES = libloader.la
 
 CCAS = $(CC)
