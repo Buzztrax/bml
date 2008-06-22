@@ -1,3 +1,8 @@
+2008-06-22  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/bmltest_process.c:
+	  Add example for native plugins.
+
 2008-06-17  Stefan Kost  <ensonic@users.sf.net>
 
 	* Makefile.am:

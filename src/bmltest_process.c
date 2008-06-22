@@ -18,15 +18,14 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-/**
+/*
  * process data with a buzz machine
  *
  * invoke it e.g. as
  *   LD_LIBRARY_PATH=".:./BuzzMachineLoader/.libs" ./bmltest_process ../machines/elak_svf.dll input.raw output1.raw
  *   LD_LIBRARY_PATH=".:./BuzzMachineLoader/.libs" ./bmltest_process ../../buzzmachines/Elak/SVF/libelak_svf.so input.raw output2.raw
- *   LD_LIBRARY_PATH=".:./BuzzMachineLoader/.libs" ./bmltest_process ~/buzztard/lib/Gear/Effects/Jeskola\ NiNjA\ dElaY.dll  input.raw output1.raw
- *
- * the dll/so *must* be a buzz-machine, not much error checking ;-)
+ *   LD_LIBRARY_PATH=".:./BuzzMachineLoader/.libs" ./bmltest_process ~/buzztard/lib/Gear/Effects/Jeskola\ NiNjA\ dElaY.dll input.raw output1.raw
+ *   LD_LIBRARY_PATH=".:./BuzzMachineLoader/.libs" ./bmltest_process ~/buzztard/lib/Gear/Jeskola_Ninja.so input.raw output1.raw
  *
  * aplay -fS16_LE -r44100 input.raw
  * aplay -fS16_LE -r44100 output1.raw
