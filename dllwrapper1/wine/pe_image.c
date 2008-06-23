@@ -968,6 +968,8 @@ WIN_BOOL PE_InitDLL( WINE_MODREF *wm, DWORD type, LPVOID lpReserved )
 	if(entry==NULL) {
 	    TRACE("no DllMain, check optional\n");
 	    entry = (void*)RVA_PTR( wm->module,OptionalHeader.AddressOfEntryPoint );
+        // FIXME: how can we be sure that is is valid?
+        //return 1;
 	}
 
 	TRACE_(relay)("CallTo32(entryproc=%p,module=%08x,type=%ld,res=%p)\n",

@@ -66,6 +66,9 @@ However, the --enable-stdcall-fixup feature (which is on by default) has not yet
 been extended to fastcall symbols. That is, an undefined symbol @foo@n will *not* 
 automatically be resolved to a defined symbol foo. 
 
+Maybe a own .def can help:
+http://www.digitalmars.com/ctg/win32programming.html
+
 = problems =
 == /dev/zero needs to be executable ==
 make sure your /dev/zero is executable (needed for mmap() )

@@ -1,0 +1,10 @@
+; i386-mingw32msvc-dlltool --base-file /tmp/ccpuYmmm.base --output-exp dsplib.exp --dllname dsplib.dll --add-stdcall-alias --as=i386-mingw32msvc-as --output-def dsplib.def --exclude-symbol=DllMainCRTStartup@12 --def /tmp/ccXzUd5E.def --output-lib dsplib.lib
+EXPORTS
+	?DSP_BW_InitBandpass@@YIXAAVCBWState@@MM@Z = @DSP_BW_InitBandpass@12 @ 9
+	?DSP_BW_InitBandreject@@YIXAAVCBWState@@MM@Z = @DSP_BW_InitBandreject@12 @ 10
+	?DSP_BW_InitHighpass@@YIXAAVCBWState@@M@Z = @DSP_BW_InitHighpass@8 @ 11
+	?DSP_BW_InitLowpass@@YIXAAVCBWState@@M@Z = @DSP_BW_InitLowpass@8 @ 12
+	?DSP_BW_Reset@@YIXAAVCBWState@@@Z = @DSP_BW_Reset@4 @ 13
+	?DSP_BW_Work@@YI_NAAVCBWState@@PAMKH@Z = @DSP_BW_Work@16 @ 14
+	?DSP_BW_WorkStereo@@YI_NAAVCBWState@@PAMKH@Z = @DSP_BW_WorkStereo@16 @ 15
+	?DSP_Init@@YIXH@Z = @DSP_Init@4 @ 16

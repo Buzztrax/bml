@@ -1,3 +1,19 @@
+2008-06-24  Stefan Kost  <ensonic@users.sf.net>
+
+	patch by: Krzysztof Foltman  <kfoltman@users.sf.net>
+
+	* README:
+	* dllwrapper1/wine/pe_image.c:
+	  What if there is now DllMain?
+
+	* src/dsplib/Makefile:
+	* src/dsplib/dsplib.def:
+	  Add def file to get same symbol names as original dsplib.
+
+	* src/dsplib/dsplib.cpp:
+	  Structure source so that we can add dummies for the missing parts.
+
+
 2008-06-22  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/bmltest_process.c:

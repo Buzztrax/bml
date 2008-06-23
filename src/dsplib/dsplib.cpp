@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 #ifdef WIN32
-#include "stdafx.h"
 #include <windows.h>
 typedef DWORD dword;
 #else
@@ -15,10 +14,38 @@ typedef DWORD dword;
 typedef uint32_t dword;
 #endif
 
+#if defined(_MSC_VER) || defined(_MINGW_VER)
+#define DE __declspec(dllexport)
+#else
+#define DE 
+#endif
 
 #ifndef M_PI
 #define M_PI 3.141592654
 #endif
+
+// work modes
+#define WM_NOIO		0
+#define WM_READ		1
+#define WM_WRITE	2
+#define WM_READWRITE	3
+
+#define BW_SETTLE_TIME          256
+
+#define QUIET 0.1
+
+static int sampleRate;
+
+extern "C" {
+
+DE void __fastcall DSP_Init(int const samplerate)
+{
+	sampleRate = samplerate;
+}
+
+// basic stuff
+
+// second order butterworth filters
 
 class CBWState
 {
@@ -31,24 +58,7 @@ public:
 	int IdleCount;
 };
 
-// work modes
-#define WM_NOIO		0
-#define WM_READ		1
-#define WM_WRITE	2
-#define WM_READWRITE	3
-
-#define BW_SETTLE_TIME          256
-
-#define QUIET 0.1
-
-int sampleRate;
-
-void DSP_Init(int const samplerate)
-{
-	sampleRate = samplerate;
-}
-
-void DSP_BW_Reset(CBWState &s)
+DE void  __fastcall DSP_BW_Reset(CBWState &s)
 {
 	s.i[0] = 0;
 	s.i[1] = 0;
@@ -62,7 +72,7 @@ void DSP_BW_Reset(CBWState &s)
 }
 
 /* rbj */
-void DSP_BW_InitLowpass(CBWState &s, float const f)
+DE void  __fastcall DSP_BW_InitLowpass(CBWState &s, float const f)
 {
 	float w0 = 2.0 * M_PI * f / (float)sampleRate;
 	float alpha = sin(w0) / (2 * 1.0 / sqrt(2.0));
@@ -89,7 +99,7 @@ void DSP_BW_InitLowpass(CBWState &s, float const f)
 }
 
 /* rbj */
-void DSP_BW_InitHighpass(CBWState &s, float const f)
+DE void  __fastcall DSP_BW_InitHighpass(CBWState &s, float const f)
 {
 	float w0 = 2.0 * M_PI * f / (float)sampleRate;
 	float alpha = sin(w0) / (2 * 1.0 / sqrt(2.0));
@@ -116,7 +126,7 @@ void DSP_BW_InitHighpass(CBWState &s, float const f)
 }
 
 /* hacked by calvin */
-void DSP_BW_InitBandpass(CBWState &s, float const f, float const bw)
+DE void  __fastcall DSP_BW_InitBandpass(CBWState &s, float const f, float const bw)
 {
 	float a = tan((bw * M_PI) / sampleRate);
 	float b = 1.0f / a;
@@ -131,7 +141,7 @@ void DSP_BW_InitBandpass(CBWState &s, float const f, float const bw)
 }
 
 /* hacked by calvin */
-void DSP_BW_InitBandreject(CBWState &s, float const f, float const bw)
+DE void  __fastcall DSP_BW_InitBandreject(CBWState &s, float const f, float const bw)
 {
 	float a = tan((bw * M_PI) / sampleRate);
 	float b = f * M_PI;
@@ -143,7 +153,7 @@ void DSP_BW_InitBandreject(CBWState &s, float const f, float const bw)
 	s.a[4] = (1 - a) * s.a[0];
 }
 
-bool DSP_BW_Work(CBWState &s, float *ps, dword const n, int const mode)
+DE bool  __fastcall DSP_BW_Work(CBWState &s, float *ps, dword const n, int const mode)
 {
 	int i;
 	float y;
@@ -185,7 +195,7 @@ bool DSP_BW_Work(CBWState &s, float *ps, dword const n, int const mode)
     return TRUE;
 }
 
-bool DSP_BW_WorkStereo(CBWState &s, float *ps, dword const n, int const mode)
+DE bool  __fastcall DSP_BW_WorkStereo(CBWState &s, float *ps, dword const n, int const mode)
 {
 	int i;
 	float y, yr;
@@ -238,6 +248,50 @@ bool DSP_BW_WorkStereo(CBWState &s, float *ps, dword const n, int const mode)
 		ps+=2;
 	}
     return TRUE;
+}
+
+// resampler
+
+#if 0
+#define RS_STEP_FRAC_BITS	24
+
+class CResamplerParams
+{
+public:
+	void SetStep(double const s)
+	{
+		StepInt = (int)s;
+		StepFrac = (int)((s - StepInt) * (1 << RS_STEP_FRAC_BITS));
+	}
+
+public:
+	void *Samples;				// ptr to first sample
+	int numSamples;				// number of samples (or loop)  
+	int LoopBegin;				// zero based index to Samples, -1 = no loop
+	int StepInt;
+	dword StepFrac;
+	float AmpStep;				// used if AmpMode == RSA_LINEAR_INTP
+
+	byte Interpolation;			// one of RSI_*
+	byte AmpMode;				// one of RSA_*
+	byte StepMode;				// one of RSS_*
+	byte Flags;					// any of RSF_* ORred
+
+};
+
+class CResamplerState
+{
+public:
+	int PosInt; 
+	dword PosFrac;
+	float Amp;
+	bool Active;					
+};
+
+DE void  __fastcall DSP_Resample(float *pout, int numsamples, CResamplerState &state, CResamplerParams const &params)
+{
+}
+#endif
 }
 
 #if 0
