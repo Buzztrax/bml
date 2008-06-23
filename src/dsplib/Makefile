@@ -1,15 +1,18 @@
-CXX=i386-mingw32-g++
+MINGW_PREFIX=i386-mingw32
+#MINGW_PREFIX=i586-mingw32msvc
 
-#DLLWRAP_FLAGS = --nodelete --export-all-symbols --add-stdcall-alias --kill-at --mno-cygwin \
-#	--as=i386-mingw32-as -driver-name $(CXX) --dlltool-name=i386-mingw32-dlltool
+CXX=$(MINGW_PREFIX)-g++
 
 DLLWRAP_FLAGS = --nodelete --kill-at --mno-cygwin \
-	--as=i386-mingw32-as -driver-name $(CXX) --dlltool-name=i386-mingw32-dlltool
+	--as=$(MINGW_PREFIX)-as -driver-name $(CXX) --dlltool-name=$(MINGW_PREFIX)-dlltool
 
 all: dsplib.dll
 
-dsplib.dll:  dsplib.o Makefile dsplib.def
-	i386-mingw32-dllwrap $(DLLWRAP_FLAGS) \
+install: dsplib.dll
+	cp dsplib.dll /usr/local/lib/Gear/
+
+dsplib.dll: dsplib.o Makefile dsplib.def
+	$(MINGW_PREFIX)-dllwrap $(DLLWRAP_FLAGS) \
 	--def dsplib.def \
 	--output-lib dsplib.lib \
 	-o dsplib.dll \

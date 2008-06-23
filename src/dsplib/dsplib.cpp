@@ -43,9 +43,146 @@ DE void __fastcall DSP_Init(int const samplerate)
 	sampleRate = samplerate;
 }
 
+};
+
 // basic stuff
 
+DE void __fastcall DSP_Zero(float *pout, dword const n)
+{
+    for (dword i = 0; i < n; i++)
+        pout[i] = 0.f;
+}
+
+DE void __fastcall DSP_Copy(float *pout, float const *pin, dword const n)
+{
+    for (dword i = 0; i < n; i++)
+        pout[i] = pin[i];
+}
+
+DE void __fastcall DSP_Copy(float *pout, float const *pin, dword const n, float const a)
+{
+    for (dword i = 0; i < n; i++)
+        pout[i] = pin[i] * a;
+}
+
+DE void __fastcall DSP_Add(float *pout, float const *pin, dword const n)
+{
+    for (dword i = 0; i < n; i++)
+        pout[i] += pin[i];
+}
+
+DE void __fastcall DSP_Add(float *pout, float const *pin, dword const n, float const a)
+{
+    for (dword i = 0; i < n; i++)
+        pout[i] += pin[i] * a;
+}
+
+DE void __fastcall DSP_CopyM2S(float *pout, float const *pin, dword const n)
+{
+    for (dword i = 0; i < n; i++)
+        pout[2 * i] = pout[2 * i + 1] = pin[i];
+}
+
+DE void __fastcall DSP_CopyM2S(float *pout, float const *pin, dword const n, float const a)
+{
+    for (dword i = 0; i < n; i++)
+        pout[2 * i] = pout[2 * i + 1] = pin[i] * a;
+}
+
+DE void __fastcall DSP_CopyM2S(float *pout, float const *pin, dword const n, float const la, float const ra)
+{
+    for (dword i = 0; i < n; i++)
+    {
+        pout[2 * i] = pin[i] * la;
+        pout[2 * i + 1] = pin[i] * ra;
+    }
+}
+
+DE void __fastcall DSP_CopyS2MOneChannel(float *pout, float const *pin, dword const n, float const a)
+{
+    for (dword i = 0; i < n; i++)
+        pout[i] = pin[2 * i] * a;
+}
+
+DE void __fastcall DSP_AddM2S(float *pout, float const *pin, dword const n)
+{
+    for (dword i = 0; i < n; i++)
+    {
+        pout[2 * i] += pin[i];
+        pout[2 * i + 1] += pin[i];
+    }
+}
+
+DE void __fastcall DSP_AddM2S(float *pout, float const *pin, dword const n, float const a)
+{
+    for (dword i = 0; i < n; i++)
+    {
+        float ia = pin[i] * a;
+        pout[2 * i] += ia;
+        pout[2 * i + 1] += ia;
+    }
+}
+
+DE void __fastcall DSP_AddM2S(float *pout, float const *pin, dword const n, float const la, float const ra)
+{
+    for (dword i = 0; i < n; i++)
+    {
+        pout[2 * i] += pin[i] * la;
+        pout[2 * i + 1] += pin[i] * ra;
+    }
+}
+
+DE void __fastcall DSP_AddS2S(float *pout, float const *pin, dword const n)
+{
+    for (dword i = 0; i < 2 * n; i += 2)
+    {
+        pout[i] += pin[i];
+        pout[i + 1] += pin[i + 1];
+    }
+}
+
+DE void __fastcall DSP_AddS2S(float *pout, float const *pin, dword const n, float const a)
+{
+    for (dword i = 0; i < 2 * n; i += 2)
+    {
+        pout[i] += pin[i] * a;
+        pout[i + 1] += pin[i + 1] * a;
+    }
+}
+
+DE void __fastcall DSP_AddS2S(float *pout, float const *pin, dword const n, float const la, float const ra)
+{
+    for (dword i = 0; i < 2 * n; i += 2)
+    {
+        pout[i] += pin[i] * la;
+        pout[i + 1] += pin[i + 1] * ra;
+    }
+}
+
+DE void __fastcall DSP_Amp(float *ps, dword const n, float const a)
+{
+    for (dword i = 0; i < n; i++)
+        ps[i] *= a;
+}
+
+DE void __fastcall DSP_AddS2MOneChannel(float *pout, float const *pin, dword const n, float const a)
+{
+    for (dword i = 0; i < n; i++)
+        pout[i] += pin[2 * i] * a;
+}
+
+DE void __fastcall DSP_AddS2SOneChannel(float *pout, float const *pin, dword const n, float const a)
+{
+    // huh?
+    for (dword i = 0; i < 2 * n; i += 2) {
+        pout[i] += pin[i] * a;
+        pout[i + 1] += pin[i] * a;
+    }
+}
+
 // second order butterworth filters
+
+extern "C" {
 
 class CBWState
 {
@@ -252,7 +389,6 @@ DE bool  __fastcall DSP_BW_WorkStereo(CBWState &s, float *ps, dword const n, int
 
 // resampler
 
-#if 0
 #define RS_STEP_FRAC_BITS	24
 
 class CResamplerParams
@@ -290,8 +426,9 @@ public:
 
 DE void  __fastcall DSP_Resample(float *pout, int numsamples, CResamplerState &state, CResamplerParams const &params)
 {
+    // printf("STUB: DSP_Resample\n");
 }
-#endif
+
 }
 
 #if 0
@@ -313,3 +450,10 @@ int main(void)
 		printf("%.10f\n", samples[i]);
 }
 #endif
+
+extern "C" {
+
+DE BOOL WINAPI DllMain(HINSTANCE, DWORD dwReason, LPVOID lpReserved) { 
+}
+
+};

@@ -1,3 +1,12 @@
+2008-06-23  Krzysztof Foltman  <kfoltman@users.sf.net>
+
+	* src/dsplib/Makefile:
+	* src/dsplib/dsplib.cpp:
+	* src/dsplib/dsplib.def: 
+	  Add primitive implementation of DSPLib primitives with proper
+	  exports (enough to make Bass 3 work), use single variable for
+	  mingw32 prefix in Makefile.
+
 2008-06-24  Stefan Kost  <ensonic@users.sf.net>
 
 	patch by: Krzysztof Foltman  <kfoltman@users.sf.net>
