@@ -42,6 +42,9 @@ in there. After building invoke :
 or alternatively run the testmachine.sh script to probe a whole directory with
 machines.
 
+If you have compiled with logging and set BML_DEBUG=1 before running, you'll get
+more diagnostics.
+
 = building the BuzzMachineLoader.dll =
 1) use MS developer studio
 2) CC=/usr/local/bin/i386-mingw32-gcc CXX=/usr/local/bin/i386-mingw32-g++ make

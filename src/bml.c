@@ -392,11 +392,16 @@ void bmlw_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks) {
 
 // wrapper management
 
-void bml_logger(char *str) {
+static void bml_stdout_logger(char *str) {
   TRACE(str);
 }
 
+static void bml_null_logger(char *str) {
+}
+
 int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
+  const char *use_log=getenv("BML_DEBUG");
+  
   TRACE("%s\n",__FUNCTION__);
   
 #ifdef HAVE_X86
@@ -451,11 +456,10 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
   if(!(BMLX(bmlw_describe_global_value)=(BMDescribeGlobalValue)GetSymbol(emu_dll,"bm_describe_global_value"))) { puts("bm_describe_global_value is missing");return(FALSE);}
   if(!(BMLX(bmlw_describe_track_value)=(BMDescribeTrackValue)GetSymbol(emu_dll,"bm_describe_track_value"))) { puts("bm_describe_track_value is missing");return(FALSE);}
 
-  // @todo needs rebuild
-  if(!(BMLX(bmlw_set_callbacks)=(BMSetCallbacks)GetSymbol(emu_dll,"bm_set_callbacks"))) { puts("bm_set_callbacks is missing");/*return(FALSE);*/}
+  if(!(BMLX(bmlw_set_callbacks)=(BMSetCallbacks)GetSymbol(emu_dll,"bm_set_callbacks"))) { puts("bm_set_callbacks is missing");return(FALSE);}
 
   TRACE("%s:   symbols connected\n",__FUNCTION__);
-  BMLX(bmlw_set_logger(bml_logger));
+  BMLX(bmlw_set_logger(use_log?bml_stdout_logger:bml_null_logger));
 #endif /* HAVE_X86 */
 
   if(!(emu_so=dlopen("libbuzzmachineloader.so",RTLD_LAZY))) {
@@ -503,7 +507,7 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
   if(!(bmln_set_callbacks=(BMSetCallbacks)dlsym(emu_so,"bm_set_callbacks"))) { puts("bm_set_callbacks is missing");return(FALSE);}
 
   TRACE("%s:   symbols connected\n",__FUNCTION__);
-  bmln_set_logger(bml_logger);
+  bmln_set_logger(use_log?bml_stdout_logger:bml_null_logger);
   
   return(TRUE);
 }

@@ -186,11 +186,11 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
 #endif
 
     // call SetNumTracks
-    DBG1("  CMachineInterface::SetNumTracks(%d)\n",bm->machine_info->minTracks);
+    //DBG1("  CMachineInterface::SetNumTracks(%d)\n",bm->machine_info->minTracks);
 	// calling this without the '-1' crashes: Automaton Parametric EQ.dll
 	//bm->machine_iface->SetNumTracks(bm->machine_info->minTracks-1);
 	bm->machine_iface->SetNumTracks(bm->machine_info->minTracks);
-    DBG("  CMachineInterface::SetNumTracks() called\n");
+    DBG1("  CMachineInterface::SetNumTracks(%d) called\n",bm->machine_info->minTracks);
 
 #ifndef BM_INIT_PARAMS_FIRST  /* params_later */
     // initialise global parameters (DefValue or NoValue, Buzz seems to use NoValue)
@@ -574,11 +574,7 @@ extern "C" DE void bm_attributes_changed(BuzzMachine *bm) {
 }
 
 extern "C" DE void bm_tick(BuzzMachine *bm) {
-    try{
-        bm->machine_iface->Tick();
-    }
-    catch (std::exception& e) { DBG1("-> exeption: %s\n",e.what()); }
-    catch(...) { DBG(" -> exeption\n"); }
+    bm->machine_iface->Tick();
     // FIXME: do we need to bump that from somewhere
     //DBG1("master_info.PosInTick = %d\n", master_info.PosInTick);
 }

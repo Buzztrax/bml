@@ -1,3 +1,21 @@
+2008-08-31  Stefan Kost  <ensonic@users.sf.net>
+
+	* TODO:
+	  more TODOs.
+
+	* dllwrapper1/wine/module.c:
+	* dllwrapper1/wine/pe_image.c:
+	  Less logging.
+
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	  Update some debug, remove expection.
+
+	* README:
+	* src/bml.c:
+	* src/dsplib/dsplib.cpp:
+	  Add env var to limmit debug spew a bit more.
+	  
+
 2008-06-23  Krzysztof Foltman  <kfoltman@users.sf.net>
 
 	* src/dsplib/Makefile:

@@ -572,7 +572,7 @@ HMODULE PE_LoadImage( int handle, LPCSTR filename, WORD *version )
     if (load_addr == 0)
     {
 
-        FIXME("We need to perform base relocations for %s\n", filename);
+        //FIXME("We need to perform base relocations for %s\n", filename);
 	dir = nt->OptionalHeader.DataDirectory+IMAGE_DIRECTORY_ENTRY_BASERELOC;
         if (dir->Size)
             reloc = dir->VirtualAddress;
@@ -602,11 +602,12 @@ HMODULE PE_LoadImage( int handle, LPCSTR filename, WORD *version )
 	}
     }
 
+/*
     TRACE("Load addr is %lx (base %lx), range %x\n",
           load_addr, nt->OptionalHeader.ImageBase, vma_size );
     TRACE_(segment)("Loading %s at %lx, range %x\n",
                     filename, load_addr, vma_size );
-
+*/
 #if 0
 
     *(PIMAGE_DOS_HEADER)load_addr = *(PIMAGE_DOS_HEADER)hModule;
@@ -718,33 +719,30 @@ WINE_MODREF *PE_CreateModule( HMODULE hModule,
         pe_resource = (PIMAGE_RESOURCE_DIRECTORY)RVA(dir->VirtualAddress);
 
     dir = nt->OptionalHeader.DataDirectory+IMAGE_DIRECTORY_ENTRY_EXCEPTION;
-    if (dir->Size) FIXME("Exception directory ignored\n" );
+    //if (dir->Size) FIXME("Exception directory ignored\n" );
 
     dir = nt->OptionalHeader.DataDirectory+IMAGE_DIRECTORY_ENTRY_SECURITY;
-    if (dir->Size) FIXME("Security directory ignored\n" );
-
-
+    //if (dir->Size) FIXME("Security directory ignored\n" );
 
 
     dir = nt->OptionalHeader.DataDirectory+IMAGE_DIRECTORY_ENTRY_DEBUG;
-    if (dir->Size) TRACE("Debug directory ignored\n" );
+    //if (dir->Size) TRACE("Debug directory ignored\n" );
 
     dir = nt->OptionalHeader.DataDirectory+IMAGE_DIRECTORY_ENTRY_COPYRIGHT;
-    if (dir->Size) FIXME("Copyright string ignored\n" );
+    //if (dir->Size) FIXME("Copyright string ignored\n" );
 
     dir = nt->OptionalHeader.DataDirectory+IMAGE_DIRECTORY_ENTRY_GLOBALPTR;
-    if (dir->Size) FIXME("Global Pointer (MIPS) ignored\n" );
-
+    //if (dir->Size) FIXME("Global Pointer (MIPS) ignored\n" );
 
 
     dir = nt->OptionalHeader.DataDirectory+IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG;
-    if (dir->Size) FIXME("Load Configuration directory ignored\n" );
+    //if (dir->Size) FIXME("Load Configuration directory ignored\n" );
 
     dir = nt->OptionalHeader.DataDirectory+IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT;
-    if (dir->Size) TRACE("Bound Import directory ignored\n" );
+    //if (dir->Size) TRACE("Bound Import directory ignored\n" );
 
     dir = nt->OptionalHeader.DataDirectory+IMAGE_DIRECTORY_ENTRY_IAT;
-    if (dir->Size) TRACE("Import Address Table directory ignored\n" );
+    //if (dir->Size) TRACE("Import Address Table directory ignored\n" );
 
     dir = nt->OptionalHeader.DataDirectory+IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT;
     if (dir->Size)

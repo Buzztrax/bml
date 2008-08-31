@@ -43,6 +43,11 @@ result should go to a given directory (use date-time when not provided)
 unk__malloc_dbg
 from MSVCRTD.dll which I can't find
 
+unk_HeapValidate
+http://msdn.microsoft.com/en-us/library/aa366708(VS.85).aspx
+- from user32.dll
+- when unloading Ninja
+
 = list missing machine for songs =
 for file in *.bmx; do ~/buzztard/bin/bt-cmd 2>/dev/null --command=info --input-file=$file | grep "  bml-"; done | sort | uniq -c | sort -n
 

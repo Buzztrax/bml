@@ -120,7 +120,7 @@ WINE_MODREF *MODULE32_LookupHMODULE(HMODULE m)
 	    return NULL;
 	}
     }
-    TRACE("LookupHMODULE hit %p\n", list->wm);
+    //TRACE("LookupHMODULE hit %p\n", list->wm);
     return list->wm;
 }
 
@@ -431,7 +431,7 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 	}
 	if ( wm )
 	{
-		TRACE("loaded module '%s'\n", libname);
+		//TRACE("Loaded module '%s'\n", libname);
 
 		if ( !MODULE_DllProcessAttach( wm, NULL ) )
 		{

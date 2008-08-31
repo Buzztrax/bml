@@ -34,7 +34,7 @@ typedef uint32_t dword;
 
 #define QUIET 0.1
 
-static int sampleRate;
+static int sampleRate = 1;
 
 extern "C" {
 
@@ -197,7 +197,7 @@ public:
 
 DE void  __fastcall DSP_BW_Reset(CBWState &s)
 {
-	s.i[0] = 0;
+ 	s.i[0] = 0;
 	s.i[1] = 0;
 	s.o[0] = 0;
 	s.o[1] = 0;
@@ -454,6 +454,6 @@ int main(void)
 extern "C" {
 
 DE BOOL WINAPI DllMain(HINSTANCE, DWORD dwReason, LPVOID lpReserved) { 
+  return 1;
 }
-
 };
