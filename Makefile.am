@@ -1,8 +1,5 @@
 ## $Id$
 
-# https://sourceforge.net/tracker/?func=detail&atid=476037&aid=1981932&group_id=55124
-MAKEFLAGS = -j1
-
 if USE_DLLWRAPPER1
 DLLWRAPPER=dllwrapper1
 endif
