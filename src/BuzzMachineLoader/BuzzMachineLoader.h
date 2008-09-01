@@ -42,6 +42,10 @@ struct _CHostCallbacks {
 // the high level instance handle
 class BuzzMachine {
 public:
+        /* FIXME: what about adding a 4 byte cookie here
+         * which bm_new() could set and
+         * a macro BM_IS_BM(bm) could check
+         */
 	// library handle
 	void *h;
 	char *lib_name;
@@ -51,8 +55,8 @@ public:
 	CMachineInfo *machine_info;
 	CMachineInterface *machine_iface;
 	CMachine *machine;
-    CMDKImplementation *mdkHelper;
-    CHostCallbacks *host_callbacks;
+	CMDKImplementation *mdkHelper;
+	CHostCallbacks *host_callbacks;
 	//callbacks->machine_ex;
 	//CMachineInterfaceEx *machine_ex;
 };

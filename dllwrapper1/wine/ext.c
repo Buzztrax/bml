@@ -234,6 +234,7 @@ LPVOID FILE_dommap( int unix_handle, LPVOID start,
     int fd = -1;
     int pos;
     LPVOID ret;
+    ssize_t read_ret;
 
     if (size_high || offset_high)
         printf("offsets larger than 4Gb not supported\n");
@@ -309,9 +310,26 @@ LPVOID FILE_dommap( int unix_handle, LPVOID start,
 //	printf("lseek\n");
         return (LPVOID)-1;
     }
-    read( fd, ret, size_low );
-    lseek( fd, pos, SEEK_SET );  /* Restore the file pointer */
-    mprotect( ret, size_low, prot );  /* Set the right protection */
+    if ((read_ret = read( fd, ret, size_low )) != size_low)
+    {
+        FILE_munmap( ret, size_high, size_low );
+//	printf("read\n");
+        return (LPVOID)-1;
+    }
+    /* Restore the file pointer */
+    if (lseek( fd, pos, SEEK_SET ) == -1)
+    {
+        FILE_munmap( ret, size_high, size_low );
+//	printf("lseek back\n");
+        return (LPVOID)-1;
+    }
+    /* Set the right protection */
+    if (mprotect( ret, size_low, prot ) == -1)
+    {
+        FILE_munmap( ret, size_high, size_low );
+//	printf("mprotect\n");
+        return (LPVOID)-1;
+    }
 //    printf("address %08x\n", *(int*)ret);
     return ret;
 }

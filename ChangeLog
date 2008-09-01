@@ -1,5 +1,13 @@
 2008-09-01  Stefan Kost  <ensonic@users.sf.net>
 
+	* dllwrapper1/wine/ext.c:
+	  handle more return values.
+
+	* src/BuzzMachineLoader/BuzzMachineLoader.h:
+	  TODOs and indenting.
+
+2008-09-01  Stefan Kost  <ensonic@users.sf.net>
+
 	* Makefile.am:
 	* dllwrapper1/wine/Makefile.am:
 	* src/Makefile.am:
