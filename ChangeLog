@@ -1,3 +1,8 @@
+2008-09-04  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader/Makefile.am:
+	  Don't install *.a for dlopened libs.
+
 2008-09-02  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader/Makefile.am:
