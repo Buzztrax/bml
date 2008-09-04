@@ -28,7 +28,6 @@ noinst_HEADERS = \
     dsplib.h \
     resample.h
 
-# TODO: make static only (AC_DISABLE_STATIC in configure.ac)
 libbuzzmachineloader_la_CXXFLAGS = $(BML_CXXFLAGS)
 libbuzzmachineloader_la_LIBADD = -lm -lpthread -ldl -lstdc++
 libbuzzmachineloader_la_LDFLAGS = -module -avoid-version

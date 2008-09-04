@@ -23,7 +23,7 @@ endif
 libbml_la_CFLAGS = $(BML_CFLAGS) $(ARCH_CFLAGS)
 libbml_la_LIBADD = -lm -lpthread -ldl $(BML_LIBS) $(WRAPPER_LIBS)
 
-bin_PROGRAMS=bmltest_info bmltest_process
+noinst_PROGRAMS=bmltest_info bmltest_process
 
 bmltest_info_SOURCES= bmltest_info.c
 bmltest_info_LDADD = $(BML_LIBS) -ldl libbml.la
