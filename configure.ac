@@ -121,3 +121,17 @@ AC_CONFIG_FILES( \
   tests/bt-cfg.sh \
 )
 AC_OUTPUT
+
+echo "
+
+Configuration
+	Version                    : ${VERSION}
+	Source code location       : ${srcdir}
+	Prefix                     : ${prefix}
+	Compiler                   : ${CC}
+
+	x86 win32 buzzmachines     : $HAVE_X86
+
+	Debug                      : ${enable_debug}
+	Coverage profiling         : ${enable_coverage}
+"
