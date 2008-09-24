@@ -28,11 +28,10 @@ noinst_HEADERS = \
     dsplib.h \
     resample.h
 
-libbuzzmachineloader_la_CXXFLAGS = $(BML_CXXFLAGS)
+libbuzzmachineloader_la_CXXFLAGS = \
+	-I$(top_srcdir)/dllwrapper1/wine \
+        $(BML_CXXFLAGS)
 libbuzzmachineloader_la_LIBADD = -lm -lpthread -ldl -lstdc++
 libbuzzmachineloader_la_LDFLAGS = -module -avoid-version
 libbuzzmachineloader_la_LIBTOOLFLAGS = --tag=disable-static
 
-INCLUDES = \
-	-I$(top_srcdir)/dllwrapper1/wine
-    

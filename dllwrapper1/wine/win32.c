@@ -2152,14 +2152,14 @@ static int WINAPI expCloseHandle(long v1)
 
 static const char* WINAPI expGetCommandLineA()
 {
-    dbgprintf("GetCommandLineA() => \"c:\\aviplay.exe\"\n");
-    return "c:\\aviplay.exe";
+    dbgprintf("GetCommandLineA() => \"c:\\buzz.exe\"\n");
+    return "c:\\buzz.exe";
 }
 
 static const char* WINAPI expGetCommandLineW()
 {
-    dbgprintf("GetCommandLineW() => \"c:\\aviplay.exe\"\n");
-    return "c:\\aviplay.exe";
+    dbgprintf("GetCommandLineW() => \"c:\\buzz.exe\"\n");
+    return "c:\\buzz.exe";
 }
 
 //static short envs[]={'p', 'a', 't', 'h', ' ', 'c', ':', '\\', 0, 0};

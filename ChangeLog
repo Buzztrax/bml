@@ -1,3 +1,13 @@
+2008-09-24  Stefan Kost  <ensonic@users.sf.net>
+
+	* dllwrapper1/wine/win32.c:
+	  Use buzz.exe as a app name.
+
+	* dllwrapper1/wine/Makefile.am:
+	* src/BuzzMachineLoader/Makefile.am:
+	* src/Makefile.am:
+	  Get rid of INCLUDES variable (automake deprecates it).
+
 2008-09-22  Stefan Kost  <ensonic@users.sf.net>
 
 	* configure.ac:
