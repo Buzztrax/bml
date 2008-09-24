@@ -23,6 +23,9 @@ libloader_la_SOURCES = \
 	stubs.s \
 	wrapper.S
 
+libloader_la_CFLAGS = $(BML_CFLAGS) $(ARCH_CFLAGS)
+libloader_la_CCASFLAGS = $(ARCH_CCASFLAGS)
+
 # Note: gcc-3.0 produces buggy code for acmStreamOpen() with
 # "-O3 -fomit-frame-pointer" or "-O2 -fomit-frame-pointer
 # -finline-functions -frename-registers" (code is OK with sole -O2),
@@ -31,14 +34,12 @@ libloader_la_SOURCES = \
 # -fno-omit-frame-pointer works around this gcc-3.0 bug.  gcc-2.95.2 is OK.
 # Note: -D_FILE_OFFSET_BITS=32 is required to disable using mmap64(),
 # as it's broken in glibc 2.1.2 (bad header) and 2.1.3 (bad code)
-libloader_la_CFLAGS = \
+AM_CPPFLAGS =  \
 	-D__WINE__ \
 	-DWIN32_PATH=\"/usr/lib/win32\" \
 	-DWIN32_LIB_PATH=\"$(libdir)\" \
 	-fno-omit-frame-pointer \
-	-mno-omit-leaf-frame-pointer \
-        $(BML_CFLAGS) $(ARCH_CFLAGS)
-libloader_la_CCASFLAGS = $(ARCH_CCASFLAGS)
+	-mno-omit-leaf-frame-pointer
 
 noinst_HEADERS = \
 	avifmt.h \
