@@ -4651,6 +4651,11 @@ static WIN_BOOL expTerminateProcess(HANDLE hProcess, DWORD uExitCode) {
 	return TRUE;
 }
 
+static DWORD WINAPI expSetCriticalSectionSpinCount(LPVOID lpCriticalSection,DWORD dwSpinCount) {
+  return 0;
+}
+
+
 /* these are needed for mss1 */
 
 /* defined in stubs.s */
@@ -5041,6 +5046,7 @@ struct exports exp_kernel32[]=
     {"LoadLibraryExA", -1, (void*)&LoadLibraryExA},
     FF(SetThreadIdealProcessor,-1)
     FF(TerminateProcess, -1)
+    FF(SetCriticalSectionSpinCount, -1)
 };
 
 struct exports exp_msvcrt[]={

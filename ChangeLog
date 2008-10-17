@@ -1,3 +1,9 @@
+2008-10-17  Stefan Kost  <ensonic@users.sf.net>
+
+	* TODO:
+	* dllwrapper1/wine/win32.c:
+	  Wrap one more win api to get "cheapo spread" working.
+
 2008-09-24  Stefan Kost  <ensonic@users.sf.net>
 
 	* dllwrapper1/wine/Makefile.am:
