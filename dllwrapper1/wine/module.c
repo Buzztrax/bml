@@ -996,13 +996,13 @@ FARPROC MODULE_GetProcAddress(
     {
     case MODULE32_PE:
      	retproc = PE_FindExportedFunction( wm, function, snoop );
-	if (!retproc) SetLastError(ERROR_PROC_NOT_FOUND);
-	break;
+        if (!retproc) SetLastError(ERROR_PROC_NOT_FOUND);
+        break;
 #ifdef HAVE_LIBDL
     case MODULE32_ELF:
-	retproc = (FARPROC) dlsym( (void*) wm->module, function);
-	if (!retproc) SetLastError(ERROR_PROC_NOT_FOUND);
-	return retproc;
+        retproc = (FARPROC) dlsym( (void*) wm->module, function);
+        if (!retproc) SetLastError(ERROR_PROC_NOT_FOUND);
+        return retproc;
 #endif
     default:
     	ERR("wine_modref type %d not handled.\n",wm->type);

@@ -158,6 +158,7 @@ FARPROC PE_FindExportedFunction(
 	rva_end = rva_start + PE_HEADER(wm->module)->OptionalHeader
 		.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].Size;
 
+    //TRACE(".. search in %ld symbols\n",exports->NumberOfNames);
 	if (HIWORD(funcName))
     {
         int min = 0, max = exports->NumberOfNames - 1;
@@ -207,7 +208,10 @@ found:
         return NULL;
     }
     addr = function[ordinal];
-    if (!addr) return NULL;
+    if (!addr) {
+      TRACE("no address for function '%s'\n", funcName );
+      return NULL;
+    }
     if ((addr < rva_start) || (addr >= rva_end))
     {
         FARPROC proc = RVA(addr);
