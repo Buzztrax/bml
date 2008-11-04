@@ -1,5 +1,13 @@
 2008-11-04  Stefan Kost  <ensonic@users.sf.net>
 
+	* dllwrapper1/wine/Makefile.am:
+	  Try using --ffast-math (recommended in the source).
+
+	* dllwrapper1/wine/win32.c:
+	  Make more stuff static and disable some unused things.
+
+2008-11-04  Stefan Kost  <ensonic@users.sf.net>
+
 	* dllwrapper1/wine/module.c:
 	* dllwrapper1/wine/pe_image.c:
 	  Indeting and more logging.

@@ -182,8 +182,9 @@ static void longcount_stub(long long* z)
     longcount(z);
 }
 
-int LOADER_DEBUG=1; // active only if compiled with -DDETAILED_OUT
-//#define DETAILED_OUT
+#ifdef DETAILED_OUT
+static int LOADER_DEBUG=1; // active only if compiled with -DDETAILED_OUT
+#endif
 static inline void __attribute__((__format__(__printf__, 1, 2))) dbgprintf(char* fmt, ...)
 {
 #ifdef DETAILED_OUT
@@ -227,7 +228,7 @@ char export_names[300][32]={
 };
 //#define min(x,y) ((x)<(y)?(x):(y))
 
-void destroy_event(void* event);
+static void destroy_event(void* event);
 
 struct th_list_t;
 typedef struct th_list_t{
@@ -356,8 +357,7 @@ struct CRITSECT
     long deadbeef;
 };
 
-void* mreq_private(int size, int to_zero, int type);
-void* mreq_private(int size, int to_zero, int type)
+static void* mreq_private(int size, int to_zero, int type)
 {
     int nsize = size + sizeof(alloc_header);
     alloc_header* header = (alloc_header* ) malloc(nsize);
@@ -612,7 +612,7 @@ struct mutex_list_t
 typedef struct mutex_list_t mutex_list;
 static mutex_list* mlist=NULL;
 
-void destroy_event(void* event)
+static void destroy_event(void* event)
 {
     mutex_list* pp=mlist;
     //dbgprintf("garbage collector: destroy_event(%x)\n", event);
@@ -2812,6 +2812,8 @@ static int WINAPI expWritePrivateProfileStringA(const char* appname,
     return 0;
 }
 
+// FIXME: not called anywhere, can we remove or at leastmake static
+#if 0
 unsigned int _GetPrivateProfileIntA(const char* appname, const char* keyname, INT default_value, const char* filename)
 {
     return expGetPrivateProfileIntA(appname, keyname, default_value, filename);
@@ -2826,7 +2828,7 @@ int _WritePrivateProfileStringA(const char* appname, const char* keyname,
 {
     return expWritePrivateProfileStringA(appname, keyname, string, filename);
 }
-
+#endif
 
 
 static int WINAPI expDefDriverProc(int _private, int id, int msg, int arg1, int arg2)
@@ -4420,7 +4422,7 @@ static double exp_CIpow(void)
 {
     FPU_DOUBLES(x,y);
 
-    dbgprintf("_CIpow(%lf, %lf)\n", x, y);
+    /*dbgprintf("_CIpow(%lf, %lf)\n", x, y);*/
     return pow(x, y);
 }
 
@@ -4812,7 +4814,7 @@ static double exp_CIcos(void)
 {
     FPU_DOUBLE(x);
 
-    dbgprintf("_CIcos(%lf)\n", x);
+    /*dbgprintf("_CIcos(%lf)\n", x);*/
     return cos(x);
 }
 
@@ -4820,7 +4822,7 @@ static double exp_CIsin(void)
 {
     FPU_DOUBLE(x);
 
-    dbgprintf("_CIsin(%lf)\n", x);
+    /*dbgprintf("_CIsin(%lf)\n", x);*/
     return sin(x);
 }
 
@@ -4828,7 +4830,7 @@ static double exp_CIcosh(void)
 {
     FPU_DOUBLE(x);
 
-    dbgprintf("_CIcosh(%lf)\n", x);
+    /*dbgprintf("_CIcosh(%lf)\n", x);*/
     return cosh(x);
 }
 
@@ -4836,7 +4838,7 @@ static double exp_CIsinh(void)
 {
     FPU_DOUBLE(x);
 
-    dbgprintf("_CIsinh(%lf)\n", x);
+    /*dbgprintf("_CIsinh(%lf)\n", x);*/
     return sinh(x);
 }
 

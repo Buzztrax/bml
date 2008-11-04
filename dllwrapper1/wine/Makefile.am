@@ -23,7 +23,7 @@ libloader_la_SOURCES = \
 	stubs.s \
 	wrapper.S
 
-libloader_la_CFLAGS = $(BML_CFLAGS) $(ARCH_CFLAGS)
+libloader_la_CFLAGS = $(BML_CFLAGS) $(ARCH_CFLAGS) -ffast-math
 libloader_la_CCASFLAGS = $(ARCH_CCASFLAGS)
 
 # Note: gcc-3.0 produces buggy code for acmStreamOpen() with
