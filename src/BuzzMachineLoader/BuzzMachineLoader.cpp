@@ -122,128 +122,6 @@ extern "C" DE void bm_free(BuzzMachine *bm) {
     }
 }
 
-//#define BM_INIT_PARAMS_FIRST 1
-#define BM_INIT_ATTRIBUTES_CHANGED_FIRST 1
-
-extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data) {
-    int i,j;
-
-    DBG2("  bm_init(bm,%ld,%p)\n",blob_size,blob_data);
-
-    // initialise attributes
-    for(i=0;i<bm->machine_info->numAttributes;i++) {
-        bm_set_attribute_value(bm,i,bm->machine_info->Attributes[i]->DefValue);
-    }
-    DBG("  attributes initialized\n");
-#ifdef BM_INIT_PARAMS_FIRST /* params_first */
-    // initialise global parameters (DefValue or NoValue, Buzz seems to use NoValue)
-    for(i=0;i<bm->machine_info->numGlobalParameters;i++) {
-        if(bm->machine_info->Parameters[i]->Flags&MPF_STATE) {
-            bm_set_global_parameter_value(bm,i,bm->machine_info->Parameters[i]->DefValue);
-        }
-        else {
-            bm_set_global_parameter_value(bm,i,bm->machine_info->Parameters[i]->NoValue);
-        }
-    }
-    // initialise track parameters
-    if((bm->machine_info->minTracks>0) && (bm->machine_info->maxTracks>0)) {
-        DBG3(" need to initialize %d track params for tracks: %d...%d\n",bm->machine_info->numTrackParameters,bm->machine_info->minTracks,bm->machine_info->maxTracks);
-        for(j=0;j<bm->machine_info->maxTracks;j++) {
-            for(i=0;i<bm->machine_info->numTrackParameters;i++) {
-                if(bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->Flags&MPF_STATE) {
-                    bm_set_track_parameter_value(bm,j,i,bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->DefValue);
-                }
-                else {
-                    bm_set_track_parameter_value(bm,j,i,bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->NoValue);
-                }
-            }
-        }
-    }
-    DBG("  parameters initialized\n");
-#endif
-    // create the machine data input
-    CMachineDataInput * pcmdii = NULL;
-
-    if (blob_size && blob_data) {
-      pcmdii = new CMachineDataInputImpl(blob_data, blob_size);
-    }
-   
-    // call Init
-	bm->machine_iface->Init(pcmdii);
-    DBG("  CMachineInterface::Init() called\n");
-    {
-      bm->mdkHelper = (CMDKImplementation*)bm->callbacks->GetNearestWaveLevel(-1,-1);
-      DBG1("  numInputChannels=%d\n",(bm->mdkHelper)?bm->mdkHelper->numChannels:0);
-      // if numChannels=0, its not a mdk-machine and numChannels=1
-    }
-
-#ifdef BM_INIT_ATTRIBUTES_CHANGED_FIRST
-    // call AttributesChanged always
-    //if(bm->machine_info->numAttributes>0) {
-		bm->machine_iface->AttributesChanged();
-        DBG("  CMachineInterface::AttributesChanged() called\n");
-    //}
-#endif
-
-    // call SetNumTracks
-    //DBG1("  CMachineInterface::SetNumTracks(%d)\n",bm->machine_info->minTracks);
-	// calling this without the '-1' crashes: Automaton Parametric EQ.dll
-	//bm->machine_iface->SetNumTracks(bm->machine_info->minTracks-1);
-	bm->machine_iface->SetNumTracks(bm->machine_info->minTracks);
-    DBG1("  CMachineInterface::SetNumTracks(%d) called\n",bm->machine_info->minTracks);
-
-#ifndef BM_INIT_PARAMS_FIRST  /* params_later */
-    // initialise global parameters (DefValue or NoValue, Buzz seems to use NoValue)
-    for(i=0;i<bm->machine_info->numGlobalParameters;i++) {
-        if(bm->machine_info->Parameters[i]->Flags&MPF_STATE) {
-            bm_set_global_parameter_value(bm,i,bm->machine_info->Parameters[i]->DefValue);
-        }
-        else {
-            bm_set_global_parameter_value(bm,i,bm->machine_info->Parameters[i]->NoValue);
-        }
-    }
-    DBG("  global parameters initialized\n");
-    // initialise track parameters
-    if((bm->machine_info->minTracks>0) && (bm->machine_info->maxTracks>0)) {
-        DBG3(" need to initialize %d track params for tracks: %d...%d\n",bm->machine_info->numTrackParameters,bm->machine_info->minTracks,bm->machine_info->maxTracks);
-        for(j=0;j<bm->machine_info->maxTracks;j++) {
-            for(i=0;i<bm->machine_info->numTrackParameters;i++) {
-                if(bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->Flags&MPF_STATE) {
-                    bm_set_track_parameter_value(bm,j,i,bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->DefValue);
-                }
-                else {
-                    bm_set_track_parameter_value(bm,j,i,bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->NoValue);
-                }
-            }
-        }
-    }
-    DBG("  track parameters initialized\n");
-#endif
-
-#ifndef BM_INIT_ATTRIBUTES_CHANGED_FIRST
-    // call AttributesChanged always
-    //if(bm->machine_info->numAttributes>0) {
-		bm->machine_iface->AttributesChanged();
-        DBG("  CMachineInterface::AttributesChanged() called\n");
-    //}
-#endif
-
-    /* we've given the machine the initial global- and track-parameters,
-     * and the attributes, give it a tick
-     * - tick HERE rather than later, to give (for example) the Master machine a
-     *   chance to update its state before any other machines need to rely on it
-     * - tick AFTER AttributesChanged, and after we've set initial track and
-     *   global data for machine)
-     */
-	bm->machine_iface->Tick();
-    DBG("  CMachineInterface::Tick() called\n");
-
-    if(bm->machine_info->Flags&MIF_USES_LIB_INTERFACE) {
-        DBG(" MIF_USES_LIB_INTERFACE");
-        FIXME;
-    }
-}
-
 extern "C" DE BuzzMachine *bm_new(char *bm_file_name) {
     BuzzMachine *bm=(BuzzMachine *)calloc(sizeof(BuzzMachine),1);
     GetInfoPtr GetInfo=NULL;
@@ -326,6 +204,128 @@ extern "C" DE BuzzMachine *bm_new(char *bm_file_name) {
     bm->machine_iface->pCB=bm->callbacks;
 
     return(bm);
+}
+
+//#define BM_INIT_PARAMS_FIRST 1
+#define BM_INIT_ATTRIBUTES_CHANGED_FIRST 1
+
+extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data) {
+    int i,j;
+
+    DBG2("  bm_init(bm,%ld,%p)\n",blob_size,blob_data);
+
+    // initialise attributes
+    for(i=0;i<bm->machine_info->numAttributes;i++) {
+        bm_set_attribute_value(bm,i,bm->machine_info->Attributes[i]->DefValue);
+    }
+    DBG("  attributes initialized\n");
+#ifdef BM_INIT_PARAMS_FIRST /* params_first */
+    // initialise global parameters (DefValue or NoValue, Buzz seems to use NoValue)
+    for(i=0;i<bm->machine_info->numGlobalParameters;i++) {
+        if(bm->machine_info->Parameters[i]->Flags&MPF_STATE) {
+            bm_set_global_parameter_value(bm,i,bm->machine_info->Parameters[i]->DefValue);
+        }
+        else {
+            bm_set_global_parameter_value(bm,i,bm->machine_info->Parameters[i]->NoValue);
+        }
+    }
+    // initialise track parameters
+    if((bm->machine_info->minTracks>0) && (bm->machine_info->maxTracks>0)) {
+        DBG3(" need to initialize %d track params for tracks: %d...%d\n",bm->machine_info->numTrackParameters,bm->machine_info->minTracks,bm->machine_info->maxTracks);
+        for(j=0;j<bm->machine_info->maxTracks;j++) {
+            for(i=0;i<bm->machine_info->numTrackParameters;i++) {
+                if(bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->Flags&MPF_STATE) {
+                    bm_set_track_parameter_value(bm,j,i,bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->DefValue);
+                }
+                else {
+                    bm_set_track_parameter_value(bm,j,i,bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->NoValue);
+                }
+            }
+        }
+    }
+    DBG("  parameters initialized\n");
+#endif
+    // create the machine data input
+    CMachineDataInput * pcmdii = NULL;
+
+    if (blob_size && blob_data) {
+      pcmdii = new CMachineDataInputImpl(blob_data, blob_size);
+    }
+   
+    // create and get mdk implementation
+    bm->mdkHelper = (CMDKImplementation*)bm->callbacks->GetNearestWaveLevel(-1,-1);
+    DBG1("  numInputChannels=%d\n",(bm->mdkHelper)?bm->mdkHelper->numChannels:0);
+    // if numChannels=0, its not a mdk-machine and numChannels=1
+
+    // call Init
+	bm->machine_iface->Init(pcmdii);
+    DBG("  CMachineInterface::Init() called\n");
+
+#ifdef BM_INIT_ATTRIBUTES_CHANGED_FIRST
+    // call AttributesChanged always
+    //if(bm->machine_info->numAttributes>0) {
+		bm->machine_iface->AttributesChanged();
+        DBG("  CMachineInterface::AttributesChanged() called\n");
+    //}
+#endif
+
+    // call SetNumTracks
+    //DBG1("  CMachineInterface::SetNumTracks(%d)\n",bm->machine_info->minTracks);
+	// calling this without the '-1' crashes: Automaton Parametric EQ.dll
+	//bm->machine_iface->SetNumTracks(bm->machine_info->minTracks-1);
+	bm->machine_iface->SetNumTracks(bm->machine_info->minTracks);
+    DBG1("  CMachineInterface::SetNumTracks(%d) called\n",bm->machine_info->minTracks);
+
+#ifndef BM_INIT_PARAMS_FIRST  /* params_later */
+    // initialise global parameters (DefValue or NoValue, Buzz seems to use NoValue)
+    for(i=0;i<bm->machine_info->numGlobalParameters;i++) {
+        if(bm->machine_info->Parameters[i]->Flags&MPF_STATE) {
+            bm_set_global_parameter_value(bm,i,bm->machine_info->Parameters[i]->DefValue);
+        }
+        else {
+            bm_set_global_parameter_value(bm,i,bm->machine_info->Parameters[i]->NoValue);
+        }
+    }
+    DBG("  global parameters initialized\n");
+    // initialise track parameters
+    if((bm->machine_info->minTracks>0) && (bm->machine_info->maxTracks>0)) {
+        DBG3(" need to initialize %d track params for tracks: %d...%d\n",bm->machine_info->numTrackParameters,bm->machine_info->minTracks,bm->machine_info->maxTracks);
+        for(j=0;j<bm->machine_info->maxTracks;j++) {
+            for(i=0;i<bm->machine_info->numTrackParameters;i++) {
+                if(bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->Flags&MPF_STATE) {
+                    bm_set_track_parameter_value(bm,j,i,bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->DefValue);
+                }
+                else {
+                    bm_set_track_parameter_value(bm,j,i,bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->NoValue);
+                }
+            }
+        }
+    }
+    DBG("  track parameters initialized\n");
+#endif
+
+#ifndef BM_INIT_ATTRIBUTES_CHANGED_FIRST
+    // call AttributesChanged always
+    //if(bm->machine_info->numAttributes>0) {
+		bm->machine_iface->AttributesChanged();
+        DBG("  CMachineInterface::AttributesChanged() called\n");
+    //}
+#endif
+
+    /* we've given the machine the initial global- and track-parameters,
+     * and the attributes, give it a tick
+     * - tick HERE rather than later, to give (for example) the Master machine a
+     *   chance to update its state before any other machines need to rely on it
+     * - tick AFTER AttributesChanged, and after we've set initial track and
+     *   global data for machine)
+     */
+	bm->machine_iface->Tick();
+    DBG("  CMachineInterface::Tick() called\n");
+
+    if(bm->machine_info->Flags&MIF_USES_LIB_INTERFACE) {
+        DBG(" MIF_USES_LIB_INTERFACE");
+        FIXME;
+    }
 }
 
 extern "C" DE int bm_get_machine_info(BuzzMachine *bm,BuzzMachineProperty key,void *value) {
