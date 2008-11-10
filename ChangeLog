@@ -1,5 +1,18 @@
 2008-11-10  Stefan Kost  <ensonic@users.sf.net>
 
+
+	* src/BuzzMachineLoader/BuzzMDKHelper.cpp:
+	* src/BuzzMachineLoader/BuzzMDKHelper.h:
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.cpp:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.cpp:
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	* src/BuzzMachineLoader/BuzzMachineLoader.h:
+	* src/BuzzMachineLoader/mdkimp.h:
+	  Revert reordering. Add some more comments. Need to recomplie a win32
+	  binary.
+
+2008-11-10  Stefan Kost  <ensonic@users.sf.net>
+
 	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
 	  Reoder function and modify initialisation sequence.
 

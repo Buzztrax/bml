@@ -42,10 +42,11 @@
 #include "debug.h"
 
 BuzzMDKHelper::BuzzMDKHelper(void) {
+    ThisMachine=NULL;
+	numChannels=0;
 }
 
 BuzzMDKHelper::~BuzzMDKHelper() {
-	//
 }
 
 void BuzzMDKHelper::AddInput(char const *szMachine, bool bStereo) {

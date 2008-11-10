@@ -27,6 +27,14 @@ class CMDKImplementation
 	friend class CMDKMachineInterface;
 	friend class CMDKMachineInterfaceEx;
 public:
+    // hmm, we need to call mdkHelper->Init(pcmdii); instead but that crashes
+    /*
+    CMDKImplementation() {
+      HaveInput=0;
+      numChannels=1;
+      MachineWantsChannels=1;
+    }
+    */
 	virtual ~CMDKImplementation();
 
 	virtual void AddInput(char const *macname, bool stereo);

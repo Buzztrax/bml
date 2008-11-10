@@ -252,14 +252,16 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
       pcmdii = new CMachineDataInputImpl(blob_data, blob_size);
     }
    
-    // create and get mdk implementation
-    bm->mdkHelper = (CMDKImplementation*)bm->callbacks->GetNearestWaveLevel(-1,-1);
-    DBG1("  numInputChannels=%d\n",(bm->mdkHelper)?bm->mdkHelper->numChannels:0);
-    // if numChannels=0, its not a mdk-machine and numChannels=1
-
-    // call Init
-	bm->machine_iface->Init(pcmdii);
+    // call Init (this also calles mdkHelper::Init()
+    bm->machine_iface->Init(pcmdii);
     DBG("  CMachineInterface::Init() called\n");
+    // create and get mdk implementation
+    if((bm->machine_info->Version & 0xff) >= 15) {
+      // imho mdk only works with for machines that use buzz 1.2 api
+      bm->mdkHelper = (CMDKImplementation*)bm->callbacks->GetNearestWaveLevel(-1,-1);
+      DBG1("  numInputChannels=%d\n",(bm->mdkHelper)?bm->mdkHelper->numChannels:0);
+      // if numChannels=0, its not a mdk-machine and numChannels=1
+    }
 
 #ifdef BM_INIT_ATTRIBUTES_CHANGED_FIRST
     // call AttributesChanged always
@@ -351,8 +353,29 @@ extern "C" DE int bm_get_machine_info(BuzzMachine *bm,BuzzMachineProperty key,vo
         case BM_PROP_AUTHOR:              *sval=bm->machine_info->Author;break;
         case BM_PROP_COMMANDS:            *sval=bm->machine_info->Commands;break;
         case BM_PROP_DLL_NAME:            *sval=bm->lib_name;break;
-        case BM_PROP_NUM_INPUT_CHANNELS:  *ival=(bm->mdkHelper && bm->mdkHelper->numChannels)?bm->mdkHelper->numChannels:1;break;
-        case BM_PROP_NUM_OUTPUT_CHANNELS: *ival=(bm->mdkHelper && bm->mdkHelper->numChannels==2)?2:((bm->machine_info->Flags&MIF_MONO_TO_STEREO)?2:1);break;
+        case BM_PROP_NUM_INPUT_CHANNELS:
+          //*ival=(bm->mdkHelper && bm->mdkHelper->numChannels)?bm->mdkHelper->numChannels:1;
+          if(bm->mdkHelper && bm->mdkHelper->numChannels) {
+            *ival=bm->mdkHelper->numChannels;
+          }
+          else {
+            *ival=1;
+          }
+          break;
+        case BM_PROP_NUM_OUTPUT_CHANNELS:
+          //*ival=(bm->mdkHelper && bm->mdkHelper->numChannels==2)?2:((bm->machine_info->Flags&MIF_MONO_TO_STEREO)?2:1);
+          if(bm->mdkHelper && bm->mdkHelper->numChannels==2) {
+            *ival=2;
+          }
+          else {
+            if(bm->machine_info->Flags&MIF_MONO_TO_STEREO) {
+              *ival=2;
+            }
+            else {
+              *ival=1;
+            }
+          }
+          break;
         default: ret=FALSE;
     }
     return(ret);

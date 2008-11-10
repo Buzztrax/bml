@@ -44,10 +44,12 @@ public:
 	virtual void Save(CMachineDataOutput * const po);
 	virtual void SetOutputMode(bool bStereo);
 	virtual void SetMode();
+    // CMDKImplementation does not have this
 	virtual void MidiControlChange(int const ctrl, int const channel, int const value);
 
 public:
 private:
+    // CMDKImplementation has different members here
     CMachine *ThisMachine;
     int numChannels;
     float Buffer[2*8192];

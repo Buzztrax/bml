@@ -42,10 +42,10 @@ struct _CHostCallbacks {
 // the high level instance handle
 class BuzzMachine {
 public:
-        /* FIXME: what about adding a 4 byte cookie here
-         * which bm_new() could set and
-         * a macro BM_IS_BM(bm) could check
-         */
+    /* FIXME: what about adding a 4 byte cookie here
+     * which bm_new() could set and
+     * a macro BM_IS_BM(bm) could check
+     */
 	// library handle
 	void *h;
 	char *lib_name;
