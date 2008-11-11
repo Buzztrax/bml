@@ -284,6 +284,7 @@ bool CMDKImplementation::WorkMonoToStereo(float *pin, float *pout, int numsample
 	
 void CMDKImplementation::Init(CMachineDataInput * const pi)
 {
+    DBG("  CMDKImplementation::Init() called\n");
 	ThisMachine = pmi->pCB->GetThisMachine();
 	
 	numChannels = 1;
@@ -373,6 +374,7 @@ CMDKMachineInterface::~CMDKMachineInterface()
 
 void CMDKMachineInterface::Init(CMachineDataInput * const pi)
 {
+    DBG("  CMDKMachineInterface::Init() called\n");
     pImp = (CMDKImplementation*)pCB->GetNearestWaveLevel(-1,-1);
 	pImp->pmi = this;
 

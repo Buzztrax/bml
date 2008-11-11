@@ -258,9 +258,14 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
     // create and get mdk implementation
     if((bm->machine_info->Version & 0xff) >= 15) {
       // imho mdk only works with for machines that use buzz 1.2 api
-      bm->mdkHelper = (CMDKImplementation*)bm->callbacks->GetNearestWaveLevel(-1,-1);
-      DBG1("  numInputChannels=%d\n",(bm->mdkHelper)?bm->mdkHelper->numChannels:0);
-      // if numChannels=0, its not a mdk-machine and numChannels=1
+      // we need to avoid creating mdkimpl here, if the machine is an mdkmachine
+      // its already created
+      // CMDKMachineInterface::Init() also sets CMachineInterfaceEx
+      if(((BuzzMachineCallbacks *)bm->callbacks)->machine_ex) {
+        bm->mdkHelper = (CMDKImplementation*)bm->callbacks->GetNearestWaveLevel(-1,-1);
+        DBG1("  numInputChannels=%d\n",(bm->mdkHelper)?bm->mdkHelper->numChannels:0);
+        // if numChannels=0, its not a mdk-machine and numChannels=1
+      }
     }
 
 #ifdef BM_INIT_ATTRIBUTES_CHANGED_FIRST

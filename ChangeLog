@@ -1,3 +1,9 @@
+2008-11-11  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	* src/BuzzMachineLoader/mdkimp.cpp:
+	  Look at CMachineInterfaceEx * before checking mdkimpl.
+
 2008-11-10  Stefan Kost  <ensonic@users.sf.net>
 
 
