@@ -1,5 +1,10 @@
 2008-11-11  Stefan Kost  <ensonic@users.sf.net>
 
+	* src/BuzzMachineLoader.dll:
+	  New win32 binary. Better mdk support.
+
+2008-11-11  Stefan Kost  <ensonic@users.sf.net>
+
 	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
 	* src/BuzzMachineLoader/mdkimp.cpp:
 	  Look at CMachineInterfaceEx * before checking mdkimpl.
