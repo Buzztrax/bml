@@ -92,8 +92,7 @@ extern "C" DE void bm_free(BuzzMachine *bm) {
     if(bm) {
         CMICallbacks *callbacks = bm->callbacks;
         DBG("freeing\n");
-        // FIXME: for Infector this leads to a double free?
-        //delete bm->machine_iface;
+        delete bm->machine_iface;
         
         if(callbacks) {
             int version = bm->machine_info->Version;

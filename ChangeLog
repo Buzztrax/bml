@@ -1,3 +1,10 @@
+2008-11-16  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.h:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.h:
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	  Call machine destructor and fix freeing mdkimpl twice.
+
 2008-11-11  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader.dll:
