@@ -1,3 +1,8 @@
+2008-11-17  Stefan Kost  <ensonic@users.sf.net>
+
+	* dllwrapper1/wine/win32.c:
+	  Implement _control87. Seems to fix dsplib based machines.
+
 2008-11-16  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader/BuzzMachineCallbacks.h:

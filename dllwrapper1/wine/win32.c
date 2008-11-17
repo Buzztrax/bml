@@ -4327,8 +4327,111 @@ static void expsrand(int seed)
     srand(seed);
 }
 
-#if 1
 
+unsigned int exp_control87(unsigned int newval,unsigned int mask)
+{
+#if 0
+  //#include <fpu_control.h>
+  fpu_control_t cw;
+  
+  dbgprintf("_control87(%u,%u)\n",newval,mask);
+  
+  _FPU_GETCW(cw);
+  //cw&=~_FPU_EXTENDED;
+  //cw|=_FPU_DOUBLE;
+  _FPU_SETCW(cw);
+#endif
+
+#if defined(__GNUC__) && defined(__i386__)
+  unsigned int fpword = 0;
+  unsigned int flags = 0;
+
+ 
+  //TRACE("(%08x, %08x): Called\n", newval, mask);
+
+  /* Get fp control word */
+  __asm__ __volatile__( "fstcw %0" : "=m" (fpword) : );
+
+  //TRACE("Control word before : %08x\n", fpword);
+
+  /* Convert into mask constants */
+
+#define _MCW_EM         0x0008001f              /* interrupt Exception Masks */
+#define _EM_INEXACT     0x00000001              /*   inexact (precision) */
+#define _EM_UNDERFLOW   0x00000002              /*   underflow */
+#define _EM_OVERFLOW    0x00000004              /*   overflow */
+#define _EM_ZERODIVIDE  0x00000008              /*   zero divide */
+#define _EM_INVALID     0x00000010              /*   invalid */
+#define _EM_DENORMAL    0x00080000              /* denormal exception mask (_control87 only) */
+  if (fpword & 0x1)  flags |= _EM_INVALID;
+  if (fpword & 0x2)  flags |= _EM_DENORMAL;
+  if (fpword & 0x4)  flags |= _EM_ZERODIVIDE;
+  if (fpword & 0x8)  flags |= _EM_OVERFLOW;
+  if (fpword & 0x10) flags |= _EM_UNDERFLOW;
+  if (fpword & 0x20) flags |= _EM_INEXACT;
+
+#define _MCW_RC         0x00000300              /* Rounding Control */
+#define _RC_NEAR        0x00000000              /*   near */
+#define _RC_DOWN        0x00000100              /*   down */
+#define _RC_UP          0x00000200              /*   up */
+#define _RC_CHOP        0x00000300              /*   chop */
+  switch(fpword & 0xC00) {
+  case 0xC00: flags |= _RC_UP|_RC_DOWN; break;
+  case 0x800: flags |= _RC_UP; break;
+  case 0x400: flags |= _RC_DOWN; break;
+  }
+
+#define _MCW_PC         0x00030000              /* Precision Control */
+#define _PC_64          0x00000000              /*    64 bits */
+#define _PC_53          0x00010000              /*    53 bits */
+#define _PC_24          0x00020000              /*    24 bits */
+  switch(fpword & 0x300) {
+  case 0x0:   flags |= _PC_24; break;
+  case 0x200: flags |= _PC_53; break;
+  case 0x300: flags |= _PC_64; break;
+  }
+
+#define _MCW_IC         0x00040000              /* Infinity Control */
+#define _IC_AFFINE      0x00040000              /*   affine */
+#define _IC_PROJECTIVE  0x00000000              /*   projective */
+  if (fpword & 0x1000) flags |= _IC_AFFINE;
+
+  /* Mask with parameters */
+  flags = (flags & ~mask) | (newval & mask);
+
+  /* Convert (masked) value back to fp word */
+  fpword = 0;
+  if (flags & _EM_INVALID)    fpword |= 0x1;
+  if (flags & _EM_DENORMAL)   fpword |= 0x2;
+  if (flags & _EM_ZERODIVIDE) fpword |= 0x4;
+  if (flags & _EM_OVERFLOW)   fpword |= 0x8;
+  if (flags & _EM_UNDERFLOW)  fpword |= 0x10;
+  if (flags & _EM_INEXACT)    fpword |= 0x20;
+  switch(flags & (_RC_UP | _RC_DOWN)) {
+  case _RC_UP|_RC_DOWN: fpword |= 0xC00; break;
+  case _RC_UP:          fpword |= 0x800; break;
+  case _RC_DOWN:        fpword |= 0x400; break;
+  }
+  switch (flags & (_PC_24 | _PC_53)) {
+  case _PC_64: fpword |= 0x300; break;
+  case _PC_53: fpword |= 0x200; break;
+  case _PC_24: fpword |= 0x0; break;
+  }
+  if (flags & _IC_AFFINE) fpword |= 0x1000;
+
+  //TRACE("Control word after  : %08x\n", fpword);
+
+  /* Put fp control word */
+  __asm__ __volatile__( "fldcw %0" : : "m" (fpword) );
+
+  return flags;
+#else
+  FIXME(":Not Implemented!\n");
+  return 0;
+#endif
+}
+
+#if 1
 // prefered compilation with  -O2 -ffast-math !
 
 static double explog10(double x)
@@ -5082,6 +5185,7 @@ struct exports exp_msvcrt[]={
     FF(time, -1)
     FF(rand, -1)
     FF(srand, -1)
+    FF(_control87, -1)
     FF(log10, -1)
     FF(pow, -1)
     FF(sin, -1)
