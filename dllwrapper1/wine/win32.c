@@ -182,6 +182,8 @@ static void longcount_stub(long long* z)
     longcount(z);
 }
 
+//#define DETAILED_OUT 1
+
 #ifdef DETAILED_OUT
 static int LOADER_DEBUG=1; // active only if compiled with -DDETAILED_OUT
 #endif
@@ -220,11 +222,9 @@ static inline void __attribute__((__format__(__printf__, 1, 2))) dbgprintf(char*
 #endif
 }
 
-
-char export_names[300][32]={
+#define NUM_STUB_ENTRIES 300
+char export_names[NUM_STUB_ENTRIES][32]={
     "name1",
-    //"name2",
-    //"name3"
 };
 //#define min(x,y) ((x)<(y)?(x):(y))
 
@@ -1454,13 +1454,13 @@ static int WINAPI expGetCurrentProcess()
 // this version is required for Quicktime codecs (.qtx/.qts) to work.
 // (they assume some pointers at FS: segment)
 
-//static int tls_count;
-static int tls_use_map[64];
+#define TLS_COUNT 8192
+static int tls_use_map[TLS_COUNT];
 static void *tls_minus_one;
 static int WINAPI expTlsAlloc()
 {
     int i;
-    for(i=0; i<64; i++)
+    for(i=0; i<TLS_COUNT; i++)
 	if(tls_use_map[i]==0)
 	{
 	    tls_use_map[i]=1;
@@ -1476,7 +1476,7 @@ static int WINAPI expTlsSetValue(int index, void* value)
 {
     dbgprintf("TlsSetValue(%d,%p) => 1\n",index,value);
 //    if((index<0) || (index>64))
-    if((index>=64))
+    if((index>=TLS_COUNT))
 	return 0;
 
     /* qt passes -1 here. probably a side effect of some bad patching */
@@ -1505,7 +1505,7 @@ static void* WINAPI expTlsGetValue(DWORD index)
 
     dbgprintf("TlsGetValue(%ld)\n",index);
 //    if((index<0) || (index>64))
-    if((index>=64))
+    if((index>=TLS_COUNT))
       return NULL;
 
     /* qt passes -1 here. probably a side effect of some bad patching */
@@ -1531,7 +1531,7 @@ static int WINAPI expTlsFree(int idx)
 {
     int index = (int) idx;
     dbgprintf("TlsFree(%d)\n",index);
-    if((index<0) || (index>=64))
+    if((index<0) || (index>=TLS_COUNT))
 	return 0;
     tls_use_map[index]=0;
     return 1;
@@ -5451,7 +5451,8 @@ static void ext_stubs(void)
 
 //extern int unk_exp1;
 static int pos=0;
-static char extcode[30000];// place for 300 unresolved exports
+// place for unresolved exports stub codes
+static char extcode[NUM_STUB_ENTRIES*0x30];
 static const char* called_unk = "Called unk_%s\n";
 
 static void* add_stub(void)
@@ -5567,9 +5568,9 @@ void* LookupExternal(const char* library, int ordinal)
 		return func;
 	}
 
-/* xine: pos is now tested inside add_stub()
-    if(pos>150)return 0;
-*/
+    /* xine: pos is now tested inside add_stub()
+    if(pos>NUM_STUB_ENTRIES)return 0;
+    */
     sprintf(export_names[pos], "%s:%d", library, ordinal);
     return add_stub();
 }
@@ -5605,9 +5606,12 @@ void* LookupExternalByName(const char* library, const char* name)
 	if((func=LookupExternalNative(library,(LPCSTR) name))) {
 		return func;
 	}
-/* xine: pos is now tested inside add_stub()
-    if(pos>150)return 0;// to many symbols
-*/
+    /* xine: pos is now tested inside add_stub()
+    if(pos>NUM_STUB_ENTRIES)return 0;// to many symbols
+    */
+    if(strlen(name)>31) {
+      dbgprintf("ERROR: name=%s longer that 32 chars (%d)! (fix export_names)\n",name,strlen(name));
+    }
     strcpy(export_names[pos], name);
     return add_stub();
 }

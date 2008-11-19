@@ -51,7 +51,7 @@ for machine in $machine_glob ; do
   #env >testmachine.log 2>&1 LD_LIBRARY_PATH="../src/" ../src/bmltest_info "$machine"
   #res=$?
   # this suppresses the output of e.g. "Sementation fault"
-  res=`env >testmachine.log 2>&1 LD_LIBRARY_PATH="../src/:../src/BuzzMachineLoader/.libs:$LD_LIBRARY_PATH" ../src/bmltest_info "$machine"; echo $?`
+  res=`env >testmachine.log 2>&1 BML_DEBUG=1 LD_LIBRARY_PATH="../src/:../src/BuzzMachineLoader/.libs:$LD_LIBRARY_PATH" ../src/bmltest_info "$machine"; echo $?`
   cat testmachine.log | grep >"$log_name" -v "Warning: the specified"
   if [ $sig_int -eq "1" ] ; then res=1; fi
   if [ $res -eq "0" ] ; then

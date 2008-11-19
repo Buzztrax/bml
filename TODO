@@ -43,11 +43,6 @@ result should go to a given directory (use date-time when not provided)
 unk__malloc_dbg
 from MSVCRTD.dll which I can't find
 
-unk_HeapValidate
-http://msdn.microsoft.com/en-us/library/aa366708(VS.85).aspx
-- from user32.dll
-- when unloading Ninja
-
 = list missing machine for songs =
 for file in *.bmx; do ~/buzztard/bin/bt-cmd 2>/dev/null --command=info --input-file=$file | grep "  bml-"; done | sort | uniq -c | sort -n
 
@@ -78,6 +73,7 @@ other-sources/buzz-sources/__BUZZ1PLAYER__NOT_FOR_PUBLIC!/CMachine.cpp
 == hoshi ==
 2008.02.22 : Of 532 machine(s) 448 machine(s) worked and 84 machine(s) failed.
 2008.02.23 : Of 533 machine(s) 457 machine(s) worked and 76 machine(s) failed.
+2008.11.19 : Of 533 machine(s) 458 machine(s) worked and 75 machine(s) failed.
 == sterni ==
 2008.10.14 : Of 853 machine(s) 759 machine(s) worked and 94 machine(s) failed.
 
@@ -86,6 +82,8 @@ Geonik's PrimiFun.dll
   if we don't have MFC42.dll
     Called unk_MFC42.DLL:1176
     Called unk_MFC42.DLL:1243
+    Called unk_MFC42.DLL:823
+      - its library:ordinal
   if we have MFC42.DLL -> Called unk_GetConsoleMode
 m4wii.dll
   if we don't have MFC42.dll
@@ -98,6 +96,8 @@ m4wii.dll
     http://source.winehq.org/source/dlls/msvcrt/cppexcept.h
     If we wrap this localy, the unk__ is gone (empty impl), but it segfaults.
     Maybe we need a full impl.
+mimo's MidiGen.dll
+  win32.c: TLS_COUNT is not enough
 Jeskola Bass 2.dll
   buzzmachinecallbackspre12.cpp:105:BuzzMachineCallbacksPre12::MidiOut (dev=1,data=136987296)
 Jeskola Tracker.dll
@@ -119,6 +119,7 @@ Jeskola Raverb (causes distortions)
 Sonic Verb (seems to work now)
   buzzmachinecallbacks.cpp:199:BuzzMachineCallbacks::GetEnvPoint (wave=-1,env=-1,i=-1076278224,&x,&y,&flags)
   buzzmachinecallbacks.cpp:276:BuzzMachineCallbacks::SetSequenceData (row=-1217504548,ppat=B7A5B3C4)
+  *** glibc detected *** /home/ensonic/projects/buzztard/bml/src/.libs/lt-bmltest_info: free(): invalid next size (normal): 0x0805cc18 ***
 cheapo spread
   hangs after GetInfo()
   or "Called unk_malloc"

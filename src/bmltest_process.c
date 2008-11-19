@@ -269,7 +269,8 @@ void test_process_n(char *libpath,const char *infilename,const char *outfilename
 }
 
 int main( int argc, char **argv ) {
-
+  setlinebuf(stdout);
+  setlinebuf(stderr);
   puts("main beg");
 
   if(bml_setup(0)) {

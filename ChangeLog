@@ -1,3 +1,20 @@
+2008-11-19  Stefan Kost  <ensonic@users.sf.net>
+
+	* TODO:
+	  Update info of failing machines.
+
+	* dllwrapper1/wine/win32.c:
+	  Replace some fixed values by defines and adjust ranges.
+
+	* src/BuzzMachineLoader.dll:
+	  Recompiled binary.
+
+	* src/bmltest_info.c:
+	* src/bmltest_process.c:
+	* tests/testmachine.sh:
+	  Switch to unbuffered output for better testability. Reactivate logging
+	  in testmachine script.
+
 2008-11-17  Stefan Kost  <ensonic@users.sf.net>
 
 	* dllwrapper1/wine/win32.c:

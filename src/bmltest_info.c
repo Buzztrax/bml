@@ -306,13 +306,14 @@ void test_info_n(char *libpath) {
 }
 
 int main( int argc, char **argv ) {
-  int i;
-  
+  setlinebuf(stdout);
+  setlinebuf(stderr); 
   puts("main beg");
 
   if(bml_setup(0)) {
     char *lib_name;
     int sl;
+    int i;
 
 #ifdef HAVE_X86
     bmlw_set_master_info(120,4,44100);
