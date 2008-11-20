@@ -40,8 +40,43 @@ result should go to a given directory (use date-time when not provided)
   mimo's miXo.dll
 
 = missing window function entries =
-unk__malloc_dbg
-from MSVCRTD.dll which I can't find
+
+unk_??0_Lockit@std@@QAE@XZ
+unk_??1_Lockit@std@@QAE@XZ
+
+unk_joyGetDevCapsA
+unk_joyGetNumDevs
+unk_joyGetPos
+
+unk_waveInOpen
+
+unk_midiOutGetNumDevs
+unk_midiOutOpen
+
+MFC42.DLL (check MFC42.DEF file)
+  unk_MFC42.DLL:823 : ??2@YAPAXI@Z
+  unk_MFC42.DLL:1176 : ?AfxGetThreadState@@YGPAV_AFX_THREAD_STATE@@XZ
+  unk_MFC42.DLL:1243 : ?AfxSetModuleState@@YGPAVAFX_MODULE_STATE@@PAV1@@Z
+
+user32.dll
+  unk_CreateDialogParamA : http://msdn.microsoft.com/en-us/library/ms645445(VS.85).aspx
+  unk_GetWindowTextA : http://msdn.microsoft.com/en-us/library/ms633520(VS.85).aspx
+  unk_LoadIconA : http://msdn.microsoft.com/en-us/library/ms648072.aspx
+  unk_SendMessageA : http://msdn.microsoft.com/en-us/library/ms644950.aspx
+  unk_SetWindowPos : http://msdn.microsoft.com/en-us/library/ms633545.aspx
+  unk_VkKeyScanA : http://msdn.microsoft.com/en-us/library/ms646329.aspx
+
+Microsoft DirectShow 9.0
+  unk_DMOEnum : http://msdn.microsoft.com/en-us/library/ms783373(VS.85).aspx
+
+Kernel32.dll
+  unk_FlsAlloc : http://msdn.microsoft.com/en-us/library/ms682664(VS.85).aspx
+  unk_FlsFree
+  unk_FlsSetValue
+  unk_ResumeThread : http://msdn.microsoft.com/en-us/library/ms685086(VS.85).aspx
+
+Gdi32.lib
+  unk_GetStockObject : http://msdn.microsoft.com/en-us/library/ms533223.aspx
 
 = list missing machine for songs =
 for file in *.bmx; do ~/buzztard/bin/bt-cmd 2>/dev/null --command=info --input-file=$file | grep "  bml-"; done | sort | uniq -c | sort -n
@@ -52,11 +87,21 @@ for file in *.bmx; do ~/buzztard/bin/bt-cmd 2>/dev/null --command=info --input-f
 = missing features =
 * getting access to Patterns/Sequence
 
+= getting better diagnostics on failure
+http://www.eptacom.net/pubblicazioni/pub_eng/except.html
+http://www.eptacom.net/pubblicazioni/pub_eng/assert.html
+http://www.codeproject.com/KB/threads/StackWalker.aspx
+
+= test single plugins =
+G_SLICE=always-malloc G_DEBUG=gc-friendly GLIBCPP_FORCE_NEW=1 GLIBCXX_FORCE_NEW=1 valgrind --tool=memcheck --leak-check=full --leak-resolution=high --trace-children=yes --num-callers=20 -v ../src/.libs/bmltest_info ~/buzztard/lib/Gear-real/Effects/Static\ Duafilt\ II.dll 
+../src/.libs/bmltest_info ~/buzztard/lib/Gear-real/Effects/Static\ Duafilt\ II.dll
+
 = what windows dll to copy and which not =
 == don't (we need to emulate) ==
 kernel32.dll ntdll.dll
 == seems safe ==
 msvcp50.dll  msvcp60.dll MFC42.DLL  MSVCRT.DLL
+
 
 = buzz emulation =
 == mdk machine ==
@@ -68,15 +113,19 @@ msvcp50.dll  msvcp60.dll MFC42.DLL  MSVCRT.DLL
 other-sources/buzz-sources/__BUZZ1PLAYER__NOT_FOR_PUBLIC!/CMachine.cpp
 * stereo output MIF_DOES_INPUT_MIXING machines will get stereo input
 * bm->callbacks->mdkHelper->numChannels
+== auxbus machines ==
+* currently all auxbus using machines fail
 
-= known not working machines =
+= machine tests =
 == hoshi ==
 2008.02.22 : Of 532 machine(s) 448 machine(s) worked and 84 machine(s) failed.
 2008.02.23 : Of 533 machine(s) 457 machine(s) worked and 76 machine(s) failed.
 2008.11.19 : Of 533 machine(s) 458 machine(s) worked and 75 machine(s) failed.
 == sterni ==
 2008.10.14 : Of 853 machine(s) 759 machine(s) worked and 94 machine(s) failed.
+2008.11.20 : Of 853 machine(s) 758 machine(s) worked and 95 machine(s) failed.
 
+In gst-buzztard/src/bml/plugin.c I maintain a black list.
 == Generators ==
 Geonik's PrimiFun.dll
   if we don't have MFC42.dll
@@ -119,7 +168,6 @@ Jeskola Raverb (causes distortions)
 Sonic Verb (seems to work now)
   buzzmachinecallbacks.cpp:199:BuzzMachineCallbacks::GetEnvPoint (wave=-1,env=-1,i=-1076278224,&x,&y,&flags)
   buzzmachinecallbacks.cpp:276:BuzzMachineCallbacks::SetSequenceData (row=-1217504548,ppat=B7A5B3C4)
-  *** glibc detected *** /home/ensonic/projects/buzztard/bml/src/.libs/lt-bmltest_info: free(): invalid next size (normal): 0x0805cc18 ***
 cheapo spread
   hangs after GetInfo()
   or "Called unk_malloc"

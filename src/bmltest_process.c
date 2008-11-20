@@ -83,6 +83,7 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
     const char *type_name[3]={"","generator","effect"};
     int nan=0,inf=0;
     float ma=0.0;
+    size_t written;
     
     puts("  windows machine created");
     bmlw_init(bm,0,NULL);
@@ -154,7 +155,7 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
           if(fabs(buffer_f[i])>ma) ma=buffer_f[i];
           buffer_w[i]=(short int)(buffer_f[i]*32768.0f);
         }
-        fwrite(buffer_w,2,i_size,outfile);
+        written=fwrite(buffer_w,2,i_size,outfile);
       }
       //printf("\n");
     }
@@ -186,6 +187,7 @@ void test_process_n(char *libpath,const char *infilename,const char *outfilename
     const char *type_name[3]={"","generator","effect"};
     int nan=0,inf=0;
     float ma=0.0;
+    size_t written;
     
     puts("  native machine created");
     bmln_init(bm,0,NULL);
@@ -253,7 +255,7 @@ void test_process_n(char *libpath,const char *infilename,const char *outfilename
           if(fabs(buffer_f[i])>ma) ma=buffer_f[i];
           buffer_w[i]=(short int)(buffer_f[i]*32768.0f);
         }
-        fwrite(buffer_w,2,i_size,outfile);
+        written=fwrite(buffer_w,2,i_size,outfile);
       }
       //printf("\n");
     }

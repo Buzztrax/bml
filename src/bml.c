@@ -393,7 +393,7 @@ void bmlw_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks) {
 // wrapper management
 
 static void bml_stdout_logger(char *str) {
-  TRACE(str);
+  TRACE("%s",str);
 }
 
 static void bml_null_logger(char *str) {

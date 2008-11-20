@@ -37,6 +37,7 @@
 //#include "BuzzMDKHelper.h"
 #include "mdkimp.h"
 #include "BuzzMachineLoader.h"
+#include "CMachine.h"
 #include "OscTable.h"
 
 CWaveInfo const *BuzzMachineCallbacks::GetWave(int const i) {
@@ -116,11 +117,13 @@ void BuzzMachineCallbacks::MessageBox(char const *txt) {
 void BuzzMachineCallbacks::Lock() {
     DBG("()\n");
     FIXME;
+    // used by : Rebirth MIDI.dll
 }
 
 void BuzzMachineCallbacks::Unlock() {
     DBG("()\n");
     FIXME;
+    // used by : Rebirth MIDI.dll
 }
 
 void BuzzMachineCallbacks::ScheduleEvent(int const time, dword const data) {
@@ -327,6 +330,8 @@ void BuzzMachineCallbacks::ADRead(int channel, float *psamples, int numsamples) 
 void BuzzMachineCallbacks::SetnumOutputChannels(CMachine *pmac, int n) {
     DBG2("(pmac=%p,n=%d)\n",pmac,n);
     FIXME;
+    // used by : ld vocoder xp.dll
+    // would this need to use mdk?
 }
 
 void BuzzMachineCallbacks::SetEventHandler(CMachine *pmac, BEventType et, EVENT_HANDLER_PTR p, void *param) {
@@ -350,8 +355,8 @@ CMachine *BuzzMachineCallbacks::GetMachine(char const *name) {
 
 CMachineInfo const *BuzzMachineCallbacks::GetMachineInfo(CMachine *pmac) {
     DBG1("(pmac=%p)\n",pmac);
-    FIXME;
-    return(NULL);
+    //FIXME;
+    return(pmac->machine_info);
 }
 
 char const *BuzzMachineCallbacks::GetMachineName(CMachine *pmac) {

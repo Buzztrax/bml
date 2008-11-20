@@ -1,3 +1,26 @@
+2008-11-20  Stefan Kost  <ensonic@users.sf.net>
+
+	* TODO:
+	  Noticed that all auxbus machines fail. Also updated list off missing
+	  dll entries.
+
+	* dllwrapper1/wine/registry.c:
+	* dllwrapper1/wine/win32.c:
+	  Fixing compiler warnings. Notes about how to get from a dll ordinal to
+	  a function name.
+
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.cpp:
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	* src/BuzzMachineLoader/CMachine.h:
+	  Try to implement one more callback api.
+
+	* src/bml.c:
+	* src/bmltest_process.c:
+	  Compiler warnings.
+
+	* tests/testmachine.sh:
+	  Log used dll's
+
 2008-11-19  Stefan Kost  <ensonic@users.sf.net>
 
 	* TODO:

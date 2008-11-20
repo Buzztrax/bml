@@ -38,6 +38,7 @@ class CMachine {
     char _placeholder6[17];
     bool hardMuted;                 // 0xFD: true when muted by user, used by mooter
     // End of Buzz compatible header
+public:
     CMachineInterface *machine_interface;
     CMachineInfo *machine_info;
 

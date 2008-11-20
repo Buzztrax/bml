@@ -13,13 +13,18 @@
 #
 # search for unk_XXX -> unknown symbols
 #  grep -Hn "unk_" testmachine/*.fail | sort | uniq
-# search for FIXME -> unimplemented buzz host entries
+#  grep -ho "unk_.*" testmachine/*.fail | sort | uniq -c
+# search for FIXME -> unimplemented buzz callback entries
 #  grep -Hn "FIXME" testmachine/*.fail
 # search for "wine/module: Win32 LoadLibrary failed to load:"
 #  grep -ho "wine/module: Win32 LoadLibrary failed to load:.*" testmachine/*.fail | sort -f | uniq -ic
 # stats
 #  ls -1 testmachine/*.okay | wc -l
 #  ls -1 testmachine/*.fail | wc -l
+#
+# TODO:
+# strings /home/ensonic/buzztard/lib/Gear-real/Generators/m4wii.dll | grep -i "\.dll" | sort | uniq
+#
 
 . ./bt-cfg.sh
 
@@ -46,6 +51,9 @@ for machine in $machine_glob ; do
   name=`basename "$machine" "$machine_glob"`
   log_name="./testmachine/$name.txt"
   rm -f "$log_name" "$log_name".okay "$log_name".fail
+  # collect used dlls
+  fieldLibs=`strings "$machine" | grep -i "\.dll" | grep -vi "$name" | sort`
+  # try to run it
   sig_segv=0
   sig_int=0
   #env >testmachine.log 2>&1 LD_LIBRARY_PATH="../src/" ../src/bmltest_info "$machine"
@@ -98,6 +106,7 @@ for machine in $machine_glob ; do
         <td>$fieldNumGlobalParams</td>
         <td>$fieldNumTrackParams</td>
         <td>$fieldNumAttributes</td>
+        <td>$fieldLibs</td>
       </tr>
 END_OF_HTML
 done
@@ -131,6 +140,7 @@ cat >testmachine.html <<END_OF_HTML
         <th>Global Par.</th>
         <th>Track Par.</th>
         <th>Attr.</th>
+        <th>Libs</th>
       </tr>
 END_OF_HTML
 cat >>testmachine.html testmachine.body.html

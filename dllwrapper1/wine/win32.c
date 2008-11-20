@@ -147,8 +147,6 @@ static void longcount_stub(long long*);
 static unsigned int (*localcount)()=localcount_stub;
 static void (*longcount)(long long*)=longcount_stub;
 
-static pthread_mutex_t memmut;
-
 static unsigned int localcount_stub(void)
 {
     unsigned int regs[4];
@@ -228,8 +226,6 @@ char export_names[NUM_STUB_ENTRIES][32]={
 };
 //#define min(x,y) ((x)<(y)?(x):(y))
 
-static void destroy_event(void* event);
-
 struct th_list_t;
 typedef struct th_list_t{
     int id;
@@ -244,6 +240,7 @@ static tls_t* g_tls=NULL;
 static th_list* list=NULL;
 
 #undef MEMORY_DEBUG
+//#define MEMORY_DEBUG
 
 #ifdef MEMORY_DEBUG
 
@@ -338,6 +335,9 @@ struct alloc_header_t
 };
 
 #ifdef GARBAGE
+static void destroy_event(void* event);
+
+static pthread_mutex_t memmut;
 static alloc_header* last_alloc = NULL;
 static int alccnt = 0;
 #endif
@@ -612,6 +612,8 @@ struct mutex_list_t
 typedef struct mutex_list_t mutex_list;
 static mutex_list* mlist=NULL;
 
+#ifdef GARBAGE
+
 static void destroy_event(void* event)
 {
     mutex_list* pp=mlist;
@@ -640,6 +642,7 @@ static void destroy_event(void* event)
 	pp=pp->prev;
     }
 }
+#endif
 
 static void* WINAPI expCreateEventA(void* pSecAttr, char bManualReset,
 				    char bInitialState, const char* name)
@@ -4894,6 +4897,18 @@ static int WINAPI expDialogBoxParamA(void *inst, const char *name,
     return 0x42424242;
 }
 
+static unsigned int expRegisterClipboardFormatA(char *format)
+{
+  static unsigned int id=0xBFFF;
+
+  // FIXME: need a hashmap
+  if(id>0xFFFF) id++;
+
+  dbgprintf("RegisterClipboardFormatA(%s) => %dn", format, id);
+  return(id);
+}
+
+
 /* needed by imagepower mjpeg2k */
 static void *exprealloc(void *ptr, size_t size)
 {
@@ -5273,6 +5288,7 @@ struct exports exp_user32[]={
 #endif
     FF(MessageBeep, -1)
     FF(DialogBoxParamA, -1)
+    FF(RegisterClipboardFormatA, -1)
 };
 struct exports exp_advapi32[]={
     FF(RegCloseKey, -1)
@@ -5571,6 +5587,7 @@ void* LookupExternal(const char* library, int ordinal)
     /* xine: pos is now tested inside add_stub()
     if(pos>NUM_STUB_ENTRIES)return 0;
     */
+    /* real names can be checked from corresponding .DEF file */
     sprintf(export_names[pos], "%s:%d", library, ordinal);
     return add_stub();
 }

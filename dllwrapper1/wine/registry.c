@@ -84,6 +84,8 @@ static void open_registry(void)
 	int fd;
 	int i;
 	unsigned int len;
+	size_t res;
+
 	if(regs)
 	{
 		printf("Multiple open_registry(>\n");
@@ -96,22 +98,22 @@ static void open_registry(void)
 	    create_registry();
 	    return;
 	}
-	read(fd, &reg_size, 4);
+	res=read(fd, &reg_size, 4);
 	regs=(struct reg_value*)malloc(reg_size*sizeof(struct reg_value));
 	head = 0;
 	for(i=0; i<reg_size; i++)
 	{
-		read(fd,&regs[i].type,4);
-		read(fd,&len,4);
+		res=read(fd,&regs[i].type,4);
+		res=read(fd,&len,4);
 		regs[i].name=(char*)malloc(len+1);
 		if(regs[i].name==0)
 		{
 			reg_size=i+1;
 			goto error;
 		}
-		read(fd, regs[i].name, len);
+		res=read(fd, regs[i].name, len);
 		regs[i].name[len]=0;
-		read(fd,&regs[i].len,4);
+		res=read(fd,&regs[i].len,4);
 		regs[i].value=(char*)malloc(regs[i].len+1);
 		if(regs[i].value==0)
 		{
@@ -119,7 +121,7 @@ static void open_registry(void)
 			reg_size=i+1;
 			goto error;
 		}
-		read(fd, regs[i].value, regs[i].len);
+		res=read(fd, regs[i].value, regs[i].len);
 		regs[i].value[regs[i].len]=0;
 	}
 error:
@@ -130,6 +132,8 @@ error:
 static void save_registry(void)
 {
 	int fd, i;
+	size_t res;
+
 	if (!regs)
 		init_registry();
 	fd = open(localregpathname, O_WRONLY | O_CREAT, 00666);
@@ -139,15 +143,15 @@ static void save_registry(void)
 		   localregpathname);
 	    return;
 	}
-	write(fd, &reg_size, 4);
+	res=write(fd, &reg_size, 4);
 	for(i=0; i<reg_size; i++)
 	{
 	        unsigned len=strlen(regs[i].name);
-		write(fd, &regs[i].type, 4);
-		write(fd, &len, 4);
-		write(fd, regs[i].name, len);
-		write(fd, &regs[i].len, 4);
-		write(fd, regs[i].value, regs[i].len);
+		res=write(fd, &regs[i].type, 4);
+		res=write(fd, &len, 4);
+		res=write(fd, regs[i].name, len);
+		res=write(fd, &regs[i].len, 4);
+		res=write(fd, regs[i].value, regs[i].len);
 	}
 	close(fd);
 }
