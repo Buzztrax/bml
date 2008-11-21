@@ -8,6 +8,7 @@
 # ./testmachine.sh "/home/ensonic/buzztard/lib/Gear-real/Effects/*.dll"
 # ./testmachine.sh "/home/ensonic/buzztard/lib/Gear-real/Generators/*.dll"
 # ./testmachine.sh "/home/ensonic/buzztard/lib/Gear-real/*/*.dll"
+# ./testmachine.sh "/home/ensonic/buzztard/lib/Gear/*.so"
 #
 # analyze results
 #
@@ -23,7 +24,10 @@
 #  ls -1 testmachine/*.fail | wc -l
 #
 # TODO:
-# strings /home/ensonic/buzztard/lib/Gear-real/Generators/m4wii.dll | grep -i "\.dll" | sort | uniq
+# also run bmltest_process
+# - check for NAN buffers
+# - check for insanely lound buffers
+# allow running under valgrind
 #
 
 . ./bt-cfg.sh
@@ -48,11 +52,13 @@ touch testmachine.body.html
 # run test loop
 
 for machine in $machine_glob ; do
-  name=`basename "$machine" "$machine_glob"`
+  #name=`basename "$machine" "$machine_glob"`
+  name=`basename "$machine"`
+  ext=${name#${name%.*}}
   log_name="./testmachine/$name.txt"
   rm -f "$log_name" "$log_name".okay "$log_name".fail
   # collect used dlls
-  fieldLibs=`strings "$machine" | grep -i "\.dll" | grep -vi "$name" | sort`
+  fieldLibs=`strings "$machine" | grep -i -F "$ext" | grep -vi "$name" | sort`
   # try to run it
   sig_segv=0
   sig_int=0
