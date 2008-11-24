@@ -93,11 +93,8 @@ http://www.eptacom.net/pubblicazioni/pub_eng/assert.html
 http://www.codeproject.com/KB/threads/StackWalker.aspx
 
 == tools ==
-objdump comes from the binutils package. By default, it is only built to support the file formats that can be executed on the native platform.
-I.e. For linux, that is ELF format. To get it to also support window PE format etc. it needs to have extra ./configure options passed to it.
-./configure --enable-targets=all
-> rpm -qf /usr/bin/objdump
-binutils-2.18.50.20080409-11.1
+use mingw-binutils to dump win32 binaries
+/usr/local/i386-mingw32/bin/objdump -t MSVCRT.DLL
 
 = test single plugins =
 G_SLICE=always-malloc G_DEBUG=gc-friendly GLIBCPP_FORCE_NEW=1 GLIBCXX_FORCE_NEW=1 valgrind --tool=memcheck --leak-check=full --leak-resolution=high --trace-children=yes --num-callers=20 -v ../src/.libs/bmltest_info ~/buzztard/lib/Gear-real/Effects/Static\ Duafilt\ II.dll 
