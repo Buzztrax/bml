@@ -92,6 +92,13 @@ http://www.eptacom.net/pubblicazioni/pub_eng/except.html
 http://www.eptacom.net/pubblicazioni/pub_eng/assert.html
 http://www.codeproject.com/KB/threads/StackWalker.aspx
 
+== tools ==
+objdump comes from the binutils package. By default, it is only built to support the file formats that can be executed on the native platform.
+I.e. For linux, that is ELF format. To get it to also support window PE format etc. it needs to have extra ./configure options passed to it.
+./configure --enable-targets=all
+> rpm -qf /usr/bin/objdump
+binutils-2.18.50.20080409-11.1
+
 = test single plugins =
 G_SLICE=always-malloc G_DEBUG=gc-friendly GLIBCPP_FORCE_NEW=1 GLIBCXX_FORCE_NEW=1 valgrind --tool=memcheck --leak-check=full --leak-resolution=high --trace-children=yes --num-callers=20 -v ../src/.libs/bmltest_info ~/buzztard/lib/Gear-real/Effects/Static\ Duafilt\ II.dll 
 ../src/.libs/bmltest_info ~/buzztard/lib/Gear-real/Effects/Static\ Duafilt\ II.dll
@@ -100,7 +107,7 @@ G_SLICE=always-malloc G_DEBUG=gc-friendly GLIBCPP_FORCE_NEW=1 GLIBCXX_FORCE_NEW=
 == don't (we need to emulate) ==
 kernel32.dll ntdll.dll
 == seems safe ==
-msvcp50.dll  msvcp60.dll MFC42.DLL  MSVCRT.DLL
+msvcp50.dll  msvcp60.dll MFC42.DLL MSVCRT.DLL
 
 
 = buzz emulation =
@@ -127,13 +134,16 @@ other-sources/buzz-sources/__BUZZ1PLAYER__NOT_FOR_PUBLIC!/CMachine.cpp
 
 In gst-buzztard/src/bml/plugin.c I maintain a black list.
 == Generators ==
+Arguelles Pro4.dll
+  registers as a Effect becasue of stereo :/
 Geonik's PrimiFun.dll
   if we don't have MFC42.dll
     Called unk_MFC42.DLL:1176
     Called unk_MFC42.DLL:1243
     Called unk_MFC42.DLL:823
       - its library:ordinal
-  if we have MFC42.DLL -> Called unk_GetConsoleMode
+  if we have MFC42.DLL
+    Called unk_GetConsoleMode
 m4wii.dll
   if we don't have MFC42.dll
     Called unk_MFC42.DLL:1176
@@ -150,8 +160,10 @@ mimo's MidiGen.dll
 Jeskola Bass 2.dll
   buzzmachinecallbackspre12.cpp:105:BuzzMachineCallbacksPre12::MidiOut (dev=1,data=136987296)
 Jeskola Tracker.dll
-  Called unk__CxxThrowException
-
+  if we don't have MFC42.dll
+    Called unk_MFC42.DLL:823
+  if we have MFC42.DLL
+    Called unk__CxxThrowException
 Ruff SPECCY II.dll
 HD Percussive_FM.dll
   crash after ?
