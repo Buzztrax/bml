@@ -1,3 +1,9 @@
+0.4.0 the light in your eyes (26.Nov.2008)
+================================================================================
+Major addition is wavetable support for tracker plugins. Besides that the new
+release improves buzzmachine compatibility, performance and has a better build
+setup.
+
 0.3.0 a tale of ice and darkness (26.Mar.2008)
 ================================================================================
 Support for native machines. Better emulation. Can be build on 64bit x86.

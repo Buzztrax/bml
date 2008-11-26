@@ -1,3 +1,8 @@
+2008-11-26  Stefan Kost  <ensonic@users.sf.net>
+
+	* NEWS:
+	  Prepare release.
+
 2008-11-24  Stefan Kost  <ensonic@users.sf.net>
 
 	* TODO:
@@ -79,7 +84,6 @@
 
 2008-11-10  Stefan Kost  <ensonic@users.sf.net>
 
-
 	* src/BuzzMachineLoader/BuzzMDKHelper.cpp:
 	* src/BuzzMachineLoader/BuzzMDKHelper.h:
 	* src/BuzzMachineLoader/BuzzMachineCallbacks.cpp:
@@ -93,7 +97,7 @@
 2008-11-10  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
-	  Reoder function and modify initialisation sequence.
+	  Reorder function and modify initialisation sequence.
 
 2008-11-04  Stefan Kost  <ensonic@users.sf.net>
 
@@ -184,8 +188,7 @@
 	* README:
 	* src/bml.c:
 	* src/dsplib/dsplib.cpp:
-	  Add env var to limmit debug spew a bit more.
-	  
+	  Add env var to limmit debug spew a bit more.  
 
 2008-06-23  Krzysztof Foltman  <kfoltman@users.sf.net>
 
@@ -210,7 +213,6 @@
 
 	* src/dsplib/dsplib.cpp:
 	  Structure source so that we can add dummies for the missing parts.
-
 
 2008-06-22  Stefan Kost  <ensonic@users.sf.net>
 
