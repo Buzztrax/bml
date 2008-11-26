@@ -2,7 +2,7 @@ dnl $Id$
 
 dnl Initialise the autoconf/automake tool
 AC_PREREQ(2.59)
-AC_INIT([bml], [0.4.0], [buzztard-devel@lists.sourceforge.net])
+AC_INIT([bml], [0.5.0], [buzztard-devel@lists.sourceforge.net])
 AC_CONFIG_SRCDIR([ChangeLog])
 AC_CONFIG_HEADERS(config.h)
 AC_CANONICAL_HOST([])
