@@ -1,3 +1,13 @@
+2008-11-27  Stefan Kost  <ensonic@users.sf.net>
+
+	* TODO:
+	  Add name for objdump under ubuntu.
+
+	* dllwrapper1/README:
+	* dllwrapper1/Makefile.am:
+	  Add README that explains where this code originates from and clarifies
+	  the license (LGPL).
+
 2008-11-26  Stefan Kost  <ensonic@users.sf.net>
 
 	* configure.ac:

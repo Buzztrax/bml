@@ -95,6 +95,7 @@ http://www.codeproject.com/KB/threads/StackWalker.aspx
 == tools ==
 use mingw-binutils to dump win32 binaries
 /usr/local/i386-mingw32/bin/objdump -t MSVCRT.DLL
+/usr/i586-mingw32msvc/bin/objdump ...
 
 = test single plugins =
 G_SLICE=always-malloc G_DEBUG=gc-friendly GLIBCPP_FORCE_NEW=1 GLIBCXX_FORCE_NEW=1 valgrind --tool=memcheck --leak-check=full --leak-resolution=high --trace-children=yes --num-callers=20 -v ../src/.libs/bmltest_info ~/buzztard/lib/Gear-real/Effects/Static\ Duafilt\ II.dll 
