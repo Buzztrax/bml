@@ -27,8 +27,10 @@ bmltest_process_SOURCES= bmltest_process.c
 bmltest_process_CFLAGS = $(BML_CFLAGS) $(ARCH_CFLAGS)
 bmltest_process_LDADD = $(BML_LIBS) -ldl libbml.la
 
+if USE_X86
 dlldir = $(libdir)
 dll_DATA = BuzzMachineLoader.dll
+endif
 
 EXTRA_DIST = $(dll_DATA)
 

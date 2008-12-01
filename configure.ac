@@ -20,6 +20,7 @@ AC_ISC_POSIX
 AC_PROG_LIBTOOL
 AM_PROG_AS
 AM_PROG_CC_STDC
+AM_PROG_CC_C_O
 
 dnl check target cpu architecture
 ARCH_CFLAGS=""
@@ -37,6 +38,7 @@ esac
 if test x$HAVE_X86 = xyes; then
   AC_DEFINE(HAVE_X86, 1, [Defined if host is x86])
 fi
+AM_CONDITIONAL(USE_X86, test x$HAVE_X86 = xyes)
 
 dnl enable runtime debugging code
 AC_MSG_CHECKING(whether to enable runtime debugging code)

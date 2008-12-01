@@ -1,5 +1,11 @@
 2008-12-01  Stefan Kost  <ensonic@users.sf.net>
 
+	* configure.ac:
+	* src/Makefile.am:
+	  Only install dll on x86.
+
+2008-12-01  Stefan Kost  <ensonic@users.sf.net>
+
 	* Makefile.am:
 	* configure.ac:
 	* src/BuzzMachineLoader/Makefile.am:
