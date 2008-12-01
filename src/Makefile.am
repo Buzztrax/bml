@@ -13,15 +13,9 @@ libbmldir = $(includedir)/libbml
 libbml_la_SOURCES = bml.c
 libbml_HEADERS = bml.h ./BuzzMachineLoader/BuzzMachineLoader.h
 
-if USE_DLLWRAPPER1
-WRAPPER_LIBS = $(top_builddir)/dllwrapper1/wine/libloader.la
-endif
-if USE_DLLWRAPPER2
-WRAPPER_LIBS = $(top_builddir)/dllwrapper2/libloader.la
-endif
-
 libbml_la_CFLAGS = $(BML_CFLAGS) $(ARCH_CFLAGS)
-libbml_la_LIBADD = -lm -lpthread -ldl $(BML_LIBS) $(WRAPPER_LIBS)
+libbml_la_LIBADD = -lm -lpthread -ldl $(BML_LIBS) \
+  $(top_builddir)/dllwrapper1/wine/libloader.la
 
 noinst_PROGRAMS=bmltest_info bmltest_process
 

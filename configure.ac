@@ -93,12 +93,6 @@ AC_CHECK_DECL(sysi86,[
 #include <sys/sysi86.h>
 ])
 
-AC_DEFINE(USE_DLLWRAPPER1, [1], [use the avifile dll wrapper])
-AM_CONDITIONAL(USE_DLLWRAPPER1, test x$HAVE_X86 = xyes)
-
-#AC_DEFINE(USE_DLLWRAPPER2, [0], [use the libfst dll wrapper])
-AM_CONDITIONAL(USE_DLLWRAPPER2, false)
-
 # Compilation and Linker flags
 BML_CFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS"
 # the -Wno-non-virtual-dtor is needed to suppress : virtual methods with no virtual destructor
@@ -117,7 +111,6 @@ AC_CONFIG_FILES( \
   src/BuzzMachineLoader/Makefile \
   dllwrapper1/Makefile \
   dllwrapper1/wine/Makefile \
-  dllwrapper2/Makefile \
   tests/bt-cfg.sh \
 )
 AC_OUTPUT

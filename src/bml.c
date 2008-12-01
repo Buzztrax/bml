@@ -22,16 +22,9 @@
 #include "config.h"
 
 #ifdef HAVE_X86
-#ifdef USE_DLLWRAPPER1
 #include "win32.h"
 #include "windef.h"
 #include "ldt_keeper.h"
-#endif
-#ifdef USE_DLLWRAPPER2
-#include <libwinelib.h>
-#include <windows.h>
-#include <winnt.h>
-#endif
 #endif  /* HAVE_X86 */
 
 #include <dlfcn.h>
@@ -41,19 +34,11 @@
 
 // buzz machine loader handle and dll handling
 #ifdef HAVE_X86
-#ifdef USE_DLLWRAPPER1
 static HINSTANCE emu_dll=0L;
 static ldt_fs_t *ldt_fs;
 #define LoadDLL(name) LoadLibraryA(name)
 #define GetSymbol(dll,name) GetProcAddress(dll,name)
 #define FreeDLL(dll) FreeLibrary(dll)
-#endif
-#ifdef USE_DLLWRAPPER2
-static void *emu_dll=NULL;
-#define LoadDLL(name) (void *)WineLoadLibrary(name)
-#define GetSymbol(dll,name) WineGetProcAddress(dll,name)
-#define FreeDLL(dll) WineFreeLibrary(dll)
-#endif
 #define BMLX(a) fptr_ ## a
 pthread_mutex_t ldt_mutex = PTHREAD_MUTEX_INITIALIZER;
 #endif  /* HAVE_X86 */
@@ -405,14 +390,9 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
   TRACE("%s\n",__FUNCTION__);
   
 #ifdef HAVE_X86
-#ifdef USE_DLLWRAPPER1
   ldt_fs=Setup_LDT_Keeper();
   TRACE("%s:   wrapper initialized: 0x%p\n",__FUNCTION__,ldt_fs);
   //Check_FS_Segment(ldt_fs);
-#endif
-#ifdef USE_DLLWRAPPER2
-  SharedWineInit(sighandler);
-#endif
 
   if(!(emu_dll=LoadDLL("BuzzMachineLoader.dll"))) {
 	TRACE("%s:   failed to load window bml\n",__FUNCTION__);
@@ -515,9 +495,7 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
 void bml_finalize(void) {
 #ifdef HAVE_X86
   FreeDLL(emu_dll);
-#ifdef USE_DLLWRAPPER1
   Restore_LDT_Keeper(ldt_fs);
-#endif
 #endif /* HAVE_X86 */
   dlclose(emu_so);
   TRACE("%s:   bml unloaded\n",__FUNCTION__);

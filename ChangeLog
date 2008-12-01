@@ -1,3 +1,27 @@
+2008-12-01  Stefan Kost  <ensonic@users.sf.net>
+
+	* Makefile.am:
+	* configure.ac:
+	* src/Makefile.am:
+	* src/bml.c:
+	* dllwrapper2 (deleted):
+	* dllwrapper2/pthreademu.c (deleted):
+	* dllwrapper2/Makefile.in (deleted):
+	* dllwrapper2/interlocked.c (deleted):
+	* dllwrapper2/pthreademu.h (deleted):
+	* dllwrapper2/lib.c (deleted):
+	* dllwrapper2/lib.h (deleted):
+	* dllwrapper2/server.h (deleted):
+	* dllwrapper2/thread.h (deleted):
+	* dllwrapper2/gettid.c (deleted):
+	* dllwrapper2/libwinelib.c (deleted):
+	* dllwrapper2/libwinelib.h (deleted):
+	* dllwrapper2/windef16.h (deleted):
+	* dllwrapper2/port.h (deleted):
+	* dllwrapper2/libbml.spec.c (deleted):
+	* dllwrapper2/server_protocol.h (deleted):
+	  Remove dllwrapper2 - not used anymore.
+
 2008-11-27  Stefan Kost  <ensonic@users.sf.net>
 
 	* TODO:
