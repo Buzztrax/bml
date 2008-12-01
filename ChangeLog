@@ -1,6 +1,13 @@
 2008-12-01  Stefan Kost  <ensonic@users.sf.net>
 
 	* configure.ac:
+	* src/BuzzMachineLoader/Makefile.am:
+	* src/Makefile.am:
+	  Check for libm and libdl. The libdl part should fix #2367633.
+
+2008-12-01  Stefan Kost  <ensonic@users.sf.net>
+
+	* configure.ac:
 	* src/Makefile.am:
 	  Only install dll on x86.
 

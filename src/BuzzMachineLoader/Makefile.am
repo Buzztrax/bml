@@ -30,7 +30,7 @@ noinst_HEADERS = \
 
 libbuzzmachineloader_la_CXXFLAGS = \
         $(BML_CXXFLAGS)
-libbuzzmachineloader_la_LIBADD = -lm -lpthread -ldl -lstdc++
+libbuzzmachineloader_la_LIBADD = $(LIBM) -lpthread $(BML_LIBS) -lstdc++
 libbuzzmachineloader_la_LDFLAGS = -module -avoid-version
 libbuzzmachineloader_la_LIBTOOLFLAGS = --tag=disable-static
 

@@ -95,11 +95,21 @@ AC_CHECK_DECL(sysi86,[
 #include <sys/sysi86.h>
 ])
 
+AC_CHECK_LIBM
+AC_SUBST(LIBM)
+
+AC_CHECK_FUNC(dlopen,
+    [],
+    [AC_CHECK_LIB(dl, dlopen,
+         [DL_LIBS=-ldl],
+         [])
+    ])
+
 # Compilation and Linker flags
 BML_CFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS"
 # the -Wno-non-virtual-dtor is needed to suppress : virtual methods with no virtual destructor
 BML_CXXFLAGS="$DEBUG_CFLAGS $COVERAGE_CFLAGS -Wno-non-virtual-dtor"
-BML_LIBS="$COVERAGE_LIBS"
+BML_LIBS="$COVERAGE_LIBS $DL_LIBS"
 AC_SUBST(BML_CFLAGS)
 AC_SUBST(BML_CXXFLAGS)
 AC_SUBST(BML_LIBS)
