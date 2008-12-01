@@ -109,8 +109,8 @@ AC_CONFIG_FILES( \
   libbml.pc \
   src/Makefile \
   src/BuzzMachineLoader/Makefile \
-  dllwrapper1/Makefile \
-  dllwrapper1/wine/Makefile \
+  dllwrapper/Makefile \
+  dllwrapper/wine/Makefile \
   tests/bt-cfg.sh \
 )
 AC_OUTPUT

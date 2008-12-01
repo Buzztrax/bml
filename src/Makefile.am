@@ -5,7 +5,7 @@ SUBDIRS = . BuzzMachineLoader
 lib_LTLIBRARIES = libbml.la
 
 AM_CPPFLAGS = \
-	-I$(top_srcdir)/dllwrapper1/wine \
+	-I$(top_srcdir)/dllwrapper/wine \
 	-I$(top_srcdir)/src/BuzzMachineLoader \
 	-I$(top_srcdir)/src
 
@@ -15,7 +15,7 @@ libbml_HEADERS = bml.h ./BuzzMachineLoader/BuzzMachineLoader.h
 
 libbml_la_CFLAGS = $(BML_CFLAGS) $(ARCH_CFLAGS)
 libbml_la_LIBADD = -lm -lpthread -ldl $(BML_LIBS) \
-  $(top_builddir)/dllwrapper1/wine/libloader.la
+  $(top_builddir)/dllwrapper/wine/libloader.la
 
 noinst_PROGRAMS=bmltest_info bmltest_process
 

@@ -1,6 +1,6 @@
 ## $Id$
 
-SUBDIRS = dllwrapper1 src
+SUBDIRS = dllwrapper src
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libbml.pc

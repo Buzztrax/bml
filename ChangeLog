@@ -2,6 +2,74 @@
 
 	* Makefile.am:
 	* configure.ac:
+	* src/BuzzMachineLoader/Makefile.am:
+	* src/Makefile.am:
+	* +   dllwrapper (added):
+	* dllwrapper1 (deleted):
+	* dllwrapper1/libwin32.h (deleted):
+	* dllwrapper1/wine (deleted):
+	* dllwrapper1/wine/winuser.h (deleted):
+	* dllwrapper1/wine/poppack.h (deleted):
+	* dllwrapper1/wine/afl.c (deleted):
+	* dllwrapper1/wine/win32.c (deleted):
+	* dllwrapper1/wine/ntdef.h (deleted):
+	* dllwrapper1/wine/win32.h (deleted):
+	* dllwrapper1/wine/registry.c (deleted):
+	* dllwrapper1/wine/loader.h (deleted):
+	* dllwrapper1/wine/debugtools.h (deleted):
+	* dllwrapper1/wine/winerror.h (deleted):
+	* dllwrapper1/wine/registry.h (deleted):
+	* dllwrapper1/wine/ldt_keeper.c (deleted):
+	* dllwrapper1/wine/stubs.s (deleted):
+	* dllwrapper1/wine/msacmdrv.h (deleted):
+	* dllwrapper1/wine/windef.h (deleted):
+	* dllwrapper1/wine/heap.h (deleted):
+	* dllwrapper1/wine/ldt_keeper.h (deleted):
+	* dllwrapper1/wine/resource.c (deleted):
+	* dllwrapper1/wine/vfl.c (deleted):
+	* dllwrapper1/wine/ldt.h (deleted):
+	* dllwrapper1/wine/wineacm.h (deleted):
+	* dllwrapper1/wine/basetsd.h (deleted):
+	* dllwrapper1/wine/driver.c (deleted):
+	* dllwrapper1/wine/.cvsignore (deleted):
+	* dllwrapper1/wine/resource.h (deleted):
+	* dllwrapper1/wine/winestring.h (deleted):
+	* dllwrapper1/wine/windows.h (deleted):
+	* dllwrapper1/wine/driver.h (deleted):
+	* dllwrapper1/wine/ext.c (deleted):
+	* dllwrapper1/wine/winreg.h (deleted):
+	* dllwrapper1/wine/wrapper.S (deleted):
+	* dllwrapper1/wine/elfdll.c (deleted):
+	* dllwrapper1/wine/winnt.h (deleted):
+	* dllwrapper1/wine/msacm.h (deleted):
+	* dllwrapper1/wine/ext.h (deleted):
+	* dllwrapper1/wine/pe_image.c (deleted):
+	* dllwrapper1/wine/elfdll.h (deleted):
+	* dllwrapper1/wine/vfw.h (deleted):
+	* dllwrapper1/wine/pe_resource.c (deleted):
+	* dllwrapper1/wine/pe_image.h (deleted):
+	* dllwrapper1/wine/mmreg.h (deleted):
+	* dllwrapper1/wine/pshpack1.h (deleted):
+	* dllwrapper1/wine/pshpack2.h (deleted):
+	* dllwrapper1/wine/pshpack4.h (deleted):
+	* dllwrapper1/wine/com.h (deleted):
+	* dllwrapper1/wine/module.c (deleted):
+	* dllwrapper1/wine/wrapper.h (deleted):
+	* dllwrapper1/wine/pshpack8.h (deleted):
+	* dllwrapper1/wine/Makefile.am (deleted):
+	* dllwrapper1/wine/module.h (deleted):
+	* dllwrapper1/wine/stubs64.s (deleted):
+	* dllwrapper1/wine/avifmt.h (deleted):
+	* dllwrapper1/wine/winbase.h (deleted):
+	* dllwrapper1/Makefile.am (deleted):
+	* dllwrapper1/.cvsignore (deleted):
+	* dllwrapper1/README (deleted):
+	  Rename dllwrapper1 to dllwrapper.
+
+2008-12-01  Stefan Kost  <ensonic@users.sf.net>
+
+	* Makefile.am:
+	* configure.ac:
 	* src/Makefile.am:
 	* src/bml.c:
 	* dllwrapper2 (deleted):
