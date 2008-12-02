@@ -34,10 +34,12 @@ libloader_la_CCASFLAGS = $(ARCH_CCASFLAGS)
 # -fno-omit-frame-pointer works around this gcc-3.0 bug.  gcc-2.95.2 is OK.
 # Note: -D_FILE_OFFSET_BITS=32 is required to disable using mmap64(),
 # as it's broken in glibc 2.1.2 (bad header) and 2.1.3 (bad code)
+#
+# can/should we use $(libdir)/win32 for the dlls
 AM_CPPFLAGS =  \
 	-D__WINE__ \
 	-DWIN32_PATH=\"/usr/lib/win32\" \
-	-DWIN32_LIB_PATH=\"$(libdir)\" \
+	-DWIN32_LIB_PATH=\"$(libdir)/win32\" \
 	-fno-omit-frame-pointer \
 	-mno-omit-leaf-frame-pointer
 

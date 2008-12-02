@@ -389,9 +389,10 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
     //if(fs_installed==0)
     //    install_fs();
     
-	TRACE("did not found module '%s'\n", libname);
+	TRACE("module '%s' not already loaded\n", libname);
 
     i = -1;
+    /* check search path */
 	while (wm == 0 && listpath[++i])
 	{
 	    memset (&path, 0, sizeof (path));

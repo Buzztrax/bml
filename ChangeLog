@@ -1,3 +1,11 @@
+2008-12-02  Stefan Kost  <ensonic@users.sf.net>
+
+	* README:
+	* dllwrapper/wine/Makefile.am:
+	* dllwrapper/wine/module.c:
+	* src/Makefile.am:
+	  Have windows dlls in $prefix/lib/win32 instead of $prefix/lib.
+
 2008-12-01  Stefan Kost  <ensonic@users.sf.net>
 
 	* configure.ac:

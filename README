@@ -25,11 +25,11 @@ Generators.
 
 = windows machines =
 The emulation uses some parts of wine at runtime. It needs kernel32.dll, e.g.
-/usr/lib/wine/kernel32.dll.so, MFC42.DLL, MSVCRT.DLL.
+kernel32.dll.so, MFC42.DLL, MSVCRT.DLL.
 The original windows dll should also work.
 
 Then you need to copy the all *.dll libraries from a windows buzz installation
-to your LD_LIBARY_PATH. We recommend to copy them to buzztard-prefix/lib.
+to your LD_LIBARY_PATH. We recommend to copy them to buzztard-prefix/lib/win32.
 
 Next copy the machines. You can e.g. just copy the whole Gear folder to
 buzztard-prefix/lib as well.
