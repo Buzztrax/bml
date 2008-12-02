@@ -28,7 +28,6 @@ bmltest_process_CFLAGS = $(BML_CFLAGS) $(ARCH_CFLAGS)
 bmltest_process_LDADD = $(BML_LIBS) libbml.la
 
 if USE_X86
-# can/should we use $(libdir)/win32 for the dlls
 dlldir = $(libdir)/win32
 dll_DATA = BuzzMachineLoader.dll
 endif

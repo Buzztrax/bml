@@ -1,5 +1,11 @@
 2008-12-02  Stefan Kost  <ensonic@users.sf.net>
 
+	* dllwrapper/wine/Makefile.am:
+	* src/Makefile.am:
+	  Also remove comments now that we changed it.
+
+2008-12-02  Stefan Kost  <ensonic@users.sf.net>
+
 	* README:
 	* dllwrapper/wine/Makefile.am:
 	* dllwrapper/wine/module.c:
