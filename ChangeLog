@@ -1,3 +1,16 @@
+2008-12-04  Stefan Kost  <ensonic@users.sf.net>
+
+	* Makefile.am:
+	* configure.ac:
+	* src/Makefile.am:
+	  Only build & link dllwrapper on x86.
+
+	* src/BuzzMachineLoader/dsplib.h:
+	  __fastcall is x86 only.
+
+	* src/bmltest_info.c:
+	  whitespace.
+
 2008-12-02  Stefan Kost  <ensonic@users.sf.net>
 
 	* dllwrapper/wine/Makefile.am:

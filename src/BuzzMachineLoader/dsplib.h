@@ -43,10 +43,11 @@ typedef unsigned long dword;
 #if defined(_MSC_VER) || defined(_MINGW_VER)
 DI void __fastcall DSP_Init(int const samplerate);
 #else
-#if __LP64__ 
-DI void DSP_Init(int const samplerate);
-#else 
+// fastcall seems to be x86 only
+#if defined(__i386__) && !defined(__LP64__) 
 DI void __attribute__ ((fastcall)) DSP_Init(int const samplerate);
+#else
+DI void DSP_Init(int const samplerate);
 #endif
 #endif
 

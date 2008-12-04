@@ -34,6 +34,9 @@ case "x${host_cpu}" in
     #ARCH_CFLAGS="-m32"
     #ARCH_CCASFLAGS="-m32"
     ;;
+  *)
+    HAVE_X86=no
+    ;;
 esac
 if test x$HAVE_X86 = xyes; then
   AC_DEFINE(HAVE_X86, 1, [Defined if host is x86])

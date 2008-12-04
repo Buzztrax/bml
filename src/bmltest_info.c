@@ -307,7 +307,7 @@ void test_info_n(char *libpath) {
 
 int main( int argc, char **argv ) {
   setlinebuf(stdout);
-  setlinebuf(stderr); 
+  setlinebuf(stderr);
   puts("main beg");
 
   if(bml_setup(0)) {
