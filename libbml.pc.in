@@ -8,4 +8,4 @@ Version: @PACKAGE_VERSION@
 Description: libbml, a library to support the use of win32/x86 buzz machines within Linux applications
 Requires: 
 Libs: -L${libdir} -lbml
-Cflags: -I${includedir} -I${includedir}/libbml
+Cflags: -I${includedir}

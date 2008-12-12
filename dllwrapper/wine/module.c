@@ -54,7 +54,7 @@ HANDLE SegptrHeap;
 WINE_MODREF* MODULE_FindModule(LPCSTR m)
 {
     modref_list* list=local_wm;
-    TRACE("FindModule: Module %s request\n", m);
+    //TRACE("FindModule: Module %s request\n", m);
     if(list==NULL)
 	return NULL;
     //while(strcmp(m, list->wm->filename))
@@ -65,7 +65,7 @@ WINE_MODREF* MODULE_FindModule(LPCSTR m)
       if(list==NULL)
           return NULL;
     }
-    TRACE("Resolved to %s\n", list->wm->filename);
+    //TRACE("Resolved to %s\n", list->wm->filename);
     return list->wm;
 }
 
@@ -103,22 +103,22 @@ static void MODULE_RemoveFromList(WINE_MODREF *mod)
 WINE_MODREF *MODULE32_LookupHMODULE(HMODULE m)
 {
     modref_list* list=local_wm;
-    TRACE("LookupHMODULE: Module %X request\n", m);
+    //TRACE("LookupHMODULE: Module %X request\n", m);
     if(list==NULL)
     {
-	TRACE("LookupHMODULE failed\n");
-	return NULL;
+        TRACE("LookupHMODULE %X failed\n", m);
+        return NULL;
     }
     while(m!=list->wm->module)
     {
 //      printf("Checking list %X wm %X module %X\n",
-//	list, list->wm, list->wm->module);
-	list=list->prev;
-	if(list==NULL)
-	{
-	    TRACE("LookupHMODULE failed\n");
-	    return NULL;
-	}
+//	       list, list->wm, list->wm->module);
+        list=list->prev;
+        if(list==NULL)
+        {
+            TRACE("LookupHMODULE %X failed\n", m);
+            return NULL;
+        }
     }
     //TRACE("LookupHMODULE hit %p\n", list->wm);
     return list->wm;
@@ -132,8 +132,7 @@ static WIN_BOOL MODULE_InitDll( WINE_MODREF *wm, DWORD type, LPVOID lpReserved )
     WIN_BOOL retv = TRUE;
 
 #ifdef LOG
-    static LPCSTR typeName[] = { "PROCESS_DETACH", "PROCESS_ATTACH",
-                                 "THREAD_ATTACH", "THREAD_DETACH" };
+    static LPCSTR typeName[] = { "PROCESS_DETACH", "PROCESS_ATTACH", "THREAD_ATTACH", "THREAD_DETACH" };
 #endif
     assert( wm );
 
@@ -339,7 +338,7 @@ static WINE_MODREF *MODULE_LoadLibraryExA( LPCSTR libname, HFILE hfile, DWORD fl
  */
 static WIN_BOOL MODULE_FreeLibrary( WINE_MODREF *wm )
 {
-    TRACE("(%s) - START\n", wm->modname );
+    //TRACE("(%s) - START\n", wm->modname );
 
     /* Recursively decrement reference counts */
     //MODULE_DecRefCount( wm );
@@ -349,7 +348,7 @@ static WIN_BOOL MODULE_FreeLibrary( WINE_MODREF *wm )
 
     PE_UnloadLibrary(wm);
 
-    TRACE("END\n");
+    //TRACE("END\n");
 
     return TRUE;
 }
@@ -616,7 +615,7 @@ static void MODULE_DecRefCount( WINE_MODREF *wm )
         return;
 
     --wm->refCount;
-    TRACE("(%s) refCount: %d\n", wm->modname, wm->refCount );
+    //TRACE("(%s) refCount: %d\n", wm->modname, wm->refCount );
 
     if ( wm->refCount == 0 )
     {

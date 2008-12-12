@@ -1,3 +1,12 @@
+2008-12-13  Stefan Kost  <ensonic@users.sf.net>
+
+	* dllwrapper/wine/module.c:
+	* dllwrapper/wine/resource.c:
+	  Comment out more traceing.
+
+	* libbml.pc.in:
+	  Don't add lib specific include dir.
+
 2008-12-04  Stefan Kost  <ensonic@users.sf.net>
 
 	* Makefile.am:

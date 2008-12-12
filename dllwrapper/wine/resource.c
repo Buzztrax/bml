@@ -175,7 +175,7 @@ static LPVOID RES_LockResource( HGLOBAL handle )
 {
     LPVOID bits = NULL;
 
-    TRACE("(%08x, %s)\n", handle, "PE" );
+    //TRACE("(%08x, %s)\n", handle, "PE" );
 
     bits = (LPVOID)handle;
 
