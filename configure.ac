@@ -1,8 +1,8 @@
 dnl $Id$
 
 dnl Initialise the autoconf/automake tool
-AC_PREREQ(2.59)
-AC_INIT([bml], [0.5.0], [buzztard-devel@lists.sourceforge.net])
+AC_PREREQ(2.61)
+AC_INIT([bml],[0.5.0],[buzztard-devel@lists.sourceforge.net])
 AC_CONFIG_SRCDIR([ChangeLog])
 AC_CONFIG_HEADERS(config.h)
 AC_CANONICAL_HOST([])
@@ -19,7 +19,6 @@ AC_PROG_LN_S
 AC_ISC_POSIX
 AC_PROG_LIBTOOL
 AM_PROG_AS
-AM_PROG_CC_STDC
 AM_PROG_CC_C_O
 
 dnl check target cpu architecture
@@ -47,7 +46,7 @@ dnl enable runtime debugging code
 AC_MSG_CHECKING(whether to enable runtime debugging code)
 AC_ARG_ENABLE(
   debug,
-  AC_HELP_STRING([--enable-debug],[enable runtime debugging code (default=no)]),
+  AS_HELP_STRING([--enable-debug],[enable runtime debugging code (default=no)]),
   ,
   [enable_debug="no"])
 AC_MSG_RESULT($enable_debug)
@@ -62,7 +61,7 @@ dnl enable coverage analysis
 AC_MSG_CHECKING(whether to enable coverage analysis)
 AC_ARG_ENABLE(
 	coverage,
-	AC_HELP_STRING([--enable-coverage],[enable coverage analysis (default=no)]),
+	AS_HELP_STRING([--enable-coverage],[enable coverage analysis (default=no)]),
 	,
 	[enable_coverage="no"])
 AC_MSG_RESULT($enable_coverage)
