@@ -1,6 +1,6 @@
 ## $Id$
 
-SUBDIRS = . BuzzMachineLoader
+SUBDIRS = BuzzMachineLoader
 
 if USE_X86
   DLLWRAPPER_LIB=$(top_builddir)/dllwrapper/wine/libloader.la
