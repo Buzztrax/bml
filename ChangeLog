@@ -1,5 +1,11 @@
 2008-12-30  Stefan Kost  <ensonic@users.sf.net>
 
+	* m4/acx_pthread.m4:
+	  Add PTHREAD_* variabled to be shown at the end of ./configure --help. Merge
+	  change from avahi to check for shared lib behaviour (do we need -lpthread).	  
+
+2008-12-30  Stefan Kost  <ensonic@users.sf.net>
+
 	* Makefile.am:
 	* autogen.sh:
 	* configure.ac:
