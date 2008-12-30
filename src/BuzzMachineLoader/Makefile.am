@@ -28,9 +28,8 @@ noinst_HEADERS = \
     dsplib.h \
     resample.h
 
-libbuzzmachineloader_la_CXXFLAGS = \
-        $(BML_CXXFLAGS)
-libbuzzmachineloader_la_LIBADD = $(LIBM) -lpthread $(BML_LIBS) -lstdc++
+libbuzzmachineloader_la_CXXFLAGS = $(PTHREAD_CFLAGS) $(BML_CXXFLAGS)
+libbuzzmachineloader_la_LIBADD = $(LIBM) $(PTHREAD_LIBS) $(BML_LIBS) -lstdc++
 libbuzzmachineloader_la_LDFLAGS = -module -avoid-version
 libbuzzmachineloader_la_LIBTOOLFLAGS = --tag=disable-static
 

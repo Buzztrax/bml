@@ -19,8 +19,8 @@ libbmldir = $(includedir)/libbml
 libbml_la_SOURCES = bml.c
 libbml_HEADERS = bml.h ./BuzzMachineLoader/BuzzMachineLoader.h
 
-libbml_la_CFLAGS = $(BML_CFLAGS) $(ARCH_CFLAGS)
-libbml_la_LIBADD = $(LIBM) -lpthread $(BML_LIBS) $(DLLWRAPPER_LIB)
+libbml_la_CFLAGS = $(PTHREAD_CFLAGS) $(BML_CFLAGS) $(ARCH_CFLAGS)
+libbml_la_LIBADD = $(LIBM) $(PTHREAD_LIBS) $(BML_LIBS) $(DLLWRAPPER_LIB)
 
 noinst_PROGRAMS=bmltest_info bmltest_process
 

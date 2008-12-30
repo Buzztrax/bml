@@ -1,3 +1,15 @@
+2008-12-30  Stefan Kost  <ensonic@users.sf.net>
+
+	* Makefile.am:
+	* autogen.sh:
+	* configure.ac:
+	* m4/acx_pthread.m4:
+	* src/BuzzMachineLoader/Makefile.am:
+	* src/Makefile.am:
+	* m4 (added):
+	* m4/acx_pthread.m4 (added):
+	  Detect pthreads.
+
 2008-12-27  Stefan Kost  <ensonic@users.sf.net>
 
 	* configure.ac:

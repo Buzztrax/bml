@@ -6,8 +6,8 @@ AC_INIT([bml],[0.5.0],[buzztard-devel@lists.sourceforge.net])
 AM_INIT_AUTOMAKE([-Wall -Werror check-news std-options])
 AC_CONFIG_SRCDIR([ChangeLog])
 AC_CONFIG_HEADERS(config.h)
+AC_CONFIG_MACRO_DIR(m4)
 AC_CANONICAL_HOST([])
-
 
 dnl Checks for programs.
 AC_PROG_CXX
@@ -87,6 +87,7 @@ else
 fi
 AM_CONDITIONAL(USE_LCOV, test ! x$lcov_path = xyes)
 
+dnl chek for heaers
 AC_HEADER_STDC([])
 AC_CHECK_HEADERS(assert.h byteswap.h malloc.h execinfo.h ucontext.h sys/mman.h sys/mixer.h libgen.h netdb.h dirent.h sys/times.h sys/ioctl.h sys/param.h alloca.h)
 
@@ -96,8 +97,10 @@ AC_CHECK_DECL(sysi86,[
 #include <sys/sysi86.h>
 ])
 
+dnl check for libraries
 AC_CHECK_LIBM
 AC_SUBST(LIBM)
+ACX_PTHREAD
 
 AC_CHECK_FUNC(dlopen,
     [],
