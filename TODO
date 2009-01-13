@@ -170,6 +170,10 @@ Aeguelles TB4004
   noisy distortion
 
 == Effects ==
+cheapo spread
+  hangs after GetInfo()
+  or "Called unk_malloc"
+  after copying msvcr70.dll to libdir "unk_SetCriticalSectionSpinCount" (this is now implemented)
 Arguelles TruePan
 Jeskola XDelay (causes distortions)
 Jeskola Raverb (causes distortions)
@@ -179,10 +183,6 @@ Jeskola Stereo Reverb (sometimes silences the whole song, NAN?)
 Sonic Verb (seems to work now)
   buzzmachinecallbacks.cpp:199:BuzzMachineCallbacks::GetEnvPoint (wave=-1,env=-1,i=-1076278224,&x,&y,&flags)
   buzzmachinecallbacks.cpp:276:BuzzMachineCallbacks::SetSequenceData (row=-1217504548,ppat=B7A5B3C4)
-cheapo spread
-  hangs after GetInfo()
-  or "Called unk_malloc"
-  after copying msvcr70.dll to libdir "unk_SetCriticalSectionSpinCount" (this is now implemented)
 Ynzn's Remote Compressor.dll
 Ynzn's Remote Gate.dll
   both crash (problem with name?)

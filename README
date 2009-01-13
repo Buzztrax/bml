@@ -43,7 +43,8 @@ or alternatively run the testmachine.sh script to probe a whole directory with
 machines.
 
 If you have compiled with logging and set BML_DEBUG=1 before running, you'll get
-more diagnostics.
+more diagnostics. For even more logging edit dllwraper/wine/win32.c and enable
+#define DETAILED_OUT
 
 = building the BuzzMachineLoader.dll =
 1) use MS developer studio
@@ -77,4 +78,8 @@ http://www.digitalmars.com/ctg/win32programming.html
 make sure your /dev/zero is executable (needed for mmap() )
 == 64 bit builds ==
 http://www.x86-64.org/documentation/assembly.html
+== missing dlls ==
+wget kegel.com/wine/winetricks 
+sh winetricks mfc42 
+
 

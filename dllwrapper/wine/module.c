@@ -11,6 +11,7 @@
 //#define DEBUG_QTX_API
 
 #include "config.h"
+#define _GNU_SOURCE
 
 #include <assert.h>
 #include <errno.h>
@@ -58,7 +59,7 @@ WINE_MODREF* MODULE_FindModule(LPCSTR m)
     if(list==NULL)
 	return NULL;
     //while(strcmp(m, list->wm->filename))
-    while(!strstr(list->wm->filename, m))
+    while(!strcasestr(list->wm->filename, m))
     {
       //TRACE("%s: %x\n", list->wm->filename, list->wm->module);
       list=list->prev;
@@ -260,7 +261,7 @@ static WIN_BOOL MODULE_DllProcessAttach( WINE_MODREF *wm, LPVOID lpReserved )
     }
 
 
-    TRACE("DllProcessAttach for  (%s,%p) - END\n", wm->modname, lpReserved );
+    TRACE("DllProcessAttach for  (%s,%p) = %s - END\n", wm->modname, lpReserved, (retv?"TRUE":"FALSE"));
 
     return retv;
 }

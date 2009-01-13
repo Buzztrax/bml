@@ -4902,9 +4902,9 @@ static unsigned int expRegisterClipboardFormatA(char *format)
   static unsigned int id=0xBFFF;
 
   // FIXME: need a hashmap
-  if(id>0xFFFF) id++;
+  if(id<0xFFFF) id++;
 
-  dbgprintf("RegisterClipboardFormatA(%s) => %dn", format, id);
+  dbgprintf("RegisterClipboardFormatA(%s) => %d\n", format, id);
   return(id);
 }
 

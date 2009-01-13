@@ -1,3 +1,16 @@
+2009-01-13  Stefan Kost  <ensonic@users.sf.net>
+
+	* README:
+	* TODO:
+	  More tips.
+
+	* dllwrapper/wine/module.c:
+	  Do incasesensitive search to avoid reloading libraries. Add more
+	  details to log.
+
+	* dllwrapper/wine/win32.c:
+	  Add missing \n. Make returned id's increment.
+
 2008-12-31  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/Makefile.am:
