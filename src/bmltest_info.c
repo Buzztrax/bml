@@ -119,7 +119,7 @@ void test_info_w(char *libpath) {
     fflush(stdout);
     if(bmlw_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,(void *)&val)) {   printf("    NumTrackParams: %i\n",val);fflush(stdout);
       num=val;
-      if(tracks) {
+      if(num && tracks) {
         for(i=0;i<num;i++) {
           printf("      TrackParam=%02i\n",i);
           if(bmlw_get_track_parameter_info(bm,i,BM_PARA_TYPE,(void *)&type))        printf("        Type: %i -> \"%s\"\n",type,((type<4)?parameter_types[type]:"unknown"));
@@ -251,7 +251,7 @@ void test_info_n(char *libpath) {
     fflush(stdout);
     if(bmln_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,(void *)&val)) {   printf("    NumTrackParams: %i\n",val);fflush(stdout);
       num=val;
-      if(tracks) {
+      if(num && tracks) {
         for(i=0;i<num;i++) {
           printf("      TrackParam=%02i\n",i);
           if(bmln_get_track_parameter_info(bm,i,BM_PARA_TYPE,(void *)&type))        printf("        Type: %i -> \"%s\"\n",type,((type<4)?parameter_types[type]:"unknown"));

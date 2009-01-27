@@ -42,12 +42,17 @@ fi
 machine_glob="$1";
 mkdir -p testmachine
 m_okay=0;
+m_info=0;
 m_fail=0;
 trap "sig_segv=1" SIGSEGV
 trap "sig_int=1" INT
 touch testmachine.failtmp
 rm -f testmachine.body.html
 touch testmachine.body.html
+
+if [ ! -e input.raw ]; then
+  dd count=10 if=/dev/zero of=input.raw
+fi
 
 # run test loop
 
@@ -56,7 +61,7 @@ for machine in $machine_glob ; do
   name=`basename "$machine"`
   ext=${name#${name%.*}}
   log_name="./testmachine/$name.txt"
-  rm -f "$log_name" "$log_name".okay "$log_name".fail
+  rm -f "$log_name" "$log_name".okay "$log_name".fail "$log_name".info
   # collect used dlls
   fieldLibs=`strings "$machine" | grep -i -F "$ext" | grep -vi "$name" | sort`
   # try to run it
@@ -65,15 +70,30 @@ for machine in $machine_glob ; do
   #env >testmachine.log 2>&1 LD_LIBRARY_PATH="../src/" ../src/bmltest_info "$machine"
   #res=$?
   # this suppresses the output of e.g. "Sementation fault"
-  res=`env >testmachine.log 2>&1 BML_DEBUG=1 LD_LIBRARY_PATH="../src/:../src/BuzzMachineLoader/.libs:$LD_LIBRARY_PATH" ../src/bmltest_info "$machine"; echo $?`
-  cat testmachine.log | grep >"$log_name" -v "Warning: the specified"
+  res=`env >bmltest_info.log 2>&1 BML_DEBUG=1 LD_LIBRARY_PATH="../src/:../src/BuzzMachineLoader/.libs:$LD_LIBRARY_PATH" ../src/bmltest_info "$machine"; echo $?`
+  cat bmltest_info.log | grep >"$log_name" -v "Warning: the specified"
   if [ $sig_int -eq "1" ] ; then res=1; fi
   if [ $res -eq "0" ] ; then
-    echo "okay : $machine";
-    m_okay=$((m_okay+1))
-    mv "$log_name" "$log_name".okay
-    tablecolor="#E0FFE0"
-    tableresult="okay"
+    # try to run it again
+    sig_segv=0
+    sig_int=0
+    # this suppresses the output of e.g. "Sementation fault"
+    res=`env >bmltest_process.log 2>&1 BML_DEBUG=1 LD_LIBRARY_PATH="../src/:../src/BuzzMachineLoader/.libs:$LD_LIBRARY_PATH" ../src/bmltest_process "$machine" input.raw output.raw; echo $?`
+    cat bmltest_process.log | grep >>"$log_name" -v "Warning: the specified"
+    if [ $sig_int -eq "1" ] ; then res=1; fi
+    if [ $res -eq "0" ] ; then
+      echo "okay : $machine";
+      m_okay=$((m_okay+1))
+      mv "$log_name" "$log_name".okay
+      tablecolor="#E0FFE0"
+      tableresult="okay"
+    else
+      echo "info : $machine";
+      m_info=$((m_info+1))
+      mv "$log_name" "$log_name".info
+      tablecolor="#FFF7E0"
+      tableresult="info"
+    fi
   else
     echo "fail : $machine";
     m_fail=$((m_fail+1))
@@ -82,20 +102,26 @@ for machine in $machine_glob ; do
     tableresult="fail"
     reason=`tail -n1 "$log_name".fail | strings`;
     echo "$reason :: $name" >>testmachine.failtmp
+    touch bmltest_process.log
   fi
-  cat testmachine.log | iconv >testmachine.tmp -fWINDOWS-1250 -tUTF-8 -c
-  fieldShortName=`egrep -o "Short Name: .*$" testmachine.tmp | sed -e 's/Short Name: "\(.*\)"$/\1/'`
-  fieldAuthor=`egrep -o "Author: .*$" testmachine.tmp | sed -e 's/Author: "\(.*\)"$/\1/'`
-  fieldType=`egrep -o "^    Type: . -> \"MT_.*$" testmachine.tmp | sed -e 's/^\ *Type: . -> "\(.*\)"$/\1/'`
-  fieldVersion=`egrep -o "Version: .*$" testmachine.tmp | sed -e 's/Version: \(.*\)$/\1/'`
-  fieldFlags=`egrep -o "^    Flags: .*$" testmachine.tmp | sed -e 's/^\ *Flags: \(.*\)$/\1/'`
-  fieldMinTracks=`egrep -o "MinTracks: .*$" testmachine.tmp | sed -e 's/MinTracks: \(.*\)$/\1/'`
-  fieldMaxTracks=`egrep -o "MaxTracks: .*$" testmachine.tmp | sed -e 's/MaxTracks: \(.*\)$/\1/'`
-  fieldInputChannels=`egrep -o "InputChannels: .*$" testmachine.tmp | sed -e 's/InputChannels: \(.*\)$/\1/'`
-  fieldOutputChannels=`egrep -o "OutputChannels: .*$" testmachine.tmp | sed -e 's/OutputChannels: \(.*\)$/\1/'`
-  fieldNumGlobalParams=`egrep -o "NumGlobalParams: .*$" testmachine.tmp | sed -e 's/NumGlobalParams: \(.*\)$/\1/'`
-  fieldNumTrackParams=`egrep -o "NumTrackParams: .*$" testmachine.tmp | sed -e 's/NumTrackParams: \(.*\)$/\1/'`
-  fieldNumAttributes=`egrep -o "NumAttributes: .*$" testmachine.tmp | sed -e 's/NumAttributes: \(.*\)$/\1/'`
+  cat bmltest_info.log | iconv >bmltest_info.tmp -fWINDOWS-1250 -tUTF-8 -c
+  fieldShortName=`egrep -o "Short Name: .*$" bmltest_info.tmp | sed -e 's/Short Name: "\(.*\)"$/\1/'`
+  fieldAuthor=`egrep -o "Author: .*$" bmltest_info.tmp | sed -e 's/Author: "\(.*\)"$/\1/'`
+  fieldType=`egrep -o "^    Type: . -> \"MT_.*$" bmltest_info.tmp | sed -e 's/^\ *Type: . -> "\(.*\)"$/\1/'`
+  fieldVersion=`egrep -o "Version: .*$" bmltest_info.tmp | sed -e 's/Version: \(.*\)$/\1/'`
+  fieldFlags=`egrep -o "^    Flags: .*$" bmltest_info.tmp | sed -e 's/^\ *Flags: \(.*\)$/\1/'`
+  fieldMinTracks=`egrep -o "MinTracks: .*$" bmltest_info.tmp | sed -e 's/MinTracks: \(.*\)$/\1/'`
+  fieldMaxTracks=`egrep -o "MaxTracks: .*$" bmltest_info.tmp | sed -e 's/MaxTracks: \(.*\)$/\1/'`
+  fieldInputChannels=`egrep -o "InputChannels: .*$" bmltest_info.tmp | sed -e 's/InputChannels: \(.*\)$/\1/'`
+  fieldOutputChannels=`egrep -o "OutputChannels: .*$" bmltest_info.tmp | sed -e 's/OutputChannels: \(.*\)$/\1/'`
+  fieldNumGlobalParams=`egrep -o "NumGlobalParams: .*$" bmltest_info.tmp | sed -e 's/NumGlobalParams: \(.*\)$/\1/'`
+  fieldNumTrackParams=`egrep -o "NumTrackParams: .*$" bmltest_info.tmp | sed -e 's/NumTrackParams: \(.*\)$/\1/'`
+  fieldNumAttributes=`egrep -o "NumAttributes: .*$" bmltest_info.tmp | sed -e 's/NumAttributes: \(.*\)$/\1/'`
+  cat bmltest_process.log | iconv >bmltest_process.tmp -fWINDOWS-1250 -tUTF-8 -c
+  fieldMaxAmp=`egrep -o "MaxAmp: .*$" bmltest_process.tmp | sed -e 's/MaxAmp: \(.*\)$/\1/'`
+  fieldMathNaN=`egrep -o "some values are nan" bmltest_process.tmp | sed -e 's/some values are "\(.*\)"$/\1/'`
+  fieldMathInf=`egrep -o "some values are inf" bmltest_process.tmp | sed -e 's/some values are "\(.*\)"$/\1/'`
+  
   cat >>testmachine.body.html <<END_OF_HTML
       <tr bgcolor="$tablecolor">
         <td><a href="$log_name.$tableresult">$tableresult</a></td>
@@ -113,13 +139,17 @@ for machine in $machine_glob ; do
         <td>$fieldNumTrackParams</td>
         <td>$fieldNumAttributes</td>
         <td>$fieldLibs</td>
+        <td>$fieldMaxAmp</td>
+        <td>$fieldMathNaN $fieldMathInf</td>
       </tr>
 END_OF_HTML
+  rm -f bmltest_info.log bmltest_process.log
 done
 
 # cleanup and report
 
-rm testmachine.log testmachine.tmp
+rm -f bmltest_info.log bmltest_info.tmp
+rm -f bmltest_process.log bmltest_process.tmp
 sort testmachine.failtmp >testmachine.fails
 rm testmachine.failtmp
 
@@ -147,6 +177,8 @@ cat >testmachine.html <<END_OF_HTML
         <th>Track Par.</th>
         <th>Attr.</th>
         <th>Libs</th>
+        <th>Max. Amplitude</th>
+        <th>NaN/Inf</th>
       </tr>
 END_OF_HTML
 cat >>testmachine.html testmachine.body.html
@@ -157,7 +189,7 @@ cat >>testmachine.html <<END_OF_HTML
 END_OF_HTML
 rm testmachine.body.html
 
-m_all=$((m_fail+m_okay))
-echo "Of $m_all machine(s) $m_okay machine(s) worked and $m_fail machine(s) failed."
+m_all=$((m_fail+m_info+m_okay))
+echo "Of $m_all machine(s) $m_okay worked, $m_info did not processed data and $m_fail machine(s) failed to load."
 echo "See testmachine.fails and testmachine.html for details"
 

@@ -1,3 +1,11 @@
+2009-01-27  Stefan Kost  <ensonic@users.sf.net>
+
+	* TODO:
+	* src/bmltest_info.c:
+	* src/bmltest_process.c:
+	* tests/testmachine.sh:
+	  Extend the machine test script to actually generate or process audio.
+
 2009-01-13  Stefan Kost  <ensonic@users.sf.net>
 
 	* README:

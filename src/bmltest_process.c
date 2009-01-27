@@ -75,7 +75,7 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
   
   if((bm=bmlw_new(libpath))) {
     FILE *infile,*outfile;
-    int s_size=BUFFER_SIZE,i_size;
+    int s_size=BUFFER_SIZE,i_size,o_size;
     short int buffer_w[BUFFER_SIZE];
     float buffer_f[BUFFER_SIZE];
     int i,mtype;
@@ -83,7 +83,7 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
     const char *type_name[3]={"","generator","effect"};
     int nan=0,inf=0;
     float ma=0.0;
-    size_t written;
+    int mode=3/*WM_READWRITE*/;
     
     puts("  windows machine created");
     bmlw_init(bm,0,NULL);
@@ -93,7 +93,7 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
     //bmlw_stop(bm);
     //bmlw_set_num_tracks(bm,2);
     //bmlw_set_num_tracks(bm,1);
-    bmlw_attributes_changed(bm);
+    //bmlw_attributes_changed(bm);
 
     // open raw files
     infile=fopen(infilename,"rb");
@@ -135,8 +135,10 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
             }
           }
         }
+        mode=2/*WM_WRITE*/;
       }
       while(!feof(infile)) {
+        // change a parameter
         // assumes the first param is of pt_word type 
         //bm_set_global_parameter_value(bm,0,ival);
         //oval=bm_get_global_parameter_value(bm,0);printf("        Value: %d\n",oval);
@@ -147,15 +149,21 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
         // set GlobalVals, TrackVals
         bmlw_tick(bm);
         i_size=fread(buffer_w,2,s_size,infile);
-        for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i]/32768.0f;
-        bmlw_work(bm,buffer_f,i_size,3/*WM_READWRITE*/);
+        // generators get silence, effects get the input
+        if(mtype==1) {
+          for(i=0;i<i_size;i++) buffer_f[i]=0.0;
+        }
+        else {
+          for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i]/32768.0f;
+        }
+        bmlw_work(bm,buffer_f,i_size,mode);
         for(i=0;i<i_size;i++) {
           if(isnan(buffer_f[i])) nan=1;
           if(isinf(buffer_f[i])) inf=1;
           if(fabs(buffer_f[i])>ma) ma=buffer_f[i];
           buffer_w[i]=(short int)(buffer_f[i]*32768.0f);
         }
-        written=fwrite(buffer_w,2,i_size,outfile);
+        o_size=fwrite(buffer_w,2,i_size,outfile);
       }
       //printf("\n");
     }
@@ -165,7 +173,7 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
     puts("  done");
     if(nan) puts("some values are nan");
     if(inf) puts("some values are inf");
-    printf("max value : %f\n",ma);
+    printf("MaxAmp: %f\n",ma);
     bmlw_free(bm);
   }
 }
@@ -179,7 +187,7 @@ void test_process_n(char *libpath,const char *infilename,const char *outfilename
   
   if((bm=bmln_new(libpath))) {
     FILE *infile,*outfile;
-    int s_size=BUFFER_SIZE,i_size;
+    int s_size=BUFFER_SIZE,i_size,o_size;
     short int buffer_w[BUFFER_SIZE];
     float buffer_f[BUFFER_SIZE];
     int i,mtype;
@@ -187,13 +195,12 @@ void test_process_n(char *libpath,const char *infilename,const char *outfilename
     const char *type_name[3]={"","generator","effect"};
     int nan=0,inf=0;
     float ma=0.0;
-    size_t written;
+    int mode=3/*WM_READWRITE*/;
     
     puts("  native machine created");
     bmln_init(bm,0,NULL);
     bmln_get_machine_info(bm,BM_PROP_TYPE,&mtype);
-    printf("  %s initialized\n",type_name[mtype]);
-    
+    printf("  %s initialized\n",type_name[mtype]);  
 
     // open raw files
     infile=fopen(infilename,"rb");
@@ -235,6 +242,7 @@ void test_process_n(char *libpath,const char *infilename,const char *outfilename
             }
           }
         }
+        mode=2/*WM_WRITE*/;
       }
       while(!feof(infile)) {
         // assumes the first param is of pt_word type 
@@ -247,15 +255,21 @@ void test_process_n(char *libpath,const char *infilename,const char *outfilename
         // set GlobalVals, TrackVals
         bmln_tick(bm);
         i_size=fread(buffer_w,2,s_size,infile);
-        for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i]/32768.0f;
-        bmln_work(bm,buffer_f,i_size,3/*WM_READWRITE*/);
+        // generators get silence, effects get the input
+        if(mtype==1) {
+          for(i=0;i<i_size;i++) buffer_f[i]=0.0;
+        }
+        else {
+          for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i]/32768.0f;
+        }
+        bmln_work(bm,buffer_f,i_size,mode);
         for(i=0;i<i_size;i++) {
           if(isnan(buffer_f[i])) nan=1;
           if(isinf(buffer_f[i])) inf=1;
           if(fabs(buffer_f[i])>ma) ma=buffer_f[i];
           buffer_w[i]=(short int)(buffer_f[i]*32768.0f);
         }
-        written=fwrite(buffer_w,2,i_size,outfile);
+        o_size=fwrite(buffer_w,2,i_size,outfile);
       }
       //printf("\n");
     }
@@ -265,7 +279,7 @@ void test_process_n(char *libpath,const char *infilename,const char *outfilename
     puts("  done");
     if(nan) puts("some values are nan");
     if(inf) puts("some values are inf");
-    printf("max value : %f\n",ma);
+    printf("MaxAmp: %f\n",ma);
     bmln_free(bm);
   }
 }
