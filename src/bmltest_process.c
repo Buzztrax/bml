@@ -82,6 +82,7 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
     //int ival=0,oval,vs=10;
     const char *type_name[3]={"","generator","effect"};
     int nan=0,inf=0;
+    int clipped=0;
     float ma=0.0;
     int mode=3/*WM_READWRITE*/;
     
@@ -164,14 +165,24 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
             for(i=0;i<i_size;i++) buffer_f[i]=0.0;
           }
           else {
-            for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i]/32768.0f;
+            for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i];
           }
           bmlw_work(bm,buffer_f,i_size,mode);
           for(i=0;i<i_size;i++) {
             if(isnan(buffer_f[i])) nan=1;
             if(isinf(buffer_f[i])) inf=1;
             if(fabs(buffer_f[i])>ma) ma=buffer_f[i];
-            buffer_w[i]=(short int)(buffer_f[i]*32768.0f);
+            if(buffer_f[i]>32767) {
+              buffer_w[i]=32767;
+              clipped++;
+            }
+            else if(buffer_f[i]<-32768) {
+              buffer_w[i]=-32768;
+              clipped++;
+            }
+            else {
+              buffer_w[i]=(short int)(buffer_f[i]);
+            }
           }
           o_size=fwrite(buffer_w,2,i_size,outfile);
         }
@@ -184,6 +195,7 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
     puts("  done");
     if(nan) puts("some values are nan");
     if(inf) puts("some values are inf");
+    printf("Clipped: %d\n",clipped);
     printf("MaxAmp: %f\n",ma);
     bmlw_free(bm);
   }
@@ -205,6 +217,7 @@ void test_process_n(char *libpath,const char *infilename,const char *outfilename
     //int ival=0,oval,vs=10;
     const char *type_name[3]={"","generator","effect"};
     int nan=0,inf=0;
+    int clipped=0;
     float ma=0.0;
     int mode=3/*WM_READWRITE*/;
     
@@ -283,14 +296,24 @@ void test_process_n(char *libpath,const char *infilename,const char *outfilename
             for(i=0;i<i_size;i++) buffer_f[i]=0.0;
           }
           else {
-            for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i]/32768.0f;
+            for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i];
           }
           bmln_work(bm,buffer_f,i_size,mode);
           for(i=0;i<i_size;i++) {
             if(isnan(buffer_f[i])) nan=1;
             if(isinf(buffer_f[i])) inf=1;
             if(fabs(buffer_f[i])>ma) ma=buffer_f[i];
-            buffer_w[i]=(short int)(buffer_f[i]*32768.0f);
+            if(buffer_f[i]>32767.0) {
+              buffer_w[i]=32767;
+              clipped++;
+            }
+            else if(buffer_f[i]<-32768.0) {
+              buffer_w[i]=-32768;
+              clipped++;
+            }
+            else {
+              buffer_w[i]=(short int)(buffer_f[i]);
+            }
           }
           o_size=fwrite(buffer_w,2,i_size,outfile);
         }
@@ -303,6 +326,7 @@ void test_process_n(char *libpath,const char *infilename,const char *outfilename
     puts("  done");
     if(nan) puts("some values are nan");
     if(inf) puts("some values are inf");
+    printf("Clipped: %d\n",clipped);
     printf("MaxAmp: %f\n",ma);
     bmln_free(bm);
   }

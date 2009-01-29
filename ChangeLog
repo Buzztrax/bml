@@ -1,3 +1,9 @@
+2009-01-30  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/bmltest_process.c:
+	* tests/testmachine.sh:
+	  Fix the audio amplitude ranges.
+
 2009-01-29  Stefan Kost  <ensonic@users.sf.net>
 
 	* TODO:

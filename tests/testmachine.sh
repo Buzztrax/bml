@@ -85,6 +85,7 @@ for machine in $machine_glob ; do
       echo "okay : $machine";
       m_okay=$((m_okay+1))
       mv "$log_name" "$log_name".okay
+      gst-launch-0.10 >/dev/null 2>&1 filesrc location=output.raw ! audio/x-raw-int,width=16,channels=1,rate=44100 ! wavenc ! filesink location="testmachine/$name.wav"
       tablecolor="#E0FFE0"
       tableresult="okay"
     else
@@ -119,6 +120,7 @@ for machine in $machine_glob ; do
   fieldNumAttributes=`egrep -o "NumAttributes: .*$" bmltest_info.tmp | sed -e 's/NumAttributes: \(.*\)$/\1/'`
   cat bmltest_process.log | iconv >bmltest_process.tmp -fWINDOWS-1250 -tUTF-8 -c
   fieldMaxAmp=`egrep -o "MaxAmp: .*$" bmltest_process.tmp | sed -e 's/MaxAmp: \(.*\)$/\1/'`
+  fieldClipped=`egrep -o "Clipped: .*$" bmltest_process.tmp | sed -e 's/Clipped: \(.*\)$/\1/'`
   fieldMathNaN=`egrep -o "some values are nan" bmltest_process.tmp | sed -e 's/some values are \(.*\)$/\1/'`
   fieldMathInf=`egrep -o "some values are inf" bmltest_process.tmp | sed -e 's/some values are \(.*\)$/\1/'`
   
@@ -140,6 +142,7 @@ for machine in $machine_glob ; do
         <td>$fieldNumAttributes</td>
         <td>$fieldLibs</td>
         <td>$fieldMaxAmp</td>
+        <td>$fieldClipped</td>
         <td>$fieldMathNaN $fieldMathInf</td>
       </tr>
 END_OF_HTML
@@ -177,7 +180,8 @@ cat >testmachine.html <<END_OF_HTML
         <th>Track Par.</th>
         <th>Attr.</th>
         <th>Libs</th>
-        <th>Max. Amplitude</th>
+        <th>Max Amp.</th>
+        <th>Clipped</th>
         <th>NaN/Inf</th>
       </tr>
 END_OF_HTML
