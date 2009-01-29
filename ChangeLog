@@ -1,3 +1,16 @@
+2009-01-29  Stefan Kost  <ensonic@users.sf.net>
+
+	* TODO:
+	  Add results.
+
+	* src/bmltest_process.c:
+	  Set a min tracks if needed. Fix setting voice params. Don't call work with 0
+	  length.
+
+	* tests/testmachine.sh:
+	  Small parsing and output fix.
+	  
+
 2009-01-27  Stefan Kost  <ensonic@users.sf.net>
 
 	* TODO:

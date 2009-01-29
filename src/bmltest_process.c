@@ -78,7 +78,7 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
     int s_size=BUFFER_SIZE,i_size,o_size;
     short int buffer_w[BUFFER_SIZE];
     float buffer_f[BUFFER_SIZE];
-    int i,mtype;
+    int i,mtype,tracks;
     //int ival=0,oval,vs=10;
     const char *type_name[3]={"","generator","effect"};
     int nan=0,inf=0;
@@ -89,10 +89,13 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
     bmlw_init(bm,0,NULL);
     bmlw_get_machine_info(bm,BM_PROP_TYPE,&mtype);
     printf("  %s initialized\n",type_name[mtype]);
+    bmlw_get_machine_info(bm,BM_PROP_MIN_TRACKS,(void *)&tracks);
+    if(tracks) {
+      bmlw_set_num_tracks(bm,tracks);
+      printf("  activated %d tracks\n",tracks);
+    }
     
     //bmlw_stop(bm);
-    //bmlw_set_num_tracks(bm,2);
-    //bmlw_set_num_tracks(bm,1);
     //bmlw_attributes_changed(bm);
 
     // open raw files
@@ -113,25 +116,31 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
             switch(ptype) {
               case 0: // note
                 bmlw_set_global_parameter_value(bm,i,32);
+                puts("    triggered global note");
                 break;
               case 1: // switch
                 bmlw_set_global_parameter_value(bm,i,1);
+                puts("    triggered global switch");
                 break;
             }
           }
         }
-        bmlw_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,&num);
-        for(i=0;i<num;i++) {
-          bmlw_get_track_parameter_info(bm,i,BM_PARA_FLAGS,(void *)&pflags);
-          if(!(pflags&2)) {
-            bmlw_get_track_parameter_info(bm,i,BM_PARA_TYPE,(void *)&ptype);
-            switch(ptype) {
-              case 0: // note
-                bmlw_set_track_parameter_value(bm,i,0,32);
-                break;
-              case 1: // switch
-                bmlw_set_track_parameter_value(bm,i,0,1);
-                break;
+        if(tracks) {
+          bmlw_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,&num);
+          for(i=0;i<num;i++) {
+            bmlw_get_track_parameter_info(bm,i,BM_PARA_FLAGS,(void *)&pflags);
+            if(!(pflags&2)) {
+              bmlw_get_track_parameter_info(bm,i,BM_PARA_TYPE,(void *)&ptype);
+              switch(ptype) {
+                case 0: // note
+                  bmlw_set_track_parameter_value(bm,0,i,32);
+                  puts("    triggered voice note");
+                  break;
+                case 1: // switch
+                  bmlw_set_track_parameter_value(bm,0,i,1);
+                  puts("    triggered voice switch");
+                  break;
+              }
             }
           }
         }
@@ -149,21 +158,23 @@ void test_process_w(char *libpath,const char *infilename,const char *outfilename
         // set GlobalVals, TrackVals
         bmlw_tick(bm);
         i_size=fread(buffer_w,2,s_size,infile);
-        // generators get silence, effects get the input
-        if(mtype==1) {
-          for(i=0;i<i_size;i++) buffer_f[i]=0.0;
+        if(i_size) {
+          // generators get silence, effects get the input
+          if(mtype==1) {
+            for(i=0;i<i_size;i++) buffer_f[i]=0.0;
+          }
+          else {
+            for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i]/32768.0f;
+          }
+          bmlw_work(bm,buffer_f,i_size,mode);
+          for(i=0;i<i_size;i++) {
+            if(isnan(buffer_f[i])) nan=1;
+            if(isinf(buffer_f[i])) inf=1;
+            if(fabs(buffer_f[i])>ma) ma=buffer_f[i];
+            buffer_w[i]=(short int)(buffer_f[i]*32768.0f);
+          }
+          o_size=fwrite(buffer_w,2,i_size,outfile);
         }
-        else {
-          for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i]/32768.0f;
-        }
-        bmlw_work(bm,buffer_f,i_size,mode);
-        for(i=0;i<i_size;i++) {
-          if(isnan(buffer_f[i])) nan=1;
-          if(isinf(buffer_f[i])) inf=1;
-          if(fabs(buffer_f[i])>ma) ma=buffer_f[i];
-          buffer_w[i]=(short int)(buffer_f[i]*32768.0f);
-        }
-        o_size=fwrite(buffer_w,2,i_size,outfile);
       }
       //printf("\n");
     }
@@ -190,7 +201,7 @@ void test_process_n(char *libpath,const char *infilename,const char *outfilename
     int s_size=BUFFER_SIZE,i_size,o_size;
     short int buffer_w[BUFFER_SIZE];
     float buffer_f[BUFFER_SIZE];
-    int i,mtype;
+    int i,mtype,tracks;
     //int ival=0,oval,vs=10;
     const char *type_name[3]={"","generator","effect"};
     int nan=0,inf=0;
@@ -201,6 +212,11 @@ void test_process_n(char *libpath,const char *infilename,const char *outfilename
     bmln_init(bm,0,NULL);
     bmln_get_machine_info(bm,BM_PROP_TYPE,&mtype);
     printf("  %s initialized\n",type_name[mtype]);  
+    bmln_get_machine_info(bm,BM_PROP_MIN_TRACKS,(void *)&tracks);
+    if(tracks) {
+      bmln_set_num_tracks(bm,tracks);
+      printf("  activated %d tracks\n",tracks);
+    }
 
     // open raw files
     infile=fopen(infilename,"rb");
@@ -220,25 +236,31 @@ void test_process_n(char *libpath,const char *infilename,const char *outfilename
             switch(ptype) {
               case 0: // note
                 bmln_set_global_parameter_value(bm,i,32);
+                puts("    triggered global note");
                 break;
               case 1: // switch
                 bmln_set_global_parameter_value(bm,i,1);
+                puts("    triggered global switch");
                 break;
             }
           }
         }
-        bmln_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,&num);
-        for(i=0;i<num;i++) {
-          bmln_get_track_parameter_info(bm,i,BM_PARA_FLAGS,(void *)&pflags);
-          if(!(pflags&2)) {
-            bmln_get_track_parameter_info(bm,i,BM_PARA_TYPE,(void *)&ptype);
-            switch(ptype) {
-              case 0: // note
-                bmln_set_track_parameter_value(bm,i,0,32);
-                break;
-              case 1: // switch
-                bmln_set_track_parameter_value(bm,i,0,1);
-                break;
+        if(tracks) {
+          bmln_get_machine_info(bm,BM_PROP_NUM_TRACK_PARAMS,&num);
+          for(i=0;i<num;i++) {
+            bmln_get_track_parameter_info(bm,i,BM_PARA_FLAGS,(void *)&pflags);
+            if(!(pflags&2)) {
+              bmln_get_track_parameter_info(bm,i,BM_PARA_TYPE,(void *)&ptype);
+              switch(ptype) {
+                case 0: // note
+                  bmln_set_track_parameter_value(bm,0,i,32);
+                  puts("    triggered voice note");
+                  break;
+                case 1: // switch
+                  bmln_set_track_parameter_value(bm,0,i,1);
+                  puts("    triggered voice switch");
+                  break;
+              }
             }
           }
         }
@@ -255,21 +277,23 @@ void test_process_n(char *libpath,const char *infilename,const char *outfilename
         // set GlobalVals, TrackVals
         bmln_tick(bm);
         i_size=fread(buffer_w,2,s_size,infile);
-        // generators get silence, effects get the input
-        if(mtype==1) {
-          for(i=0;i<i_size;i++) buffer_f[i]=0.0;
+        if(i_size) {
+          // generators get silence, effects get the input
+          if(mtype==1) {
+            for(i=0;i<i_size;i++) buffer_f[i]=0.0;
+          }
+          else {
+            for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i]/32768.0f;
+          }
+          bmln_work(bm,buffer_f,i_size,mode);
+          for(i=0;i<i_size;i++) {
+            if(isnan(buffer_f[i])) nan=1;
+            if(isinf(buffer_f[i])) inf=1;
+            if(fabs(buffer_f[i])>ma) ma=buffer_f[i];
+            buffer_w[i]=(short int)(buffer_f[i]*32768.0f);
+          }
+          o_size=fwrite(buffer_w,2,i_size,outfile);
         }
-        else {
-          for(i=0;i<i_size;i++) buffer_f[i]=(float)buffer_w[i]/32768.0f;
-        }
-        bmln_work(bm,buffer_f,i_size,mode);
-        for(i=0;i<i_size;i++) {
-          if(isnan(buffer_f[i])) nan=1;
-          if(isinf(buffer_f[i])) inf=1;
-          if(fabs(buffer_f[i])>ma) ma=buffer_f[i];
-          buffer_w[i]=(short int)(buffer_f[i]*32768.0f);
-        }
-        o_size=fwrite(buffer_w,2,i_size,outfile);
       }
       //printf("\n");
     }

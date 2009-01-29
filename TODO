@@ -123,12 +123,13 @@ other-sources/buzz-sources/__BUZZ1PLAYER__NOT_FOR_PUBLIC!/CMachine.cpp
 
 = machine tests =
 == hoshi ==
-2008.02.22 : Of 532 machine(s) 448 machine(s) worked and 84 machine(s) failed.
-2008.02.23 : Of 533 machine(s) 457 machine(s) worked and 76 machine(s) failed.
-2008.11.19 : Of 533 machine(s) 458 machine(s) worked and 75 machine(s) failed.
+2008.02.22 : Of 532 machine(s) 448 worked and 84 failed to load.
+2008.02.23 : Of 533 machine(s) 457 worked and 76 failed to load.
+2008.11.19 : Of 533 machine(s) 458 worked and 75 failed to load.
+2009.01.29 : Of 533 machine(s) 451 worked, 9 did not processed data and 73 failed to load.
 == sterni ==
-2008.10.14 : Of 853 machine(s) 759 machine(s) worked and 94 machine(s) failed.
-2008.11.20 : Of 853 machine(s) 758 machine(s) worked and 95 machine(s) failed.
+2008.10.14 : Of 853 machine(s) 759 worked and 94 failed to load.
+2008.11.20 : Of 853 machine(s) 758 worked and 95 failed to load.
 
 In gst-buzztard/src/bml/plugin.c I maintain a black list.
 == Generators ==

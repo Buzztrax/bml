@@ -119,8 +119,8 @@ for machine in $machine_glob ; do
   fieldNumAttributes=`egrep -o "NumAttributes: .*$" bmltest_info.tmp | sed -e 's/NumAttributes: \(.*\)$/\1/'`
   cat bmltest_process.log | iconv >bmltest_process.tmp -fWINDOWS-1250 -tUTF-8 -c
   fieldMaxAmp=`egrep -o "MaxAmp: .*$" bmltest_process.tmp | sed -e 's/MaxAmp: \(.*\)$/\1/'`
-  fieldMathNaN=`egrep -o "some values are nan" bmltest_process.tmp | sed -e 's/some values are "\(.*\)"$/\1/'`
-  fieldMathInf=`egrep -o "some values are inf" bmltest_process.tmp | sed -e 's/some values are "\(.*\)"$/\1/'`
+  fieldMathNaN=`egrep -o "some values are nan" bmltest_process.tmp | sed -e 's/some values are \(.*\)$/\1/'`
+  fieldMathInf=`egrep -o "some values are inf" bmltest_process.tmp | sed -e 's/some values are \(.*\)$/\1/'`
   
   cat >>testmachine.body.html <<END_OF_HTML
       <tr bgcolor="$tablecolor">
@@ -190,6 +190,6 @@ END_OF_HTML
 rm testmachine.body.html
 
 m_all=$((m_fail+m_info+m_okay))
-echo "Of $m_all machine(s) $m_okay worked, $m_info did not processed data and $m_fail machine(s) failed to load."
+echo "Of $m_all machine(s) $m_okay worked, $m_info did not processed data and $m_fail failed to load."
 echo "See testmachine.fails and testmachine.html for details"
 
