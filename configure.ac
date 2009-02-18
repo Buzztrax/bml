@@ -132,7 +132,6 @@ AC_CONFIG_FILES( \
 AC_OUTPUT
 
 echo "
-
 Configuration
 	Version                    : ${VERSION}
 	Source code location       : ${srcdir}
@@ -144,3 +143,14 @@ Configuration
 	Debug                      : ${enable_debug}
 	Coverage profiling         : ${enable_coverage}
 "
+
+if test ! `echo $PKG_CONFIG_PATH  | grep $prefix` ; then
+echo "
+You are installing buzztard libraries into a location that is not yet known to
+system. In order for other buzztard modules to find them and the application to
+work with all features please register the location (see README for details):
+export LD_LIBRARY_PATH=$prefix/lib:\$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH="\$PKG_CONFIG_PATH:$prefix/lib/pkgconfig"
+"
+fi
+

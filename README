@@ -14,7 +14,21 @@ See original README in README.libfst for the latter.
 Please note that loading the windows dlls only works on x86 systems.
 If one build on a non x86 system, the library can only support native
 buzzmachines (see buzzmachines module in same svn).
-.
+
+= installing localy =
+Use following options for ./autogen.sh or ./configure
+  --prefix=$HOME/buzztard
+when installing the package to e.g. $HOME/buzztard remember to set these
+environment variables:
+libraries:
+  export LD_LIBRARY_PATH=$HOME/buzztard/lib:$LD_LIBRARY_PATH
+pkg-config:
+  export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$HOME/buzztard/lib/pkgconfig"
+
+= installing in /usr/local =
+The default value for the --prefix configure option is /usr/local. Also in that
+case the variables mentioned in the last example need to be exported.
+
 = machines =
 Export the path we you have the machine, e.g.:
   export BML_PATH=$HOME/buzztard/lib/Gear:$HOME/buzztard/lib/Gear/Effects:\
@@ -72,6 +86,9 @@ automatically be resolved to a defined symbol foo.
 
 Maybe a own .def can help:
 http://www.digitalmars.com/ctg/win32programming.html
+
+what about using winegcc - e.g.:
+winegcc -shared XXX.dll.spec -mnocygwin -o XXX.dll.so abc.o def.o -lole32 -lwinmm -lpthread -luuid
 
 = problems =
 == /dev/zero needs to be executable ==
