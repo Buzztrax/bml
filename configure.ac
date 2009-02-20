@@ -120,8 +120,8 @@ AC_SUBST(BML_LIBS)
 AC_SUBST(ARCH_CFLAGS)
 AC_SUBST(ARCH_CCASFLAGS)
 
-AC_CONFIG_FILES( \
-  Makefile \
+SHAVE_INIT([.])
+AC_CONFIG_FILES(Makefile shave shave-libtool \
   libbml.pc \
   src/Makefile \
   src/BuzzMachineLoader/Makefile \
