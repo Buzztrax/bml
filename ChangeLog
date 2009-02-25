@@ -1,5 +1,10 @@
 2009-02-25  Stefan Kost  <ensonic@users.sf.net>
 
+	* src/BuzzMachineLoader/BuzzMachineLoader.h:
+	  Indent.
+
+2009-02-25  Stefan Kost  <ensonic@users.sf.net>
+
 	* Makefile.am:
 	* autogen.sh:
 	* m4/shave.m4:
