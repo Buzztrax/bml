@@ -10,6 +10,8 @@ SUBDIRS = ${DLLWRAPPER} src
 
 ACLOCAL_AMFLAGS = -I m4
 
+CONFIG_CLEAN_FILES = shave·shave-libtool
+
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libbml.pc
 
