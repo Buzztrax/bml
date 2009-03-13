@@ -93,6 +93,7 @@ extern "C" DE void bm_free(BuzzMachine *bm) {
         CMICallbacks *callbacks = bm->callbacks;
         DBG("freeing\n");
         delete bm->machine_iface;
+        delete bm->machine;
         
         if(callbacks) {
             int version = bm->machine_info->Version;

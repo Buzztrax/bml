@@ -3986,7 +3986,8 @@ static void* expnew(int size)
     void* result;
     assert(size >= 0);
 
-    result=my_mreq(size,0);
+    //result=my_mreq(size,0);
+    result=my_mreq(size,1);
     dbgprintf("new(%d) => %p\n", size, result);
     if (result==0)
 	dbgprintf("WARNING: new() failed\n");

@@ -1,3 +1,11 @@
+2009-03-13  Stefan Kost  <ensonic@users.sf.net>
+
+	* dllwrapper/wine/win32.c:
+	  Zero memory for new. Makes valgrind much happier.
+
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	  Free more, leak less.
+
 2009-02-25  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader/BuzzMachineLoader.h:
