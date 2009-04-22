@@ -633,6 +633,7 @@ extern "C" DE void bm_set_num_tracks(BuzzMachine *bm, int num) {
 	DBG1("(num=%d)\n",num);
 	bm->machine_iface->SetNumTracks(num);
 	// we don't need to initialize the track params, as the max-num of tracks is already initialized in bm_init()
+    // dunno if some machines would require this
 }
 
 /*

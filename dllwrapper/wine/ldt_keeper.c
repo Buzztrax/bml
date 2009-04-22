@@ -250,7 +250,7 @@ static int _modify_ldt(ldt_fs_t *ldt_fs, struct modify_ldt_ldt_s array)
 ldt_fs_t* Setup_LDT_Keeper(void)
 {
     struct modify_ldt_ldt_s array;
-    int ret;
+    /*int ret;*/
     int ldt_already_set = 0;
     ldt_fs_t* ldt_fs = (ldt_fs_t*) malloc(sizeof(ldt_fs_t));
 
@@ -324,7 +324,7 @@ ldt_fs_t* Setup_LDT_Keeper(void)
         array.contents=MODIFY_LDT_CONTENTS_DATA;
         array.limit_in_pages=0;
     
-        ret = _modify_ldt(ldt_fs, array);
+        /*ret = */ _modify_ldt(ldt_fs, array);
         
         ldt_fs->prev_struct = (char*)malloc(sizeof(char) * 8);
         *(void**)array.base_addr = ldt_fs->prev_struct;

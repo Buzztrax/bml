@@ -20,6 +20,7 @@ pass_though=0
 
 # scan the arguments, keep the right ones for libtool, and discover the mode
 preserved_args=
+tag_seen=0
 while test "$#" -gt 0; do
     opt="$1"
     shift
@@ -31,6 +32,10 @@ while test "$#" -gt 0; do
         ;;
     -o)
         lt_output="$1"
+        preserved_args="$preserved_args $opt"
+	;;
+    --tag=*)
+        tag_seen=1
         preserved_args="$preserved_args $opt"
 	;;
     *)
@@ -58,12 +63,17 @@ esac
 lt_unmangle "$lt_output"
 output=$last_result
 
+tag=""
+if test $tag_seen -eq 0 -a x"$mode" = xcompile; then
+    tag="--tag=CC"
+fi
+
 if test -z $V; then
     if test $pass_though -eq 0; then
         echo "$Q$output"
     fi
-    $LIBTOOL --silent $preserved_args
+    $LIBTOOL --silent $tag $preserved_args
 else
-    echo $LIBTOOL $preserved_args
-    $LIBTOOL $preserved_args
+    echo $LIBTOOL $tag $preserved_args
+    $LIBTOOL $tag $preserved_args
 fi

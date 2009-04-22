@@ -1,3 +1,18 @@
+2009-04-23  Stefan Kost  <ensonic@users.sf.net>
+
+	* TODO:
+	  More todos
+
+	* dllwrapper/wine/ldt_keeper.c:
+	  Clang checker fix.
+
+	* shave-libtool.in:
+	  Fix the build.
+
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	* src/BuzzMachineLoader/MachineInterface.h:
+	  Comments.
+
 2009-03-13  Stefan Kost  <ensonic@users.sf.net>
 
 	* dllwrapper/wine/win32.c:

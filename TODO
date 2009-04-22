@@ -6,6 +6,8 @@ $Id$
   BuzzMachine -> BMLMachine
   BuzzMachineProperty -> BMLMachineProperty
   ...
+  
+* charsets, should we convert all strings to UTF-8 in here already?
 
 = testing =
 modify tests/testmachine.h
@@ -127,6 +129,7 @@ other-sources/buzz-sources/__BUZZ1PLAYER__NOT_FOR_PUBLIC!/CMachine.cpp
 2008.02.23 : Of 533 machine(s) 457 worked and 76 failed to load.
 2008.11.19 : Of 533 machine(s) 458 worked and 75 failed to load.
 2009.01.29 : Of 533 machine(s) 451 worked, 9 did not processed data and 73 failed to load.
+
 == sterni ==
 2008.10.14 : Of 853 machine(s) 759 worked and 94 failed to load.
 2008.11.20 : Of 853 machine(s) 758 worked and 95 failed to load.
