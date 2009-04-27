@@ -6,9 +6,8 @@ is about. Buzztard is free software and distributed under the LGPL.
 
 = intro =
 The libbml is a library that loads buzz machines from the windows music
-composer Buzz, so that Linux apps can use them.
-This lib is either using the libavifile wrapper or the libfst one.
-See original README in README.libfst for the latter.
+composer Buzz, so that Linux/Unix applications can use them.
+It also supports open source buzz machines on any platform.
 
 = building =
 Please note that loading the windows dlls only works on x86 systems.
