@@ -152,7 +152,9 @@ void test_info_w(char *libpath) {
         }
       }
       else {
-        printf("      WARNING but tracks=0..0\n");fflush(stdout);
+        if(num) {
+          printf("      WARNING but tracks=0..0\n");fflush(stdout);
+        }
       }        
     }
     fflush(stdout);
@@ -284,7 +286,9 @@ void test_info_n(char *libpath) {
         }
       }
       else {
-        printf("      WARNING but tracks=0..0\n");fflush(stdout);
+        if(num) {
+          printf("      WARNING but tracks=0..0\n");fflush(stdout);
+        }
       }        
     }
     fflush(stdout);

@@ -1,3 +1,11 @@
+2009-04-30  Stefan Kost  <ensonic@users.sf.net>
+
+	* NEWS:
+	  Preparse for pre-releasing.
+
+	* src/bmltest_info.c:
+	  Fix wrong warning.
+
 2009-04-27  Stefan Kost  <ensonic@users.sf.net>
 
 	* README:
