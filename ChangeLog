@@ -1,3 +1,8 @@
+2009-05-04  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	  More explanation in TODO comment
+
 2009-04-30  Stefan Kost  <ensonic@users.sf.net>
 
 	* NEWS:

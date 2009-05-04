@@ -82,9 +82,11 @@ extern "C" DE void bm_set_master_info(long bpm, long tpb, long srat) {
 #ifdef _MSC_VER
   DSP_Init(master_info.SamplesPerSec);
 #else
-  /* todo: we need a dsplib rewrite and a way to link fastcall stuff from
-   * mingw-cross
+  /* todo: we need a way to link fastcall stuff from mingw-cross
+   * undefined symbol: _Z8DSP_Initi
+   * right now we link statically and call this from the plugins.
    */
+  //DSP_Init(master_info.SamplesPerSec);
 #endif
 }
 
