@@ -24,10 +24,8 @@
 #  ls -1 testmachine/*.fail | wc -l
 #
 # TODO:
-# also run bmltest_process
-# - check for NAN buffers
-# - check for insanely lound buffers
-# allow running under valgrind
+# - allow running under valgrind
+# - if a machine is m2s (fieldFlags), then channels=2 
 #
 
 . ./bt-cfg.sh
@@ -73,6 +71,19 @@ for machine in $machine_glob ; do
   res=`env >bmltest_info.log 2>&1 BML_DEBUG=1 LD_LIBRARY_PATH="../src/:../src/BuzzMachineLoader/.libs:$LD_LIBRARY_PATH" ../src/bmltest_info "$machine"; echo $?`
   cat bmltest_info.log | grep >"$log_name" -v "Warning: the specified"
   if [ $sig_int -eq "1" ] ; then res=1; fi
+  cat bmltest_info.log | iconv >bmltest_info.tmp -fWINDOWS-1250 -tUTF-8 -c
+  fieldShortName=`egrep -o "Short Name: .*$" bmltest_info.tmp | sed -e 's/Short Name: "\(.*\)"$/\1/'`
+  fieldAuthor=`egrep -o "Author: .*$" bmltest_info.tmp | sed -e 's/Author: "\(.*\)"$/\1/'`
+  fieldType=`egrep -o "^    Type: . -> \"MT_.*$" bmltest_info.tmp | sed -e 's/^\ *Type: . -> "\(.*\)"$/\1/'`
+  fieldVersion=`egrep -o "Version: .*$" bmltest_info.tmp | sed -e 's/Version: \(.*\)$/\1/'`
+  fieldFlags=`egrep -o "^    Flags: .*$" bmltest_info.tmp | sed -e 's/^\ *Flags: \(.*\)$/\1/'`
+  fieldMinTracks=`egrep -o "MinTracks: .*$" bmltest_info.tmp | sed -e 's/MinTracks: \(.*\)$/\1/'`
+  fieldMaxTracks=`egrep -o "MaxTracks: .*$" bmltest_info.tmp | sed -e 's/MaxTracks: \(.*\)$/\1/'`
+  fieldInputChannels=`egrep -o "InputChannels: .*$" bmltest_info.tmp | sed -e 's/InputChannels: \(.*\)$/\1/'`
+  fieldOutputChannels=`egrep -o "OutputChannels: .*$" bmltest_info.tmp | sed -e 's/OutputChannels: \(.*\)$/\1/'`
+  fieldNumGlobalParams=`egrep -o "NumGlobalParams: .*$" bmltest_info.tmp | sed -e 's/NumGlobalParams: \(.*\)$/\1/'`
+  fieldNumTrackParams=`egrep -o "NumTrackParams: .*$" bmltest_info.tmp | sed -e 's/NumTrackParams: \(.*\)$/\1/'`
+  fieldNumAttributes=`egrep -o "NumAttributes: .*$" bmltest_info.tmp | sed -e 's/NumAttributes: \(.*\)$/\1/'`
   if [ $res -eq "0" ] ; then
     # try to run it again
     sig_segv=0
@@ -85,7 +96,7 @@ for machine in $machine_glob ; do
       echo "okay : $machine";
       m_okay=$((m_okay+1))
       mv "$log_name" "$log_name".okay
-      gst-launch-0.10 >/dev/null 2>&1 filesrc location=output.raw ! audio/x-raw-int,width=16,channels=1,rate=44100 ! wavenc ! filesink location="testmachine/$name.wav"
+      gst-launch-0.10 >/dev/null 2>&1 filesrc location=output.raw ! audio/x-raw-int,width=16,channels=$fieldOutputChannels,rate=44100 ! wavenc ! filesink location="testmachine/$name.wav"
       tablecolor="#E0FFE0"
       tableresult="okay"
     else
@@ -105,19 +116,6 @@ for machine in $machine_glob ; do
     echo "$reason :: $name" >>testmachine.failtmp
     touch bmltest_process.log
   fi
-  cat bmltest_info.log | iconv >bmltest_info.tmp -fWINDOWS-1250 -tUTF-8 -c
-  fieldShortName=`egrep -o "Short Name: .*$" bmltest_info.tmp | sed -e 's/Short Name: "\(.*\)"$/\1/'`
-  fieldAuthor=`egrep -o "Author: .*$" bmltest_info.tmp | sed -e 's/Author: "\(.*\)"$/\1/'`
-  fieldType=`egrep -o "^    Type: . -> \"MT_.*$" bmltest_info.tmp | sed -e 's/^\ *Type: . -> "\(.*\)"$/\1/'`
-  fieldVersion=`egrep -o "Version: .*$" bmltest_info.tmp | sed -e 's/Version: \(.*\)$/\1/'`
-  fieldFlags=`egrep -o "^    Flags: .*$" bmltest_info.tmp | sed -e 's/^\ *Flags: \(.*\)$/\1/'`
-  fieldMinTracks=`egrep -o "MinTracks: .*$" bmltest_info.tmp | sed -e 's/MinTracks: \(.*\)$/\1/'`
-  fieldMaxTracks=`egrep -o "MaxTracks: .*$" bmltest_info.tmp | sed -e 's/MaxTracks: \(.*\)$/\1/'`
-  fieldInputChannels=`egrep -o "InputChannels: .*$" bmltest_info.tmp | sed -e 's/InputChannels: \(.*\)$/\1/'`
-  fieldOutputChannels=`egrep -o "OutputChannels: .*$" bmltest_info.tmp | sed -e 's/OutputChannels: \(.*\)$/\1/'`
-  fieldNumGlobalParams=`egrep -o "NumGlobalParams: .*$" bmltest_info.tmp | sed -e 's/NumGlobalParams: \(.*\)$/\1/'`
-  fieldNumTrackParams=`egrep -o "NumTrackParams: .*$" bmltest_info.tmp | sed -e 's/NumTrackParams: \(.*\)$/\1/'`
-  fieldNumAttributes=`egrep -o "NumAttributes: .*$" bmltest_info.tmp | sed -e 's/NumAttributes: \(.*\)$/\1/'`
   cat bmltest_process.log | iconv >bmltest_process.tmp -fWINDOWS-1250 -tUTF-8 -c
   fieldMaxAmp=`egrep -o "MaxAmp: .*$" bmltest_process.tmp | sed -e 's/MaxAmp: \(.*\)$/\1/'`
   fieldClipped=`egrep -o "Clipped: .*$" bmltest_process.tmp | sed -e 's/Clipped: \(.*\)$/\1/'`

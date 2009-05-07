@@ -1,7 +1,6 @@
 $Id$
 
 = general =
-
 * rename public API in BuzzMachineLoader.h
   BuzzMachine -> BMLMachine
   BuzzMachineProperty -> BMLMachineProperty
@@ -9,8 +8,12 @@ $Id$
   
 * charsets, should we convert all strings to UTF-8 in here already?
 
+= mode tools =
+== bmldump_src_skel ==
+dump a source skelleton for rewriting a machine
+
 = testing =
-modify tests/testmachine.h
+modify tests/testmachine.sh
 eventually improve scrolling:
   http://www.litotes.demon.co.uk/example_scripts/tableScroll.html
 result should go to a given directory (use date-time when not provided)

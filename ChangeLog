@@ -1,3 +1,21 @@
+2009-05-07  Stefan Kost  <ensonic@users.sf.net>
+
+	* TODO:
+	  Idea.
+
+	* src/Makefile.am:
+	* src/bmltest_info.c:
+	* src/bmltest_info.h:
+	* src/bmltest_process.c:
+	* src/bmltest_process.h:
+	* src/bmltest_info.h (added):
+	* src/bmltest_process.h (added):
+	  Refactor to avoid code duplication for native/wrapped. Reset triggers
+	  after 1st iteration. Trigger more param types. Support m2s machines.
+
+	* tests/testmachine.sh:
+	  If result is stereo then convert it as stereo.
+
 2009-05-04  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
