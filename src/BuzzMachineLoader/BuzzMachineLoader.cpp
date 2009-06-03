@@ -50,15 +50,17 @@
 
 // buzz emulation code
 
-typedef CMachineInfo* (*GetInfoPtr)();
-typedef CMachineInterface *(*CreateMachinePtr)();
-
 typedef void (*CMIInitPtr)(CMachineInterface *_this, CMachineDataInput * const pi);
 
 // globals
+
 CMasterInfo master_info;
 
 // prototypes
+
+extern "C" DE void bm_free(BuzzMachine *bm);
+extern "C" DE BuzzMachine *bm_new(BuzzMachineHandle *bmh);
+extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data);
 
 extern "C" DE void bm_set_attribute_value(BuzzMachine *bm,int index,int value);
 extern "C" DE void bm_set_global_parameter_value(BuzzMachine *bm,int index,int value);
@@ -66,7 +68,8 @@ extern "C" DE void bm_set_track_parameter_value(BuzzMachine *bm,int track,int in
 
 // helpers
 
-// public API
+
+// global API
 
 extern "C" DE void bm_set_logger(DebugLoggerFunc func) {
     debug_log_func=func;
@@ -90,6 +93,233 @@ extern "C" DE void bm_set_master_info(long bpm, long tpb, long srat) {
 #endif
 }
 
+
+// library api
+
+extern "C" DE void bm_close(BuzzMachineHandle *bmh) {
+    if(bmh) {
+        if(bmh->bm) {
+            bm_free(bmh->bm);
+        }
+        if(bmh->lib_name) {
+            free(bmh->lib_name);
+        }
+        if(bmh->h) {
+#ifdef WIN32
+            FreeLibrary((HMODULE)(bmh->h));
+#else
+            dlclose(bmh->h);
+#endif
+            DBG("  dll unloaded\n");
+        }
+        free(bmh);
+    }
+}
+
+extern "C" DE BuzzMachineHandle *bm_open(char *bm_file_name) {
+    BuzzMachineHandle *bmh=(BuzzMachineHandle *)calloc(sizeof(BuzzMachineHandle),1);
+    GetInfoPtr GetInfo=NULL;
+    CreateMachinePtr CreateMachine=NULL;
+
+#ifdef WIN32
+    bmh->h=(void*)LoadLibraryA(bm_file_name);
+#else
+    bmh->h=dlopen(bm_file_name,RTLD_LAZY);
+#endif
+    if(!bmh->h) {
+#ifdef WIN32
+        DBG1("  failed to load machine dll from \"%s\"\n",bm_file_name);
+#else
+        DBG2("  failed to load machine dll from \"%s\": %s\n",bm_file_name,dlerror());
+#endif
+        bm_close(bmh);
+        return(NULL);
+    }
+    DBG1("  dll %s loaded\n",bm_file_name);
+    bmh->lib_name=strdup(bm_file_name);
+
+    //-- get the two dll entries
+#ifdef WIN32
+    GetInfo      =(GetInfoPtr      )GetProcAddress((HMODULE)(bmh->h),"GetInfo");
+    CreateMachine=(CreateMachinePtr)GetProcAddress((HMODULE)(bmh->h),"CreateMachine");
+#else
+    GetInfo      =(GetInfoPtr      )dlsym(bmh->h,"GetInfo");
+    CreateMachine=(CreateMachinePtr)dlsym(bmh->h,"CreateMachine");
+#endif
+    if(!GetInfo) {
+        DBG("  failed to connect to GetInfo method\n");
+        bm_close(bmh);
+        return(NULL);
+    }
+    if(!CreateMachine) {
+        DBG("  failed to connect to GreateMachine method\n");
+        bm_close(bmh);
+        return(NULL);
+    }
+    bmh->CreateMachine=CreateMachine;
+    DBG("  symbols connected\n");
+
+    //-- call GetInfo
+    bmh->machine_info=GetInfo();
+    DBG("  GetInfo() called\n");
+
+    //-- apply fixes
+    if(!bmh->machine_info->minTracks) {
+        if(bmh->machine_info->numTrackParameters) {
+            DBG("!! buggy machine, numTrackParams>0, but minTracks=0\n");
+            bmh->machine_info->numTrackParameters=0;
+        }
+        if(bmh->machine_info->maxTracks) {
+            DBG("!! buggy machine, maxTracks>0, but minTracks=0\n");
+            bmh->machine_info->maxTracks=0;
+        }
+    }
+    
+    //-- we need to temporarily create an instance to query extra data
+    if((bmh->bm=bm_new(bmh))) {
+      bm_init(bmh->bm,0,NULL);
+      if(bmh->bm->mdkHelper) {
+        if(bmh->bm->mdkHelper->numChannels) {
+          bmh->mdk_num_channels=bmh->bm->mdkHelper->numChannels;
+        }
+      }
+    }
+    else {
+      DBG("  CreateMachine() failed\n");
+      bm_close(bmh);
+      return(NULL);
+    }
+    
+    return(bmh);
+}
+
+extern "C" DE int bm_get_machine_info(BuzzMachineHandle *bmh,BuzzMachineProperty key,void *value) {
+    int ret=TRUE;
+    int *ival;
+    const char **sval;
+
+    if(!value) return(FALSE);
+
+    ival=(int *)value;
+    sval=(const char **)value;
+    switch(key) {
+        case BM_PROP_TYPE:                *ival=bmh->machine_info->Type;break;
+        case BM_PROP_VERSION:             *ival=bmh->machine_info->Version;break;
+        case BM_PROP_FLAGS:               *ival=bmh->machine_info->Flags;break;
+        case BM_PROP_MIN_TRACKS:          *ival=bmh->machine_info->minTracks;break;
+        case BM_PROP_MAX_TRACKS:          *ival=bmh->machine_info->maxTracks;break;
+        case BM_PROP_NUM_GLOBAL_PARAMS:   *ival=bmh->machine_info->numGlobalParameters;break;
+        case BM_PROP_NUM_TRACK_PARAMS:    *ival=bmh->machine_info->numTrackParameters;break;
+        case BM_PROP_NUM_ATTRIBUTES:      *ival=bmh->machine_info->numAttributes;break;
+        case BM_PROP_NAME:                *sval=bmh->machine_info->Name;break;
+        case BM_PROP_SHORT_NAME:          *sval=bmh->machine_info->ShortName;break;
+        case BM_PROP_AUTHOR:              *sval=bmh->machine_info->Author;break;
+        case BM_PROP_COMMANDS:            *sval=bmh->machine_info->Commands;break;
+        case BM_PROP_DLL_NAME:            *sval=bmh->lib_name;break;
+        case BM_PROP_NUM_INPUT_CHANNELS:
+          //*ival=(bm->mdkHelper && bm->mdkHelper->numChannels)?bm->mdkHelper->numChannels:1;
+          if(bmh->mdk_num_channels) {
+            *ival=bmh->mdk_num_channels;
+          }
+          else {
+            *ival=1;
+          }
+          break;
+        case BM_PROP_NUM_OUTPUT_CHANNELS:
+          //*ival=(bm->mdkHelper && bm->mdkHelper->numChannels==2)?2:((bm->machine_info->Flags&MIF_MONO_TO_STEREO)?2:1);
+          if(bmh->mdk_num_channels==2) {
+            *ival=2;
+          }
+          else {
+            if(bmh->machine_info->Flags&MIF_MONO_TO_STEREO) {
+              *ival=2;
+            }
+            else {
+              *ival=1;
+            }
+          }
+          break;
+        default: ret=FALSE;
+    }
+    return(ret);
+}
+
+static int bm_get_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachineParameter key,void *value) {
+    int ret=TRUE;
+    int *ival;
+    const char **sval;
+
+    ival=(int *)value;
+    sval=(const char **)value;
+    switch(key) {
+        case BM_PARA_TYPE:            *ival=bmh->machine_info->Parameters[index]->Type;break;
+        case BM_PARA_NAME:            *sval=bmh->machine_info->Parameters[index]->Name;break;
+        case BM_PARA_DESCRIPTION:     *sval=bmh->machine_info->Parameters[index]->Description;break;
+        case BM_PARA_MIN_VALUE:       *ival=bmh->machine_info->Parameters[index]->MinValue;break;
+        case BM_PARA_MAX_VALUE:       *ival=bmh->machine_info->Parameters[index]->MaxValue;break;
+        case BM_PARA_NO_VALUE:        *ival=bmh->machine_info->Parameters[index]->NoValue;break;
+        case BM_PARA_FLAGS:           *ival=bmh->machine_info->Parameters[index]->Flags;break;
+        case BM_PARA_DEF_VALUE:       *ival=bmh->machine_info->Parameters[index]->DefValue;break;
+        default: ret=FALSE;
+    }
+    return(ret);
+}
+
+extern "C" DE int bm_get_global_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachineParameter key,void *value) {
+    if(!value) return(FALSE);
+    if(!(index<bmh->machine_info->numGlobalParameters)) return(FALSE);
+
+    return(bm_get_parameter_info(bmh,index,key,value));
+}
+
+extern "C" DE int bm_get_track_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachineParameter key,void *value) {
+    if(!value) return(FALSE);
+    if(!(index<bmh->machine_info->numTrackParameters)) return(FALSE);
+
+    return(bm_get_parameter_info(bmh,(bmh->machine_info->numGlobalParameters+index),key,value));
+}
+
+extern "C" DE int bm_get_attribute_info(BuzzMachineHandle *bmh,int index,BuzzMachineAttribute key,void *value) {
+    int ret=TRUE;
+    int *ival;
+    const char **sval;
+
+    if(!value) return(FALSE);
+    if(!(index<bmh->machine_info->numAttributes)) return(FALSE);
+
+    ival=(int *)value;
+    sval=(const char **)value;
+    switch(key) {
+        case BM_ATTR_NAME:        *sval=bmh->machine_info->Attributes[index]->Name;break;
+        case BM_ATTR_MIN_VALUE:   *ival=bmh->machine_info->Attributes[index]->MinValue;break;
+        case BM_ATTR_MAX_VALUE:   *ival=bmh->machine_info->Attributes[index]->MaxValue;break;
+        case BM_ATTR_DEF_VALUE:   *ival=bmh->machine_info->Attributes[index]->DefValue;break;
+        default: ret=FALSE;
+    }
+    return(ret);
+}
+
+extern "C" DE char const *bm_describe_global_value(BuzzMachineHandle *bmh,int const param,int const value) {
+    static const char *empty="";
+
+    if(!(param<bmh->machine_info->numGlobalParameters)) return(empty);
+
+    //DBG2("(param=%d,value=%d)\n",param,value);
+    return(bmh->bm->machine_iface->DescribeValue(param,value));
+}
+
+extern "C" DE char const *bm_describe_track_value(BuzzMachineHandle *bmh,int const param,int const value) {
+    static const char *empty="";
+
+    if(!(param<bmh->machine_info->numTrackParameters)) return(empty);
+
+    //DBG2("(param=%d,value=%d)\n",param,value);
+    return(bmh->bm->machine_iface->DescribeValue(bmh->machine_info->numGlobalParameters+param,value));
+}
+
+
+// instance api
+
 extern "C" DE void bm_free(BuzzMachine *bm) {
     if(bm) {
         CMICallbacks *callbacks = bm->callbacks;
@@ -110,81 +340,19 @@ extern "C" DE void bm_free(BuzzMachine *bm) {
                 DBG("  freed callback instance\n");
             }         
         }
-        if(bm->lib_name) {
-            free(bm->lib_name);
-        }
-        if(bm->h) {
-#ifdef WIN32
-            FreeLibrary((HMODULE)(bm->h));
-#else
-            dlclose(bm->h);
-#endif
-            DBG("  dll unloaded\n");
-        }
         free(bm);
     }
 }
 
-extern "C" DE BuzzMachine *bm_new(char *bm_file_name) {
+extern "C" DE BuzzMachine *bm_new(BuzzMachineHandle *bmh) {
     BuzzMachine *bm=(BuzzMachine *)calloc(sizeof(BuzzMachine),1);
-    GetInfoPtr GetInfo=NULL;
-    CreateMachinePtr CreateMachine=NULL;
 
-#ifdef WIN32
-    bm->h=(void*)LoadLibraryA(bm_file_name);
-#else
-    bm->h=dlopen(bm_file_name,RTLD_LAZY);
-#endif
-    if(!bm->h) {
-#ifdef WIN32
-        DBG1("  failed to load machine dll from \"%s\"\n",bm_file_name);
-#else
-        DBG2("  failed to load machine dll from \"%s\": %s\n",bm_file_name,dlerror());
-#endif
-        bm_free(bm);
-        return(NULL);
-    }
-    DBG1("  dll %s loaded\n",bm_file_name);
-    bm->lib_name=strdup(bm_file_name);
-
-    //-- get the two dll entries
-#ifdef WIN32
-    GetInfo      =(GetInfoPtr      )GetProcAddress((HMODULE)(bm->h),"GetInfo");
-    CreateMachine=(CreateMachinePtr)GetProcAddress((HMODULE)(bm->h),"CreateMachine");
-#else
-    GetInfo      =(GetInfoPtr      )dlsym(bm->h,"GetInfo");
-    CreateMachine=(CreateMachinePtr)dlsym(bm->h,"CreateMachine");
-#endif
-    if(!GetInfo) {
-        DBG("  failed to connect to GetInfo method\n");
-        bm_free(bm);
-        return(NULL);
-    }
-    if(!CreateMachine) {
-        DBG("  failed to connect to GreateMachine method\n");
-        bm_free(bm);
-        return(NULL);
-    }
-    DBG("  symbols connected\n");
-
-    //-- call GetInfo
-    bm->machine_info=GetInfo();
-    DBG("  GetInfo() called\n");
-
-    //-- apply fixes
-    if(!bm->machine_info->minTracks) {
-      if(bm->machine_info->numTrackParameters) {
-        DBG("!! buggy machine, numTrackParams>0, but minTracks=0\n");
-        bm->machine_info->numTrackParameters=0;
-      }
-      if(bm->machine_info->maxTracks) {
-        DBG("!! buggy machine, maxTracks>0, but minTracks=0\n");
-        bm->machine_info->maxTracks=0;
-      }
-    }
+    // copy some fields from bmh for convinient access
+    bm->bmh=bmh;
+    bm->machine_info=bm->bmh->machine_info;
 
     // call CreateMachine
-    bm->machine_iface=CreateMachine();
+    bm->machine_iface=bm->bmh->CreateMachine();
     DBG("  CreateMachine() called\n");
 
     // we need to create a CMachine object
@@ -209,9 +377,6 @@ extern "C" DE BuzzMachine *bm_new(char *bm_file_name) {
     return(bm);
 }
 
-//#define BM_INIT_PARAMS_FIRST 1
-#define BM_INIT_ATTRIBUTES_CHANGED_FIRST 1
-
 extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data) {
     int i,j;
 
@@ -222,32 +387,7 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
         bm_set_attribute_value(bm,i,bm->machine_info->Attributes[i]->DefValue);
     }
     DBG("  attributes initialized\n");
-#ifdef BM_INIT_PARAMS_FIRST /* params_first */
-    // initialise global parameters (DefValue or NoValue, Buzz seems to use NoValue)
-    for(i=0;i<bm->machine_info->numGlobalParameters;i++) {
-        if(bm->machine_info->Parameters[i]->Flags&MPF_STATE) {
-            bm_set_global_parameter_value(bm,i,bm->machine_info->Parameters[i]->DefValue);
-        }
-        else {
-            bm_set_global_parameter_value(bm,i,bm->machine_info->Parameters[i]->NoValue);
-        }
-    }
-    // initialise track parameters
-    if((bm->machine_info->minTracks>0) && (bm->machine_info->maxTracks>0)) {
-        DBG3(" need to initialize %d track params for tracks: %d...%d\n",bm->machine_info->numTrackParameters,bm->machine_info->minTracks,bm->machine_info->maxTracks);
-        for(j=0;j<bm->machine_info->maxTracks;j++) {
-            for(i=0;i<bm->machine_info->numTrackParameters;i++) {
-                if(bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->Flags&MPF_STATE) {
-                    bm_set_track_parameter_value(bm,j,i,bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->DefValue);
-                }
-                else {
-                    bm_set_track_parameter_value(bm,j,i,bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->NoValue);
-                }
-            }
-        }
-    }
-    DBG("  parameters initialized\n");
-#endif
+
     // create the machine data input
     CMachineDataInput * pcmdii = NULL;
 
@@ -271,13 +411,11 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
       }
     }
 
-#ifdef BM_INIT_ATTRIBUTES_CHANGED_FIRST
     // call AttributesChanged always
     //if(bm->machine_info->numAttributes>0) {
 		bm->machine_iface->AttributesChanged();
         DBG("  CMachineInterface::AttributesChanged() called\n");
     //}
-#endif
 
     // call SetNumTracks
     //DBG1("  CMachineInterface::SetNumTracks(%d)\n",bm->machine_info->minTracks);
@@ -286,7 +424,6 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
 	bm->machine_iface->SetNumTracks(bm->machine_info->minTracks);
     DBG1("  CMachineInterface::SetNumTracks(%d) called\n",bm->machine_info->minTracks);
 
-#ifndef BM_INIT_PARAMS_FIRST  /* params_later */
     // initialise global parameters (DefValue or NoValue, Buzz seems to use NoValue)
     for(i=0;i<bm->machine_info->numGlobalParameters;i++) {
         if(bm->machine_info->Parameters[i]->Flags&MPF_STATE) {
@@ -312,15 +449,6 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
         }
     }
     DBG("  track parameters initialized\n");
-#endif
-
-#ifndef BM_INIT_ATTRIBUTES_CHANGED_FIRST
-    // call AttributesChanged always
-    //if(bm->machine_info->numAttributes>0) {
-		bm->machine_iface->AttributesChanged();
-        DBG("  CMachineInterface::AttributesChanged() called\n");
-    //}
-#endif
 
     /* we've given the machine the initial global- and track-parameters,
      * and the attributes, give it a tick
@@ -336,112 +464,6 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
         DBG(" MIF_USES_LIB_INTERFACE");
         FIXME;
     }
-}
-
-extern "C" DE int bm_get_machine_info(BuzzMachine *bm,BuzzMachineProperty key,void *value) {
-    int ret=TRUE;
-    int *ival;
-    const char **sval;
-
-    if(!value) return(FALSE);
-
-    ival=(int *)value;
-    sval=(const char **)value;
-    switch(key) {
-        case BM_PROP_TYPE:                *ival=bm->machine_info->Type;break;
-        case BM_PROP_VERSION:             *ival=bm->machine_info->Version;break;
-        case BM_PROP_FLAGS:               *ival=bm->machine_info->Flags;break;
-        case BM_PROP_MIN_TRACKS:          *ival=bm->machine_info->minTracks;break;
-        case BM_PROP_MAX_TRACKS:          *ival=bm->machine_info->maxTracks;break;
-        case BM_PROP_NUM_GLOBAL_PARAMS:   *ival=bm->machine_info->numGlobalParameters;break;
-        case BM_PROP_NUM_TRACK_PARAMS:    *ival=bm->machine_info->numTrackParameters;break;
-        case BM_PROP_NUM_ATTRIBUTES:      *ival=bm->machine_info->numAttributes;break;
-        case BM_PROP_NAME:                *sval=bm->machine_info->Name;break;
-        case BM_PROP_SHORT_NAME:          *sval=bm->machine_info->ShortName;break;
-        case BM_PROP_AUTHOR:              *sval=bm->machine_info->Author;break;
-        case BM_PROP_COMMANDS:            *sval=bm->machine_info->Commands;break;
-        case BM_PROP_DLL_NAME:            *sval=bm->lib_name;break;
-        case BM_PROP_NUM_INPUT_CHANNELS:
-          //*ival=(bm->mdkHelper && bm->mdkHelper->numChannels)?bm->mdkHelper->numChannels:1;
-          if(bm->mdkHelper && bm->mdkHelper->numChannels) {
-            *ival=bm->mdkHelper->numChannels;
-          }
-          else {
-            *ival=1;
-          }
-          break;
-        case BM_PROP_NUM_OUTPUT_CHANNELS:
-          //*ival=(bm->mdkHelper && bm->mdkHelper->numChannels==2)?2:((bm->machine_info->Flags&MIF_MONO_TO_STEREO)?2:1);
-          if(bm->mdkHelper && bm->mdkHelper->numChannels==2) {
-            *ival=2;
-          }
-          else {
-            if(bm->machine_info->Flags&MIF_MONO_TO_STEREO) {
-              *ival=2;
-            }
-            else {
-              *ival=1;
-            }
-          }
-          break;
-        default: ret=FALSE;
-    }
-    return(ret);
-}
-
-static int bm_get_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value) {
-    int ret=TRUE;
-    int *ival;
-    const char **sval;
-
-    ival=(int *)value;
-    sval=(const char **)value;
-    switch(key) {
-        case BM_PARA_TYPE:            *ival=bm->machine_info->Parameters[index]->Type;break;
-        case BM_PARA_NAME:            *sval=bm->machine_info->Parameters[index]->Name;break;
-        case BM_PARA_DESCRIPTION:    *sval=bm->machine_info->Parameters[index]->Description;break;
-        case BM_PARA_MIN_VALUE:        *ival=bm->machine_info->Parameters[index]->MinValue;break;
-        case BM_PARA_MAX_VALUE:        *ival=bm->machine_info->Parameters[index]->MaxValue;break;
-        case BM_PARA_NO_VALUE:        *ival=bm->machine_info->Parameters[index]->NoValue;break;
-        case BM_PARA_FLAGS:            *ival=bm->machine_info->Parameters[index]->Flags;break;
-        case BM_PARA_DEF_VALUE:        *ival=bm->machine_info->Parameters[index]->DefValue;break;
-        default: ret=FALSE;
-    }
-    return(ret);
-}
-
-extern "C" DE int bm_get_global_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value) {
-    if(!value) return(FALSE);
-    if(!(index<bm->machine_info->numGlobalParameters)) return(FALSE);
-
-    return(bm_get_parameter_info(bm,index,key,value));
-}
-
-extern "C" DE int bm_get_track_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value) {
-    if(!value) return(FALSE);
-    if(!(index<bm->machine_info->numTrackParameters)) return(FALSE);
-
-    return(bm_get_parameter_info(bm,(bm->machine_info->numGlobalParameters+index),key,value));
-}
-
-extern "C" DE int bm_get_attribute_info(BuzzMachine *bm,int index,BuzzMachineAttribute key,void *value) {
-    int ret=TRUE;
-    int *ival;
-    const char **sval;
-
-    if(!value) return(FALSE);
-    if(!(index<bm->machine_info->numAttributes)) return(FALSE);
-
-    ival=(int *)value;
-    sval=(const char **)value;
-    switch(key) {
-        case BM_ATTR_NAME:        *sval=bm->machine_info->Attributes[index]->Name;break;
-        case BM_ATTR_MIN_VALUE:    *ival=bm->machine_info->Attributes[index]->MinValue;break;
-        case BM_ATTR_MAX_VALUE:    *ival=bm->machine_info->Attributes[index]->MaxValue;break;
-        case BM_ATTR_DEF_VALUE:    *ival=bm->machine_info->Attributes[index]->DefValue;break;
-        default: ret=FALSE;
-    }
-    return(ret);
 }
 
 extern "C" DE void * bm_get_track_parameter_location(BuzzMachine *bm,int track,int index) {
@@ -642,24 +664,6 @@ extern "C" DE void bm_set_num_tracks(BuzzMachine *bm, int num) {
 virtual void MuteTrack(int const i) {}
 virtual bool IsTrackMuted(int const i) const { return false; }
 */
-
-extern "C" DE char const *bm_describe_global_value(BuzzMachine *bm, int const param,int const value) {
-    static const char *empty="";
-
-    if(!(param<bm->machine_info->numGlobalParameters)) return(empty);
-
-    //DBG2("(param=%d,value=%d)\n",param,value);
-    return(bm->machine_iface->DescribeValue(param,value));
-}
-
-extern "C" DE char const *bm_describe_track_value(BuzzMachine *bm, int const param,int const value) {
-    static const char *empty="";
-
-    if(!(param<bm->machine_info->numTrackParameters)) return(empty);
-
-    //DBG2("(param=%d,value=%d)\n",param,value);
-    return(bm->machine_iface->DescribeValue(bm->machine_info->numGlobalParameters+param,value));
-}
 
 extern "C" DE void bm_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks) {
     bm->host_callbacks=callbacks;

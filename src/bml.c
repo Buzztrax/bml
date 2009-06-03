@@ -57,14 +57,19 @@ typedef void (*BMSetLogger)(BMLDebugLogger func);
 // windows plugin API method pointers
 BMSetLogger BMLX(bmlw_set_logger);
 BMSetMasterInfo BMLX(bmlw_set_master_info);
-BMNew BMLX(bmlw_new);
-BMInit BMLX(bmlw_init);
-BMFree BMLX(bmlw_free);
+
+BMOpen BMLX(bmlw_open);
+BMClose BMLX(bmlw_close);
 
 BMGetMachineInfo BMLX(bmlw_get_machine_info);
 BMGetGlobalParameterInfo BMLX(bmlw_get_global_parameter_info);
 BMGetTrackParameterInfo BMLX(bmlw_get_track_parameter_info);
 BMGetAttributeInfo BMLX(bmlw_get_attribute_info);
+
+BMNew BMLX(bmlw_new);
+BMFree BMLX(bmlw_free);
+
+BMInit BMLX(bmlw_init);
 
 BMGetTrackParameterLocation BMLX(bmlw_get_track_parameter_location);
 BMGetTrackParameterValue BMLX(bmlw_get_track_parameter_value);
@@ -97,14 +102,19 @@ BMSetCallbacks BMLX(bmlw_set_callbacks);
 // native plugin API method pointers
 BMSetLogger bmln_set_logger;
 BMSetMasterInfo bmln_set_master_info;
-BMNew bmln_new;
-BMInit bmln_init;
-BMFree bmln_free;
+
+BMOpen bmln_open;
+BMClose bmln_close;
 
 BMGetMachineInfo bmln_get_machine_info;
 BMGetGlobalParameterInfo bmln_get_global_parameter_info;
 BMGetTrackParameterInfo bmln_get_track_parameter_info;
 BMGetAttributeInfo bmln_get_attribute_info;
+
+BMNew bmln_new;
+BMFree bmln_free;
+
+BMInit bmln_init;
 
 BMGetTrackParameterLocation bmln_get_track_parameter_location;
 BMGetTrackParameterValue bmln_get_track_parameter_value;
@@ -135,6 +145,8 @@ BMSetCallbacks bmln_set_callbacks;
 #ifdef HAVE_X86
 // passthrough functions
 
+// global API
+
 void bmlw_set_master_info(long bpm, long tpb, long srat) {
 	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment(ldt_fs);
@@ -142,21 +154,98 @@ void bmlw_set_master_info(long bpm, long tpb, long srat) {
 	pthread_mutex_unlock(&ldt_mutex);
 }
 
-BuzzMachine *bmlw_new(char *bm_file_name) {
+// library api
+
+BuzzMachineHandle *bmlw_open(char *bm_file_name) {
+	BuzzMachineHandle *bmh;
+
+	pthread_mutex_lock(&ldt_mutex);
+	Check_FS_Segment(ldt_fs);
+	bmh=BMLX(bmlw_open(bm_file_name));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(bmh);
+}
+
+void bmlw_close(BuzzMachineHandle *bmh) {
+	pthread_mutex_lock(&ldt_mutex);
+	Check_FS_Segment(ldt_fs);
+	BMLX(bmlw_close(bmh));
+	pthread_mutex_unlock(&ldt_mutex);
+}
+
+
+int bmlw_get_machine_info(BuzzMachineHandle *bmh, BuzzMachineProperty key, void *value) {
+	int ret;
+
+	pthread_mutex_lock(&ldt_mutex);
+	Check_FS_Segment(ldt_fs);
+	ret=BMLX(bmlw_get_machine_info(bmh,key,value));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
+}
+
+int bmlw_get_global_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachineParameter key,void *value) {
+	int ret;
+
+	pthread_mutex_lock(&ldt_mutex);
+	Check_FS_Segment(ldt_fs);
+	ret=BMLX(bmlw_get_global_parameter_info(bmh,index,key,value));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
+}
+
+int bmlw_get_track_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachineParameter key,void *value) {
+	int ret;
+
+	pthread_mutex_lock(&ldt_mutex);
+	Check_FS_Segment(ldt_fs);
+	ret=BMLX(bmlw_get_track_parameter_info(bmh,index,key,value));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
+}
+
+int bmlw_get_attribute_info(BuzzMachineHandle *bmh,int index,BuzzMachineAttribute key,void *value) {
+	int ret;
+
+	pthread_mutex_lock(&ldt_mutex);
+	Check_FS_Segment(ldt_fs);
+	ret=BMLX(bmlw_get_attribute_info(bmh,index,key,value));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
+}
+
+
+const char *bmlw_describe_global_value(BuzzMachineHandle *bmh, int const param,int const value) {
+	const char *ret;
+	
+	pthread_mutex_lock(&ldt_mutex);
+	Check_FS_Segment(ldt_fs);
+	ret=BMLX(bmlw_describe_global_value(bmh,param,value));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
+}
+
+const char *bmlw_describe_track_value(BuzzMachineHandle *bmh, int const param,int const value) {
+	const char *ret;
+	
+	pthread_mutex_lock(&ldt_mutex);
+	Check_FS_Segment(ldt_fs);
+	ret=BMLX(bmlw_describe_track_value(bmh,param,value));
+	pthread_mutex_unlock(&ldt_mutex);
+	return(ret);
+}
+
+
+// instance api
+
+BuzzMachine *bmlw_new(BuzzMachineHandle *bmh) {
 	BuzzMachine *bm;
 
 	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment(ldt_fs);
-	bm=BMLX(bmlw_new(bm_file_name));
+	bm=BMLX(bmlw_new(bmh));
 	pthread_mutex_unlock(&ldt_mutex);
 	return(bm);
-}
-
-void bmlw_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data) {
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
-	BMLX(bmlw_init(bm,blob_size,blob_data));
-	pthread_mutex_unlock(&ldt_mutex);
 }
 
 void bmlw_free(BuzzMachine *bm) {
@@ -167,44 +256,11 @@ void bmlw_free(BuzzMachine *bm) {
 }
 
 
-int bmlw_get_machine_info(BuzzMachine *bm, BuzzMachineProperty key, void *value) {
-	int ret;
-
+void bmlw_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data) {
 	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment(ldt_fs);
-	ret=BMLX(bmlw_get_machine_info(bm,key,value));
+	BMLX(bmlw_init(bm,blob_size,blob_data));
 	pthread_mutex_unlock(&ldt_mutex);
-	return(ret);
-}
-
-int bmlw_get_global_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value) {
-	int ret;
-
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
-	ret=BMLX(bmlw_get_global_parameter_info(bm,index,key,value));
-	pthread_mutex_unlock(&ldt_mutex);
-	return(ret);
-}
-
-int bmlw_get_track_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value) {
-	int ret;
-
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
-	ret=BMLX(bmlw_get_track_parameter_info(bm,index,key,value));
-	pthread_mutex_unlock(&ldt_mutex);
-	return(ret);
-}
-
-int bmlw_get_attribute_info(BuzzMachine *bm,int index,BuzzMachineAttribute key,void *value) {
-	int ret;
-
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
-	ret=BMLX(bmlw_get_attribute_info(bm,index,key,value));
-	pthread_mutex_unlock(&ldt_mutex);
-	return(ret);
 }
 
 
@@ -343,27 +399,6 @@ void bmlw_set_num_tracks(BuzzMachine *bm, int num) {
 }
 
 
-const char *bmlw_describe_global_value(BuzzMachine *bm, int const param,int const value) {
-	const char *ret;
-	
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
-	ret=BMLX(bmlw_describe_global_value(bm,param,value));
-	pthread_mutex_unlock(&ldt_mutex);
-	return(ret);
-}
-
-const char *bmlw_describe_track_value(BuzzMachine *bm, int const param,int const value) {
-	const char *ret;
-	
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
-	ret=BMLX(bmlw_describe_track_value(bm,param,value));
-	pthread_mutex_unlock(&ldt_mutex);
-	return(ret);
-}
-
-
 void bmlw_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks) {
 	pthread_mutex_lock(&ldt_mutex);
 	Check_FS_Segment(ldt_fs);
@@ -403,14 +438,24 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
   if(!(BMLX(bmlw_set_logger)=(BMSetLogger)GetSymbol(emu_dll,"bm_set_logger"))) { puts("bm_set_logger is missing");return(FALSE);}
 
   if(!(BMLX(bmlw_set_master_info)=(BMSetMasterInfo)GetSymbol(emu_dll,"bm_set_master_info"))) { puts("bm_set_master_info is missing");return(FALSE);}
-  if(!(BMLX(bmlw_new)=(BMNew)GetSymbol(emu_dll,"bm_new"))) { puts("bm_new is missing");return(FALSE);}
-  if(!(BMLX(bmlw_init)=(BMInit)GetSymbol(emu_dll,"bm_init"))) { puts("bm_init is missing");return(FALSE);}
-  if(!(BMLX(bmlw_free)=(BMFree)GetSymbol(emu_dll,"bm_free"))) { puts("bm_free is missing");return(FALSE);}
+
+
+  if(!(BMLX(bmlw_open)=(BMOpen)GetSymbol(emu_dll,"bm_open"))) { puts("bm_open is missing");return(FALSE);}
+  if(!(BMLX(bmlw_close)=(BMClose)GetSymbol(emu_dll,"bm_close"))) { puts("bm_close is missing");return(FALSE);}
 
   if(!(BMLX(bmlw_get_machine_info)=(BMGetMachineInfo)GetSymbol(emu_dll,"bm_get_machine_info"))) { puts("bm_get_machine_info is missing");return(FALSE);}
   if(!(BMLX(bmlw_get_global_parameter_info)=(BMGetGlobalParameterInfo)GetSymbol(emu_dll,"bm_get_global_parameter_info"))) { puts("bm_get_global_parameter_info is missing");return(FALSE);}
   if(!(BMLX(bmlw_get_track_parameter_info)=(BMGetTrackParameterInfo)GetSymbol(emu_dll,"bm_get_track_parameter_info"))) { puts("bm_get_track_parameter_info is missing");return(FALSE);}
   if(!(BMLX(bmlw_get_attribute_info)=(BMGetAttributeInfo)GetSymbol(emu_dll,"bm_get_attribute_info"))) { puts("bm_get_attribute_info is missing");return(FALSE);}
+
+  if(!(BMLX(bmlw_describe_global_value)=(BMDescribeGlobalValue)GetSymbol(emu_dll,"bm_describe_global_value"))) { puts("bm_describe_global_value is missing");return(FALSE);}
+  if(!(BMLX(bmlw_describe_track_value)=(BMDescribeTrackValue)GetSymbol(emu_dll,"bm_describe_track_value"))) { puts("bm_describe_track_value is missing");return(FALSE);}
+
+
+  if(!(BMLX(bmlw_new)=(BMNew)GetSymbol(emu_dll,"bm_new"))) { puts("bm_new is missing");return(FALSE);}
+  if(!(BMLX(bmlw_free)=(BMFree)GetSymbol(emu_dll,"bm_free"))) { puts("bm_free is missing");return(FALSE);}
+
+  if(!(BMLX(bmlw_init)=(BMInit)GetSymbol(emu_dll,"bm_init"))) { puts("bm_init is missing");return(FALSE);}
 
   if(!(BMLX(bmlw_get_track_parameter_location)=(BMGetTrackParameterLocation)GetSymbol(emu_dll,"bm_get_track_parameter_location"))) { puts("bm_get_track_parameter_location is missing");return(FALSE);}
   if(!(BMLX(bmlw_get_track_parameter_value)=(BMGetTrackParameterValue)GetSymbol(emu_dll,"bm_get_track_parameter_value"))) { puts("bm_get_track_parameter_value is missing");return(FALSE);}
@@ -433,9 +478,6 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
 
   if(!(BMLX(bmlw_set_num_tracks)=(BMSetNumTracks)GetSymbol(emu_dll,"bm_set_num_tracks"))) { puts("bm_set_num_tracks is missing");return(FALSE);}
 
-  if(!(BMLX(bmlw_describe_global_value)=(BMDescribeGlobalValue)GetSymbol(emu_dll,"bm_describe_global_value"))) { puts("bm_describe_global_value is missing");return(FALSE);}
-  if(!(BMLX(bmlw_describe_track_value)=(BMDescribeTrackValue)GetSymbol(emu_dll,"bm_describe_track_value"))) { puts("bm_describe_track_value is missing");return(FALSE);}
-
   if(!(BMLX(bmlw_set_callbacks)=(BMSetCallbacks)GetSymbol(emu_dll,"bm_set_callbacks"))) { puts("bm_set_callbacks is missing");return(FALSE);}
 
   TRACE("%s:   symbols connected\n",__FUNCTION__);
@@ -451,14 +493,24 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
   if(!(bmln_set_logger=(BMSetLogger)dlsym(emu_so,"bm_set_logger"))) { puts("bm_set_logger is missing");return(FALSE);}
 
   if(!(bmln_set_master_info=(BMSetMasterInfo)dlsym(emu_so,"bm_set_master_info"))) { puts("bm_set_master_info is missing");return(FALSE);}
-  if(!(bmln_new=(BMNew)dlsym(emu_so,"bm_new"))) { puts("bm_new is missing");return(FALSE);}
-  if(!(bmln_init=(BMInit)dlsym(emu_so,"bm_init"))) { puts("bm_init is missing");return(FALSE);}
-  if(!(bmln_free=(BMFree)dlsym(emu_so,"bm_free"))) { puts("bm_free is missing");return(FALSE);}
+
+
+  if(!(bmln_open=(BMOpen)dlsym(emu_so,"bm_open"))) { puts("bm_open is missing");return(FALSE);}
+  if(!(bmln_close=(BMClose)dlsym(emu_so,"bm_close"))) { puts("bm_close is missing");return(FALSE);}
 
   if(!(bmln_get_machine_info=(BMGetMachineInfo)dlsym(emu_so,"bm_get_machine_info"))) { puts("bm_get_machine_info is missing");return(FALSE);}
   if(!(bmln_get_global_parameter_info=(BMGetGlobalParameterInfo)dlsym(emu_so,"bm_get_global_parameter_info"))) { puts("bm_get_global_parameter_info is missing");return(FALSE);}
   if(!(bmln_get_track_parameter_info=(BMGetTrackParameterInfo)dlsym(emu_so,"bm_get_track_parameter_info"))) { puts("bm_get_track_parameter_info is missing");return(FALSE);}
   if(!(bmln_get_attribute_info=(BMGetAttributeInfo)dlsym(emu_so,"bm_get_attribute_info"))) { puts("bm_get_attribute_info is missing");return(FALSE);}
+
+  if(!(bmln_describe_global_value=(BMDescribeGlobalValue)dlsym(emu_so,"bm_describe_global_value"))) { puts("bm_describe_global_value is missing");return(FALSE);}
+  if(!(bmln_describe_track_value=(BMDescribeTrackValue)dlsym(emu_so,"bm_describe_track_value"))) { puts("bm_describe_track_value is missing");return(FALSE);}
+
+
+  if(!(bmln_new=(BMNew)dlsym(emu_so,"bm_new"))) { puts("bm_new is missing");return(FALSE);}
+  if(!(bmln_free=(BMFree)dlsym(emu_so,"bm_free"))) { puts("bm_free is missing");return(FALSE);}
+
+  if(!(bmln_init=(BMInit)dlsym(emu_so,"bm_init"))) { puts("bm_init is missing");return(FALSE);}
 
   if(!(bmln_get_track_parameter_location=(BMGetTrackParameterLocation)dlsym(emu_so,"bm_get_track_parameter_location"))) { puts("bm_get_track_parameter_location is missing");return(FALSE);}
   if(!(bmln_get_track_parameter_value=(BMGetTrackParameterValue)dlsym(emu_so,"bm_get_track_parameter_value"))) { puts("bm_get_track_parameter_value is missing");return(FALSE);}
@@ -480,9 +532,6 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
   if(!(bmln_attributes_changed=(BMAttributesChanged)dlsym(emu_so,"bm_attributes_changed"))) { puts("bm_attributes_changed is missing");return(FALSE);}
 
   if(!(bmln_set_num_tracks=(BMSetNumTracks)dlsym(emu_so,"bm_set_num_tracks"))) { puts("bm_set_num_tracks is missing");return(FALSE);}
-
-  if(!(bmln_describe_global_value=(BMDescribeGlobalValue)dlsym(emu_so,"bm_describe_global_value"))) { puts("bm_describe_global_value is missing");return(FALSE);}
-  if(!(bmln_describe_track_value=(BMDescribeTrackValue)dlsym(emu_so,"bm_describe_track_value"))) { puts("bm_describe_track_value is missing");return(FALSE);}
 
   if(!(bmln_set_callbacks=(BMSetCallbacks)dlsym(emu_so,"bm_set_callbacks"))) { puts("bm_set_callbacks is missing");return(FALSE);}
 

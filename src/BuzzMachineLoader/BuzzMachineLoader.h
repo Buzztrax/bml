@@ -39,7 +39,27 @@ struct _CHostCallbacks {
 
 #ifdef BUZZ_MACHINE_LOADER
 
-// the high level instance handle
+typedef CMachineInfo* (*GetInfoPtr)();
+typedef CMachineInterface *(*CreateMachinePtr)();
+
+class BuzzMachine;
+
+// machine library handle
+class BuzzMachineHandle {
+public:
+	// library handle
+	void *h;
+	char *lib_name;
+    // machine info
+    CMachineInfo *machine_info;
+    int mdk_num_channels;
+    // functions
+    CreateMachinePtr CreateMachine;
+    // dummy machine instance, so that we can call DescribeValue
+    BuzzMachine *bm;
+};
+
+// machine instance handle
 class BuzzMachine {
 public:
     /* FIXME: what about adding a 4 byte cookie here
@@ -47,8 +67,7 @@ public:
      * a macro BM_IS_BM(bm) could check
      */
 	// library handle
-	void *h;
-	char *lib_name;
+    BuzzMachineHandle *bmh;
 	// callback instance
 	CMICallbacks *callbacks;
 	// classes
@@ -61,6 +80,7 @@ public:
 	//CMachineInterfaceEx *machine_ex;
 };
 #else
+typedef void BuzzMachineHandle;
 typedef void BuzzMachine;
 #endif
 

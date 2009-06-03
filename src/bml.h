@@ -51,14 +51,24 @@ extern void bml_finalize(void);
 
 // dll passthrough API method pointer types
 typedef void (*BMSetMasterInfo)(long bpm, long tpb, long srat);
-typedef void * (*BMNew)(char *bm_file_name);
-typedef void (*BMInit)(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data);
+
+
+typedef BuzzMachineHandle * (*BMOpen)(char *bm_file_name);
+typedef void (*BMClose)(BuzzMachineHandle *bmh);
+
+typedef int (*BMGetMachineInfo)(BuzzMachineHandle *bmh, BuzzMachineProperty key, void *value);
+typedef int (*BMGetGlobalParameterInfo)(BuzzMachineHandle *bmh,int index,BuzzMachineParameter key,void *value);
+typedef int (*BMGetTrackParameterInfo)(BuzzMachineHandle *bmh,int index,BuzzMachineParameter key,void *value);
+typedef int (*BMGetAttributeInfo)(BuzzMachineHandle *bmh,int index,BuzzMachineAttribute key,void *value);
+
+typedef const char *(*BMDescribeGlobalValue)(BuzzMachineHandle *bmh, int const param,int const value);
+typedef const char *(*BMDescribeTrackValue)(BuzzMachineHandle *bmh, int const param,int const value);
+
+
+typedef BuzzMachine * (*BMNew)(BuzzMachineHandle *bmh);
 typedef void (*BMFree)(BuzzMachine *bm);
 
-typedef int (*BMGetMachineInfo)(BuzzMachine *bm, BuzzMachineProperty key, void *value);
-typedef int (*BMGetGlobalParameterInfo)(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value);
-typedef int (*BMGetTrackParameterInfo)(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value);
-typedef int (*BMGetAttributeInfo)(BuzzMachine *bm,int index,BuzzMachineAttribute key,void *value);
+typedef void (*BMInit)(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data);
 
 typedef void * (*BMGetTrackParameterLocation)(BuzzMachine *bm,int track,int index);
 typedef int  (*BMGetTrackParameterValue)(BuzzMachine *bm,int track,int index);
@@ -81,21 +91,28 @@ typedef void (*BMAttributesChanged)(BuzzMachine *bm);
 
 typedef void (*BMSetNumTracks)(BuzzMachine *bm, int num);
 
-typedef const char *(*BMDescribeGlobalValue)(BuzzMachine *bm, int const param,int const value);
-typedef const char *(*BMDescribeTrackValue)(BuzzMachine *bm, int const param,int const value);
-
 typedef void *(*BMSetCallbacks)(BuzzMachine *bm, CHostCallbacks *callbacks);
 
 // windows plugin API functions
 extern void bmlw_set_master_info(long bpm, long tpb, long srat);
-extern BuzzMachine *bmlw_new(char *bm_file_name);
-extern void bmlw_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data);
+
+extern BuzzMachineHandle *bmlw_open(char *bm_file_name);
+extern void bmlw_close(BuzzMachineHandle *bmh);
+
+
+extern int bmlw_get_machine_info(BuzzMachineHandle *bmh, BuzzMachineProperty key, void *value);
+extern int bmlw_get_global_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachineParameter key,void *value);
+extern int bmlw_get_track_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachineParameter key,void *value);
+extern int bmlw_get_attribute_info(BuzzMachineHandle *bmh,int index,BuzzMachineAttribute key,void *value);
+
+extern const char *bmlw_describe_global_value(BuzzMachineHandle *bmh, int const param,int const value);
+extern const char *bmlw_describe_track_value(BuzzMachineHandle *bmh, int const param,int const value);
+
+
+extern BuzzMachine *bmlw_new(BuzzMachineHandle *bmh);
 extern void bmlw_free(BuzzMachine *bm);
 
-extern int bmlw_get_machine_info(BuzzMachine *bm, BuzzMachineProperty key, void *value);
-extern int bmlw_get_global_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value);
-extern int bmlw_get_track_parameter_info(BuzzMachine *bm,int index,BuzzMachineParameter key,void *value);
-extern int bmlw_get_attribute_info(BuzzMachine *bm,int index,BuzzMachineAttribute key,void *value);
+extern void bmlw_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data);
 
 extern void *bmlw_get_track_parameter_location(BuzzMachine *bm,int track,int index);
 extern int bmlw_get_track_parameter_value(BuzzMachine *bm,int track,int index);
@@ -118,21 +135,28 @@ extern void bmlw_attributes_changed(BuzzMachine *bm);
 
 extern void bmlw_set_num_tracks(BuzzMachine *bm, int num);
 
-extern const char *bmlw_describe_global_value(BuzzMachine *bm, int const param,int const value);
-extern const char *bmlw_describe_track_value(BuzzMachine *bm, int const param,int const value);
-
 extern void bmlw_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks);
 
 // native plugin API functions
 extern BMSetMasterInfo bmln_set_master_info;
-extern BMNew bmln_new;
-extern BMInit bmln_init;
-extern BMFree bmln_free;
+
+
+extern BMOpen bmln_open;
+extern BMClose bmln_close;
 
 extern BMGetMachineInfo bmln_get_machine_info;
 extern BMGetGlobalParameterInfo bmln_get_global_parameter_info;
 extern BMGetTrackParameterInfo bmln_get_track_parameter_info;
 extern BMGetAttributeInfo bmln_get_attribute_info;
+
+extern BMDescribeGlobalValue bmln_describe_global_value;
+extern BMDescribeTrackValue bmln_describe_track_value;
+
+
+extern BMNew bmln_new;
+extern BMFree bmln_free;
+
+extern BMInit bmln_init;
 
 extern BMGetTrackParameterLocation bmln_get_track_parameter_location;
 extern BMGetTrackParameterValue bmln_get_track_parameter_value;
@@ -154,9 +178,6 @@ extern BMStop bmln_stop;
 extern BMAttributesChanged bmln_attributes_changed;
 
 extern BMSetNumTracks bmln_set_num_tracks;
-
-extern BMDescribeGlobalValue bmln_describe_global_value;
-extern BMDescribeTrackValue bmln_describe_track_value;
 
 extern BMSetCallbacks bmln_set_callbacks;
 
