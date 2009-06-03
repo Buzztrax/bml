@@ -1,5 +1,14 @@
 2009-06-04  Stefan Kost  <ensonic@users.sf.net>
 
+	* src/BuzzMachineLoader.dll:
+	  Rebuild for API hanges.
+
+	* src/bmltest_info.h:
+	  Fix bm->bmh.
+	  
+
+2009-06-04  Stefan Kost  <ensonic@users.sf.net>
+
 	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
 	* src/BuzzMachineLoader/BuzzMachineLoader.h:
 	* src/bml.c:

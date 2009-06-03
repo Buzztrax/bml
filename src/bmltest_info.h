@@ -80,7 +80,7 @@ void bml(test_info(char *libpath)) {
              bml(get_global_parameter_info(bmh,i,BM_PARA_DEF_VALUE,(void *)&val)))    printf("        Value: %d .. %d .. %d [%d]\n",mival,val,maval,noval);
           val =        bml(get_global_parameter_value(bm,i));
           addr=        bml(get_global_parameter_location(bm,i));
-          str =(char *)bml(describe_global_value(bm,i,val));
+          str =(char *)bml(describe_global_value(bmh,i,val));
           switch(type) {
             case 0: //PT_NOTE:
             case 1: //PT_SWITCH:
@@ -115,7 +115,7 @@ void bml(test_info(char *libpath)) {
                bml(get_track_parameter_info(bmh,i,BM_PARA_DEF_VALUE,(void *)&val)))    printf("        Value: %d .. %d .. %d [%d]\n",mival,val,maval,noval);
             val =        bml(get_track_parameter_value(bm,0,i));
             addr=        bml(get_track_parameter_location(bm,0,i));
-            str =(char *)bml(describe_track_value(bm,i,val));
+            str =(char *)bml(describe_track_value(bmh,i,val));
             switch(type) {
               case 0: //PT_NOTE:
               case 1: //PT_SWITCH:
