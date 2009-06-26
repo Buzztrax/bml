@@ -149,7 +149,7 @@ static void (*longcount)(long long*)=longcount_stub;
 
 static unsigned int localcount_stub(void)
 {
-    unsigned int regs[4];
+    unsigned int regs[4] = {0, };
     do_cpuid(1, regs);
     if ((regs[3] & 0x00000010) != 0)
     {
@@ -165,7 +165,7 @@ static unsigned int localcount_stub(void)
 }
 static void longcount_stub(long long* z)
 {
-    unsigned int regs[4];
+    unsigned int regs[4] = {0, };
     do_cpuid(1, regs);
     if ((regs[3] & 0x00000010) != 0)
     {
