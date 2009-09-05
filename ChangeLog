@@ -1,3 +1,8 @@
+2009-09-05  Stefan Kost  <ensonic@users.sf.net>
+
+	* NEWS:
+	  Update NEWS.
+
 2009-06-26  Krzysztof Foltman  <kfoltman@users.sf.net>
 
 	* dllwrapper/wine/win32.c:
@@ -6,7 +11,7 @@
 2009-06-04  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader.dll:
-	  Rebuild for API hanges.
+	  Rebuild for API changes.
 
 	* src/bmltest_info.h:
 	  Fix bm->bmh.
@@ -148,8 +153,7 @@
 	  length.
 
 	* tests/testmachine.sh:
-	  Small parsing and output fix.
-	  
+	  Small parsing and output fix.	  
 
 2009-01-27  Stefan Kost  <ensonic@users.sf.net>
 
