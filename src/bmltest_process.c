@@ -39,15 +39,17 @@
 
 #include "config.h"
 
+#define _ISOC99_SOURCE /* for isinf() and co. */
+#define _BSD_SOURCE /* for setlinebuf() */
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <math.h>
 #include <unistd.h>
 #include <signal.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <math.h>
 
 //#include <fpu_control.h>
 

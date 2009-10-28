@@ -1,3 +1,10 @@
+2009-10-28  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/bmltest_process.c:
+	* src/bmltest_process.h:
+	* tests/testmachine.sh:
+	  Add denormal detection to tests.
+
 2009-09-06  Stefan Kost  <ensonic@users.sf.net>
 
 	* configure.ac:

@@ -121,6 +121,7 @@ for machine in $machine_glob ; do
   fieldClipped=`egrep -o "Clipped: .*$" bmltest_process.tmp | sed -e 's/Clipped: \(.*\)$/\1/'`
   fieldMathNaN=`egrep -o "some values are nan" bmltest_process.tmp | sed -e 's/some values are \(.*\)$/\1/'`
   fieldMathInf=`egrep -o "some values are inf" bmltest_process.tmp | sed -e 's/some values are \(.*\)$/\1/'`
+  fieldMathDen=`egrep -o "some values are denormal" bmltest_process.tmp | sed -e 's/some values are \(.*\)$/\1/'`
   
   cat >>testmachine.body.html <<END_OF_HTML
       <tr bgcolor="$tablecolor">
@@ -141,7 +142,7 @@ for machine in $machine_glob ; do
         <td>$fieldLibs</td>
         <td>$fieldMaxAmp</td>
         <td>$fieldClipped</td>
-        <td>$fieldMathNaN $fieldMathInf</td>
+        <td>$fieldMathNaN $fieldMathInf $fieldMathDen</td>
       </tr>
 END_OF_HTML
   rm -f bmltest_info.log bmltest_process.log
@@ -180,7 +181,7 @@ cat >testmachine.html <<END_OF_HTML
         <th>Libs</th>
         <th>Max Amp.</th>
         <th>Clipped</th>
-        <th>NaN/Inf</th>
+        <th>NaN/Inf/Den</th>
       </tr>
 END_OF_HTML
 cat >>testmachine.html testmachine.body.html

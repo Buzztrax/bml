@@ -44,7 +44,7 @@ void bml(test_process(char *libpath,const char *infilename,const char *outfilena
       int i,mtype,mflags,tracks;
       //int ival=0,oval,vs=10;
       const char *type_name[3]={"","generator","effect"};
-      int nan=0,inf=0;
+      int nan=0,inf=0,den=0;
       int clipped=0;
       float ma=0.0;
       int mode=3/*WM_READWRITE*/;
@@ -159,6 +159,7 @@ void bml(test_process(char *libpath,const char *infilename,const char *outfilena
             for(i=0;i<o_size;i++) {
               if(isnan(buffer_f[i])) nan=1;
               if(isinf(buffer_f[i])) inf=1;
+              if(fpclassify(buffer_f[i])==FP_SUBNORMAL) den=1;
               if(fabs(buffer_f[i])>ma) ma=buffer_f[i];
               if(buffer_f[i]>32767) {
                 buffer_w[i]=32767;
@@ -238,6 +239,7 @@ void bml(test_process(char *libpath,const char *infilename,const char *outfilena
       puts("  done");
       if(nan) puts("some values are nan");
       if(inf) puts("some values are inf");
+      if(den) puts("some values are denormal");
       printf("Clipped: %d\n",clipped);
       printf("MaxAmp: %f\n",ma);
       bml(free(bm));
