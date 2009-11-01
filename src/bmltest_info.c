@@ -38,8 +38,28 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <time.h>
 
 #include "bml.h"
+
+static inline double
+_get_timestamp (void)
+{
+#ifdef HAVE_CLOCK_GETTIME
+  struct timespec now;
+
+  clock_gettime (CLOCK_MONOTONIC, &now);
+  return ((double)now.tv_sec + ((double)now.tv_nsec/1000000000.0));
+#else
+/*
+  GTimeVal now;
+
+  g_get_current_time (&now);
+  return GST_TIMEVAL_TO_TIME (now);
+*/
+  return 0UL;
+#endif
+}
 
 #ifdef HAVE_X86
 #define bml(a) bmlw_ ## a

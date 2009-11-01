@@ -2,7 +2,7 @@
 # $Id$
 # iterates over the given directory and tries all buzz machines
 #
-# if elements hang, they can be skipped by pressing ctrl-c
+# if machines hang, they can be skipped by pressing ctrl-c
 #
 # ./testmachine.sh "machines/*.dll"
 # ./testmachine.sh "/home/ensonic/buzztard/lib/Gear-real/Effects/*.dll"
@@ -61,7 +61,7 @@ for machine in $machine_glob ; do
   log_name="./testmachine/$name.txt"
   rm -f "$log_name" "$log_name".okay "$log_name".fail "$log_name".info
   # collect used dlls
-  fieldLibs=`strings "$machine" | grep -i -F "$ext" | grep -vi "$name" | sort`
+  fieldLibs=`strings "$machine" | grep -i -F "$ext" | grep -vi "$name" | sort | uniq`
   # try to run it
   sig_segv=0
   sig_int=0
@@ -72,6 +72,8 @@ for machine in $machine_glob ; do
   cat bmltest_info.log | grep >"$log_name" -v "Warning: the specified"
   if [ $sig_int -eq "1" ] ; then res=1; fi
   cat bmltest_info.log | iconv >bmltest_info.tmp -fWINDOWS-1250 -tUTF-8 -c
+  fieldCreateTime=`egrep -o "machine created in .*$" bmltest_info.tmp | sed -e 's/machine created in \(.*\) sec$/\1/'`
+  fieldInitTime=`egrep -o "machine initialized in .*$" bmltest_info.tmp | sed -e 's/machine initialized in \(.*\) sec$/\1/'`
   fieldShortName=`egrep -o "Short Name: .*$" bmltest_info.tmp | sed -e 's/Short Name: "\(.*\)"$/\1/'`
   fieldAuthor=`egrep -o "Author: .*$" bmltest_info.tmp | sed -e 's/Author: "\(.*\)"$/\1/'`
   fieldType=`egrep -o "^    Type: . -> \"MT_.*$" bmltest_info.tmp | sed -e 's/^\ *Type: . -> "\(.*\)"$/\1/'`
@@ -126,6 +128,8 @@ for machine in $machine_glob ; do
   cat >>testmachine.body.html <<END_OF_HTML
       <tr bgcolor="$tablecolor">
         <td><a href="$log_name.$tableresult">$tableresult</a></td>
+        <td>$fieldCreateTime</td>
+        <td>$fieldInitTime</td>
         <td>$name</td>
         <td>$fieldShortName</td>
         <td>$fieldAuthor</td>
@@ -165,6 +169,8 @@ cat >testmachine.html <<END_OF_HTML
     <table class="sortable" border="1" cellspacing="0">
       <tr>
         <th>Res.</th>
+        <th>Create sec.</th>
+        <th>Init sec.</th>
         <th>Plugin Lib.</th>
         <th>Name</th>
         <th>Author</th>

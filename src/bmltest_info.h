@@ -25,18 +25,24 @@ void bml(test_info(char *libpath)) {
   char *str;
   int type,val,i,num,tracks;
   int maval,mival,noval,ptrval=0;
+  double ts1, ts2;
  
   printf("%s(\"%s\")\n",__FUNCTION__,libpath);
+  
+  ts1=_get_timestamp();
   
   if((bmh=bml(open(libpath)))) {
     if((bm=bml(new(bmh)))) {
       char *machine_types[]={"MT_MASTER","MT_GENERATOR","MT_EFFECT" };
       char *parameter_types[]={"PT_NOTE","PT_SWITCH","PT_BYTE","PT_WORD" };
       void *addr;
-  
-      puts("  windows machine created");
+
+      ts2=_get_timestamp();
+      printf("  machine created in %lf sec\n",ts2-ts1);
+      ts1=ts2;
       bml(init(bm,0,NULL));
-      puts("  windows machine initialized");
+      ts2=_get_timestamp();
+      printf("  machine initialized in %lf sec\n",ts2-ts1);
   
       if(bml(get_machine_info(bmh,BM_PROP_SHORT_NAME,(void *)&str)))           printf("    Short Name: \"%s\"\n",str);
       if(bml(get_machine_info(bmh,BM_PROP_NAME,(void *)&str)))                 printf("    Name: \"%s\"\n",str);
