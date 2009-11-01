@@ -132,6 +132,7 @@ other-sources/buzz-sources/__BUZZ1PLAYER__NOT_FOR_PUBLIC!/CMachine.cpp
 2008.02.23 : Of 533 machine(s) 457 worked and 76 failed to load.
 2008.11.19 : Of 533 machine(s) 458 worked and 75 failed to load.
 2009.01.29 : Of 533 machine(s) 451 worked, 9 did not processed data and 73 failed to load.
+2009.11.02 : Of 537 machine(s) 454 worked, 10 did not processed data and 73 failed to load
 
 == sterni ==
 2008.10.14 : Of 853 machine(s) 759 worked and 94 failed to load.
@@ -139,8 +140,6 @@ other-sources/buzz-sources/__BUZZ1PLAYER__NOT_FOR_PUBLIC!/CMachine.cpp
 
 In gst-buzztard/src/bml/plugin.c I maintain a black list.
 == Generators ==
-Arguelles Pro4.dll
-  registers as a Effect becasue of stereo :/
 Geonik's PrimiFun.dll
   if we don't have MFC42.dll
     Called unk_MFC42.DLL:1176

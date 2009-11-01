@@ -14,6 +14,7 @@
 #include "debugtools.h"
 #include "winerror.h"
 #include "ext.h"
+#include "win32.h"
 
 //DEFAULT_DEBUG_CHANNEL(elfdll)
 
@@ -165,11 +166,11 @@ static LPSTR get_sobasename(LPCSTR path, LPSTR name)
 
 static WINE_MODREF *ELFDLL_CreateModref(HMODULE hModule, LPCSTR path)
 {
-//	IMAGE_NT_HEADERS *nt = PE_HEADER(hModule);
-	IMAGE_DATA_DIRECTORY *dir;
-	IMAGE_IMPORT_DESCRIPTOR *pe_import = NULL;
+	//IMAGE_NT_HEADERS *nt = PE_HEADER(hModule);
+	//IMAGE_DATA_DIRECTORY *dir;
+	//IMAGE_IMPORT_DESCRIPTOR *pe_import = NULL;
 	WINE_MODREF *wm;
-	int len;
+	//int len;
 	HANDLE procheap = GetProcessHeap();
 
 	wm = (WINE_MODREF *)HeapAlloc(procheap, HEAP_ZERO_MEMORY, sizeof(*wm));
@@ -236,7 +237,7 @@ static WINE_MODREF *ELFDLL_CreateModref(HMODULE hModule, LPCSTR path)
 WINE_MODREF *ELFDLL_LoadLibraryExA(LPCSTR path, DWORD flags)
 {
 	LPVOID dlhandle;
-	struct elfdll_image *image;
+	//struct elfdll_image *image;
 	char name[129];
 	char soname[129];
 	WINE_MODREF *wm;

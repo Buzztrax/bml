@@ -89,7 +89,11 @@ AM_CONDITIONAL(USE_LCOV, test ! x$lcov_path = xyes)
 
 dnl chek for heaers
 AC_HEADER_STDC([])
-AC_CHECK_HEADERS(assert.h byteswap.h malloc.h execinfo.h ucontext.h sys/mman.h sys/mixer.h libgen.h netdb.h dirent.h sys/times.h sys/ioctl.h sys/param.h alloca.h)
+AC_CHECK_HEADERS( \
+  alloca.h assert.h byteswap.h dirent.h execinfo.h kstat.h libgen.h malloc.h \
+  netdb.h ucontext.h \
+  sys/mman.h sys/mixer.h sys/times.h sys/ioctl.h sys/param.h \
+)
 
 AC_CHECK_DECL(sysi86,[
 	AC_DEFINE(HAVE_SYSI86,1,[Define this if the 'sysi86' function is declared in sys/sysi86.h])
@@ -101,11 +105,17 @@ dnl check for libraries
 AC_CHECK_LIBM
 AC_SUBST(LIBM)
 ACX_PTHREAD
+AC_CHECK_LIB([rt], [main])
+
+AC_CHECK_FUNCS([vsscanf clock_gettime])
 
 AC_CHECK_FUNC(dlopen,
-    [],
+    [AC_DEFINE(HAVE_LIBDL,1,[We can use libdl functions])],
     [AC_CHECK_LIB(dl, dlopen,
-         [DL_LIBS=-ldl],
+         [
+           DL_LIBS=-ldl
+           AC_DEFINE(HAVE_LIBDL,1,[We can use libdl functions])
+         ],
          [])
     ])
 

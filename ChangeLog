@@ -1,3 +1,10 @@
+2009-11-01  Stefan Kost  <ensonic@users.sf.net>
+
+	* TODO:
+	* configure.ac:
+	* dllwrapper/wine/elfdll.c:
+	  Add configure checks for thing uses conditionally in dllwrapper.
+
 2009-10-28  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/bmltest_process.c:
