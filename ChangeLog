@@ -1,3 +1,14 @@
+2010-01-12  Stefan Kost  <ensonic@users.sf.net>
+
+	* dllwrapper/wine/debugtools.h:
+	* dllwrapper/wine/ldt_keeper.c:
+	* dllwrapper/wine/module.c:
+	* dllwrapper/wine/pe_image.c:
+	* dllwrapper/wine/registry.c:
+	* src/bml.c:
+	  Add a custom logger, that also prints timestamps. Small cleanups and
+	  fixmes.
+
 2009-11-01  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/bmltest_info.c:

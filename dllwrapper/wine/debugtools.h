@@ -8,15 +8,12 @@
 #include "config.h"
 #include "windef.h"
 
-#ifdef XINE_MAJOR
-#include "compat.h"
-#endif
-
 struct _GUID;
 
 #ifndef TRACE
 #ifdef LOG
-#  define TRACE printf
+extern void _log_printf (const char *fmt, ...);
+#  define TRACE _log_printf
 #else
 #  define TRACE(...)
 #endif

@@ -17,10 +17,6 @@
 
 #include "debugtools.h"
 
-#ifdef XINE_MAJOR
-#include "xineutils.h"
-#endif
-
 //#undef TRACE
 //#define TRACE printf
 
@@ -319,19 +315,20 @@ static void init_registry(void)
 	sprintf(localregpathname, "%s/.xine/win32registry", xine_get_homedir());
 #else
 	// regpathname is an external pointer
-        //
+    //
 	// registry.c is holding it's own internal pointer
 	// localregpathname  - which is being allocate/deallocated
 
 	if (localregpathname == 0)
 	{
-            const char* pthn = regpathname;
+	    /* FIXME: use .config or something like it */
+        const char* pthn = regpathname;
 	    if (!regpathname)
 	    {
-		// avifile - for now reading data from user's home
-		struct passwd* pwent;
-		pwent = getpwuid(geteuid());
-                pthn = pwent->pw_dir;
+            // avifile - for now reading data from user's home
+            struct passwd* pwent;
+            pwent = getpwuid(geteuid());
+            pthn = pwent->pw_dir;
 	    }
 
 	    localregpathname = (char*)malloc(strlen(pthn)+20);
@@ -344,6 +341,12 @@ static void init_registry(void)
 	open_registry();
 	insert_handle(HKEY_LOCAL_MACHINE, "HKLM");
 	insert_handle(HKEY_CURRENT_USER, "HKCU");
+	
+	/* FIXME: fake a buzz registry
+      jeskola\buzz\settings\audio
+      jeskola\buzz\settings\theme
+      jeskola\buzz\settings\buzzpath
+	*/
 }
 
 #if 0

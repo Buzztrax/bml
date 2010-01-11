@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2000-2006 the xine project
- * 
+ *
  * This file is part of xine, a free video player.
- * 
+ *
  * xine is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * xine is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
@@ -24,7 +24,7 @@
  *
  * Allocate an LDT entry for the TEB (thread environment block)
  * TEB is a the only thread specific structure provided to userspace
- * by MS Windows. 
+ * by MS Windows.
  * Any W32 dll may access the TEB through FS:0, so we must provide it.
  *
  * Additional notes:
@@ -32,13 +32,13 @@
  * by calling these functions before any threads have been created. this
  * is a ugly hack, as the main code includes a plugin function at its
  * initialization.
- * Also, IMHO, that was slightly wrong. The TEB is supposed to be unique 
+ * Also, IMHO, that was slightly wrong. The TEB is supposed to be unique
  * per W32 thread. The current xine implementation will allocate different
  * TEBs for the audio and video codecs.
  *
  */
- 
- 
+
+
 /**
  * OLD AVIFILE COMMENT:
  * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -64,6 +64,9 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include <unistd.h>
+
+#include "debugtools.h"
+
 #ifdef __linux__
 #include <asm/unistd.h>
 #include <asm/ldt.h>
@@ -162,7 +165,7 @@ void Check_FS_Segment(ldt_fs_t *ldt_fs)
 	"movw %%fs,%%ax; mov %%eax,%0" : "=r" (fs) :: "%eax"
     );
     fs = fs & 0xffff;
-    
+
     if( fs != ldt_fs->teb_sel ) {
       printf("ldt_keeper: FS segment is not set or has being lost!\n");
       printf("            Please report this error to xine-devel@lists.sourceforge.net\n");
@@ -268,24 +271,21 @@ ldt_fs_t* Setup_LDT_Keeper(void)
 
         memset (ldt, 0, (TEB_SEL_IDX+1)*8);
         modify_ldt(0, ldt, (TEB_SEL_IDX+1)*8);
-/*        
+/*
         printf("ldt_keeper: old LDT entry = [%x] [%x]\n",
                 *(unsigned int *) (&ldt[TEB_SEL_IDX*8]),
                 *(unsigned int *) (&ldt[TEB_SEL_IDX*8+4]) );
-*/                
+*/
         limit = ((*(unsigned int *) (&ldt[TEB_SEL_IDX*8])) & 0xffff) |
                 ((*(unsigned int *) (&ldt[TEB_SEL_IDX*8+4])) & 0xf0000);
-        
+
         if( limit ) {
             if( limit == getpagesize()-1 ) {
                 ldt_already_set = 1;
             } else {
-#ifdef LOG
-                printf("ldt_keeper: LDT entry seems to be used by someone else. [%x] [%x]\n",
+                TRACE("ldt_keeper: LDT entry seems to be used by someone else. [%x] [%x]\n",
                        *(unsigned int *) (&ldt[TEB_SEL_IDX*8]),
                        *(unsigned int *) (&ldt[TEB_SEL_IDX*8+4]) );
-                printf("            Please report this message to xine-devel@lists.sourceforge.net\n");
-#endif        
             }
         }
         free(ldt);
@@ -294,16 +294,14 @@ ldt_fs_t* Setup_LDT_Keeper(void)
 
     if( !ldt_already_set )
     {
-#ifdef LOG
-        printf("ldt_keeper: creating a new segment descriptor.\n");
-#endif        
+        TRACE("ldt_keeper: creating a new segment descriptor.\n");
         ldt_fs->fd = open("/dev/zero", O_RDWR);
         if(ldt_fs->fd<0){
             perror( "Cannot open /dev/zero for READ+WRITE. Check permissions! error: ");
 	    free(ldt_fs);
 	    return NULL;
         }
-    
+
         ldt_fs->fs_seg = mmap(NULL, getpagesize(), PROT_READ | PROT_WRITE, MAP_PRIVATE,
 			      ldt_fs->fd, 0);
         if (ldt_fs->fs_seg == (void*)-1)
@@ -323,49 +321,43 @@ ldt_fs_t* Setup_LDT_Keeper(void)
         array.seg_not_present=0;
         array.contents=MODIFY_LDT_CONTENTS_DATA;
         array.limit_in_pages=0;
-    
+
         /*ret = */ _modify_ldt(ldt_fs, array);
-        
+
         ldt_fs->prev_struct = (char*)malloc(sizeof(char) * 8);
         *(void**)array.base_addr = ldt_fs->prev_struct;
-        
+
         memcpy( &global_ldt_fs, ldt_fs, sizeof(ldt_fs_t) );
     } else {
-#ifdef LOG
-        printf("ldt_keeper: LDT entry already set, reusing.\n");
-#endif        
+        TRACE("ldt_keeper: LDT entry already set, reusing.\n");
         global_usage_count++;
         memcpy( ldt_fs, &global_ldt_fs, sizeof(ldt_fs_t) );
     }
-    
+
     Setup_FS_Segment(ldt_fs);
-    
+
     return ldt_fs;
 }
 
 void Restore_LDT_Keeper(ldt_fs_t* ldt_fs)
 {
     struct modify_ldt_ldt_s array;
-    
+
     if (ldt_fs == NULL || ldt_fs->fs_seg == 0)
 	return;
 
     if( global_usage_count ) {
-#ifdef LOG
-        printf("ldt_keeper: shared LDT, restore does nothing.\n");
-#endif        
+        TRACE("ldt_keeper: shared LDT, restore does nothing.\n");
         /* shared LDT. only the last user can free. */
-        global_usage_count--; 
+        global_usage_count--;
     } else {
-#ifdef LOG
-        printf("ldt_keeper: freeing LDT entry.\n");
-#endif        
+        TRACE("ldt_keeper: freeing LDT entry.\n");
         if (ldt_fs->prev_struct)
             free(ldt_fs->prev_struct);
         munmap((char*)ldt_fs->fs_seg, getpagesize());
         ldt_fs->fs_seg = 0;
         close(ldt_fs->fd);
-    
+
         /* mark LDT entry as free again */
         memset(&array, 0, sizeof(struct modify_ldt_ldt_s));
         array.entry_number=TEB_SEL_IDX;

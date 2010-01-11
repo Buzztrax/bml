@@ -44,8 +44,43 @@ pthread_mutex_t ldt_mutex = PTHREAD_MUTEX_INITIALIZER;
 #endif  /* HAVE_X86 */
 static void *emu_so=NULL;
 
+
 #ifdef LOG
-#  define TRACE printf
+#include <sys/time.h>
+#include <time.h>
+
+static double _first_ts = 0.0;
+
+static double
+_get_timestamp (void)
+{
+  struct timespec ts;
+
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+  return (((double) ts.tv_sec+ (double) ts.tv_nsec * 1.0e-9) - _first_ts);
+}
+
+static void
+#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ > 4)
+__attribute__ ((constructor))
+#endif /* !__GNUC__ */
+_lib_init (void)
+{
+  _first_ts = _get_timestamp();
+}
+
+void
+_log_printf (const char *fmt, ...)
+{
+  va_list ap;
+  
+  printf ("%10.4lf: ", _get_timestamp());
+  va_start(ap, fmt);
+  vprintf (fmt, ap);
+  va_end(ap);
+}
+
+#  define TRACE _log_printf
 #else
 #  define TRACE(...)
 #endif

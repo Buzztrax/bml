@@ -137,19 +137,13 @@ static WIN_BOOL MODULE_InitDll( WINE_MODREF *wm, DWORD type, LPVOID lpReserved )
 #endif
     assert( wm );
 
-
     /* Skip calls for modules loaded with special load flags */
 
     if (    ( wm->flags & WINE_MODREF_DONT_RESOLVE_REFS )
          || ( wm->flags & WINE_MODREF_LOAD_AS_DATAFILE ) )
         return TRUE;
 
-
-#ifdef LOG
     TRACE("(%s,%s,%p) - CALL\n", wm->modname, typeName[type], lpReserved );
-#else
-    TRACE("(%s,%p) - CALL\n", wm->modname, lpReserved );
-#endif
 
     /* Call the initialization routine */
     switch ( wm->type )
@@ -171,11 +165,7 @@ static WIN_BOOL MODULE_InitDll( WINE_MODREF *wm, DWORD type, LPVOID lpReserved )
     /* The state of the module list may have changed due to the call
        to PE_InitDLL. We cannot assume that this module has not been
        deleted.  */
-#ifdef LOG
     TRACE("(%p,%s,%p) - RETURN %d\n", wm, typeName[type], lpReserved, retv );
-#else
-    TRACE("(%p,%p) - RETURN %d\n", wm, lpReserved, retv );
-#endif
 
     return retv;
 }
