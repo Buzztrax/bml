@@ -12,10 +12,10 @@ struct _GUID;
 
 #ifndef TRACE
 #ifdef LOG
-extern void _log_printf (const char *fmt, ...);
-#  define TRACE _log_printf
+extern void (*_log_printf)(const char *file, const int line, const char *fmt, ...);
+#  define TRACE(...) _log_printf(__FILE__,__LINE__,__VA_ARGS__)
 #else
-#  define TRACE(...)
+#  define TRACE(__FILE__,__LINE__,...)
 #endif
 #endif
 

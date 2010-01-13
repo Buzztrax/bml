@@ -182,43 +182,25 @@ static void longcount_stub(long long* z)
 
 //#define DETAILED_OUT 1
 
-#ifdef DETAILED_OUT
-static int LOADER_DEBUG=1; // active only if compiled with -DDETAILED_OUT
-#endif
+#ifndef DETAILED_OUT
+#define dbgprintf(...)
+#else
 static inline void __attribute__((__format__(__printf__, 1, 2))) dbgprintf(char* fmt, ...)
 {
-#ifdef DETAILED_OUT
-    if(LOADER_DEBUG)
-    {
-	FILE* f=NULL;
 	va_list va;
 	va_start(va, fmt);
-	//f=fopen("./log", "a");
 	vprintf(fmt, va);
 	fflush(stdout);
+	/*FILE *f=fopen("./log", "a");
 	if(f)
 	{
 	    vfprintf(f, fmt, va);
 	    fsync(fileno(f));
 	    fclose(f);
-	}
+	}*/
 	va_end(va);
-    }
-#endif
-#undef MPLAYER
-#ifdef MPLAYER
-    #include "../mp_msg.h"
-    if (verbose > 2)
-    {
-	va_list va;
-
-	va_start(va, fmt);
-//	vprintf(fmt, va);
-	mp_dbg(MSGT_WIN32, MSGL_DBG3, fmt, va);
-	va_end(va);
-    }
-#endif
 }
+#endif
 
 #define NUM_STUB_ENTRIES 300
 char export_names[NUM_STUB_ENTRIES][32]={
@@ -851,19 +833,17 @@ static void WINAPI expExitThread(int retcode)
 static HANDLE WINAPI expCreateMutexA(void *pSecAttr,
 		    char bInitialOwner, const char *name)
 {
+#ifndef QTX
     HANDLE mlist = (HANDLE)expCreateEventA(pSecAttr, 0, 0, name);
 
-    if (name)
 	dbgprintf("CreateMutexA(%p, %d, '%s') => 0x%x\n",
-	    pSecAttr, bInitialOwner, name, mlist);
-    else
-	dbgprintf("CreateMutexA(%p, %d, NULL) => 0x%x\n",
-	    pSecAttr, bInitialOwner, mlist);
-#ifndef QTX
+	  pSecAttr, bInitialOwner, name?name:"NULL", mlist);
     /* 10l to QTX, if CreateMutex returns a real mutex, WaitForSingleObject
        waits for ever, else it works ;) */
     return mlist;
 #else
+	dbgprintf("CreateMutexA(%p, %d, '%s') => 0x0\n",
+	  pSecAttr, bInitialOwner, name?name:"NULL");
     return 0;
 #endif
 }
@@ -1220,8 +1200,7 @@ static long WINAPI expHeapSize(int heap, int flags, void* pointer)
 }
 static void* WINAPI expHeapReAlloc(HANDLE heap,int flags,void *lpMem,int size)
 {
-    long orgsize = my_size(lpMem);
-    dbgprintf("HeapReAlloc() Size %ld org %d\n",orgsize,size);
+    dbgprintf("HeapReAlloc() Size %ld org %d\n",my_size(lpMem),size);
     return my_realloc(lpMem, size);
 }
 static long WINAPI expGetProcessHeap(void)
@@ -5562,10 +5541,10 @@ void* LookupExternal(const char* library, int ordinal)
 
     if(library==0)
     {
-      dbgprintf("ERROR: library=0\n");
-      return (void*)ext_unknown;
+        dbgprintf("ERROR: library=0\n");
+        return (void*)ext_unknown;
     }
-    //    dbgprintf("%x %x\n", &unk_exp1, &unk_exp2);
+    //dbgprintf("%x %x\n", &unk_exp1, &unk_exp2);
 
     dbgprintf("External func %s:%d\n", library, ordinal);
 

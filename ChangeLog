@@ -1,3 +1,15 @@
+2010-01-13  Stefan Kost  <ensonic@users.sf.net>
+
+	* README:
+	* dllwrapper/wine/debugtools.h:
+	* dllwrapper/wine/module.c:
+	* dllwrapper/wine/registry.c:
+	* dllwrapper/wine/win32.c:
+	* src/bml.c:
+	* tests/testmachine.sh:
+	  Turn BLM_DEBUG envvar into flag based for more finegrained log control.
+	  Have also filename:lineno on bml debug logs.
+
 2010-01-12  Stefan Kost  <ensonic@users.sf.net>
 
 	* dllwrapper/wine/debugtools.h:

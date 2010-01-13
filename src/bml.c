@@ -44,7 +44,13 @@ pthread_mutex_t ldt_mutex = PTHREAD_MUTEX_INITIALIZER;
 #endif  /* HAVE_X86 */
 static void *emu_so=NULL;
 
-
+/* we can configure the packge with --enable-debug to get LOG defined
+ * if log is defined logging is compiled in otherwise out
+ * if it is in we can still control the amount of logging by setting bits in
+ * BML_DEBUG:
+ *   1 : only logging from the windows adapter (BuzzMachineLoader.dll)
+ *   2 : only logging from bml and dllwrapper
+ */
 #ifdef LOG
 #include <sys/time.h>
 #include <time.h>
@@ -61,28 +67,30 @@ _get_timestamp (void)
 }
 
 static void
-#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ > 4)
-__attribute__ ((constructor))
-#endif /* !__GNUC__ */
-_lib_init (void)
-{
-  _first_ts = _get_timestamp();
-}
-
-void
-_log_printf (const char *fmt, ...)
+_log_stdout_printf (const char *file, const int line, const char *fmt, ...)
 {
   va_list ap;
-  
-  printf ("%10.4lf: ", _get_timestamp());
+
+  if(file)
+    printf ("%10.4lf: %s:%d: ", _get_timestamp(), file, line);
+  else
+    printf ("%10.4lf: ", _get_timestamp());
   va_start(ap, fmt);
   vprintf (fmt, ap);
   va_end(ap);
 }
 
-#  define TRACE _log_printf
+static void
+_log_null_printf (const char *file, const int line, const char *fmt, ...)
+{
+}
+
+void (*_log_printf)(const char *file, const int line, const char *fmt, ...)=_log_null_printf;
+
+
+#  define TRACE(...) _log_printf(__FILE__,__LINE__,__VA_ARGS__)
 #else
-#  define TRACE(...)
+#  define TRACE(__FILE__,__LINE__,...)
 #endif
 
 typedef void (*BMLDebugLogger)(char *str);
@@ -448,14 +456,36 @@ void bmlw_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks) {
 // wrapper management
 
 static void bml_stdout_logger(char *str) {
-  TRACE("%s",str);
+  static char lbuf[1000];
+  static int p=0;
+  int i=0;
+  
+  if(!str)
+    return;
+  
+  while((str[i]!='\0') && (str[i]!='\n')) {
+    if(p<1000) lbuf[p++]=str[i++];
+  }
+  if(str[i]=='\n') {
+    lbuf[p]='\0';
+    _log_stdout_printf(NULL,0,"%s\n",lbuf);
+    p=0;
+  }
 }
 
 static void bml_null_logger(char *str) {
 }
 
 int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
-  const char *use_log=getenv("BML_DEBUG");
+  const char *debug_log_flag_str=getenv("BML_DEBUG");
+  const int debug_log_flags=debug_log_flag_str?atoi(debug_log_flag_str):0;
+ 
+#ifdef LOG
+  _first_ts = _get_timestamp();
+  if (debug_log_flags&0x2) {
+    _log_printf=_log_stdout_printf;
+  }
+#endif
   
   TRACE("%s\n",__FUNCTION__);
   
@@ -516,7 +546,7 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
   if(!(BMLX(bmlw_set_callbacks)=(BMSetCallbacks)GetSymbol(emu_dll,"bm_set_callbacks"))) { puts("bm_set_callbacks is missing");return(FALSE);}
 
   TRACE("%s:   symbols connected\n",__FUNCTION__);
-  BMLX(bmlw_set_logger(use_log?bml_stdout_logger:bml_null_logger));
+  BMLX(bmlw_set_logger((debug_log_flags&0x1)?bml_stdout_logger:bml_null_logger));
 #endif /* HAVE_X86 */
 
   if(!(emu_so=dlopen("libbuzzmachineloader.so",RTLD_LAZY))) {
@@ -571,7 +601,7 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
   if(!(bmln_set_callbacks=(BMSetCallbacks)dlsym(emu_so,"bm_set_callbacks"))) { puts("bm_set_callbacks is missing");return(FALSE);}
 
   TRACE("%s:   symbols connected\n",__FUNCTION__);
-  bmln_set_logger(use_log?bml_stdout_logger:bml_null_logger);
+  bmln_set_logger((debug_log_flags&0x1)?bml_stdout_logger:bml_null_logger);
   
   return(TRUE);
 }

@@ -409,7 +409,7 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 	    }
 	    path[511] = 0;
 
-		//TRACE("trying to load module '%s'\n", path);
+		TRACE("trying to load module '%s'\n", path);
 	    wm = MODULE_LoadLibraryExA( path, hfile, flags );
 
 	    if (!wm)
@@ -422,7 +422,7 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 	}
 	if ( wm )
 	{
-		//TRACE("Loaded module '%s'\n", libname);
+		TRACE("Loaded module '%s'\n", libname);
 
 		if ( !MODULE_DllProcessAttach( wm, NULL ) )
 		{

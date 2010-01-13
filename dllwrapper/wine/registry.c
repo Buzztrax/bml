@@ -377,11 +377,12 @@ long RegOpenKeyExA(long key, const char* subkey, long reserved, long access, int
     char* full_name;
     reg_handle_t* t;
     struct reg_value* v;
-    TRACE("Opening key %s\n", subkey);
 
     if(!regs)
-        init_registry()
-;
+        init_registry();
+
+    TRACE("Opening key %s\n", subkey);
+
 /*	t=find_handle_2(key, subkey);
 
 	if(t==0)
@@ -428,10 +429,11 @@ long RegQueryValueExA(long key, const char* value, int* reserved, int* type, int
 {
     struct reg_value* t;
     char* c;
-    TRACE("Querying value %s\n", value);
+
     if(!regs)
 	init_registry();
 
+    TRACE("Querying value %s\n", value);
     c=build_keyname(key, value);
     if (!c)
 	return 1;
@@ -464,10 +466,10 @@ long RegCreateKeyExA(long key, const char* name, long reserved,
     reg_handle_t* t;
     char* fullname;
     struct reg_value* v;
-    //        TRACE("Creating/Opening key %s\n", name);
     if(!regs)
 	init_registry();
 
+    //TRACE("Creating/Opening key %s\n", name);
     fullname=build_keyname(key, name);
     if (!fullname)
 	return 1;
@@ -504,8 +506,8 @@ long RegEnumValueA(HKEY hkey, DWORD index, LPSTR value, LPDWORD val_count,
 		   LPDWORD reserved, LPDWORD type, LPBYTE data, LPDWORD count)
 {
     // currenly just made to support MSZH & ZLIB
-    //printf("Reg Enum 0x%x %d  %s %d   data: %p %d  %d >%s<\n", hkey, index,
-    //       value, *val_count, data, *count, reg_size, data);
+    TRACE("Reg Enum 0x%x %d  %s %d   data: %p %d  %d >%s<\n", hkey, index,
+           value, *val_count, data, *count, reg_size, data);
     reg_handle_t* t = find_handle(hkey);
     if (t && index < 10)
     {

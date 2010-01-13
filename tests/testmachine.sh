@@ -7,7 +7,7 @@
 # ./testmachine.sh "machines/*.dll"
 # ./testmachine.sh "/home/ensonic/buzztard/lib/Gear-real/Effects/*.dll"
 # ./testmachine.sh "/home/ensonic/buzztard/lib/Gear-real/Generators/*.dll"
-# ./testmachine.sh "/home/ensonic/buzztard/lib/Gear-real/*/*.dll"
+# ./testmachine.sh "/home/ensonic/buzztard/lib/Gear-real/{G,E}*/*.dll"
 # ./testmachine.sh "/home/ensonic/buzztard/lib/Gear/*.so"
 #
 # analyze results
@@ -68,7 +68,7 @@ for machine in $machine_glob ; do
   #env >testmachine.log 2>&1 LD_LIBRARY_PATH="../src/" ../src/bmltest_info "$machine"
   #res=$?
   # this suppresses the output of e.g. "Sementation fault"
-  res=`env >bmltest_info.log 2>&1 BML_DEBUG=1 LD_LIBRARY_PATH="../src/:../src/BuzzMachineLoader/.libs:$LD_LIBRARY_PATH" ../src/bmltest_info "$machine"; echo $?`
+  res=`env >bmltest_info.log 2>&1 BML_DEBUG=255 LD_LIBRARY_PATH="../src/:../src/BuzzMachineLoader/.libs:$LD_LIBRARY_PATH" ../src/bmltest_info "$machine"; echo $?`
   cat bmltest_info.log | grep >"$log_name" -v "Warning: the specified"
   if [ $sig_int -eq "1" ] ; then res=1; fi
   cat bmltest_info.log | iconv >bmltest_info.tmp -fWINDOWS-1250 -tUTF-8 -c
@@ -91,7 +91,7 @@ for machine in $machine_glob ; do
     sig_segv=0
     sig_int=0
     # this suppresses the output of e.g. "Sementation fault"
-    res=`env >bmltest_process.log 2>&1 BML_DEBUG=1 LD_LIBRARY_PATH="../src/:../src/BuzzMachineLoader/.libs:$LD_LIBRARY_PATH" ../src/bmltest_process "$machine" input.raw output.raw; echo $?`
+    res=`env >bmltest_process.log 2>&1 BML_DEBUG=255 LD_LIBRARY_PATH="../src/:../src/BuzzMachineLoader/.libs:$LD_LIBRARY_PATH" ../src/bmltest_process "$machine" input.raw output.raw; echo $?`
     cat bmltest_process.log | grep >>"$log_name" -v "Warning: the specified"
     if [ $sig_int -eq "1" ] ; then res=1; fi
     if [ $res -eq "0" ] ; then

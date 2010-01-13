@@ -55,8 +55,12 @@ in there. After building invoke :
 or alternatively run the testmachine.sh script to probe a whole directory with
 machines.
 
-If you have compiled with logging and set BML_DEBUG=1 before running, you'll get
-more diagnostics. For even more logging edit dllwraper/wine/win32.c and enable
+If you have compiled with logging (--enable-debug), you can set flags in 
+BML_DEBUG env var toget more diagnostics. BML_DEBUG:
+  1 : only logging from the windows adapter (BuzzMachineLoader.dll)
+  2 : only logging from bml and dllwrapper
+(or just set BML_DEBUG=255 to get as much as there is)
+For even more logging edit dllwraper/wine/win32.c and enable
 #define DETAILED_OUT
 
 = building the BuzzMachineLoader.dll =
