@@ -15,7 +15,7 @@ struct _GUID;
 extern void (*_log_printf)(const char *file, const int line, const char *fmt, ...);
 #  define TRACE(...) _log_printf(__FILE__,__LINE__,__VA_ARGS__)
 #else
-#  define TRACE(__FILE__,__LINE__,...)
+#  define TRACE(...)
 #endif
 #endif
 

@@ -1,3 +1,9 @@
+2010-01-22  Stefan Kost  <ensonic@users.sf.net>
+
+	* dllwrapper/wine/debugtools.h:
+	* src/bml.c:
+	  Fix the build for --disable-debug.
+
 2010-01-13  Stefan Kost  <ensonic@users.sf.net>
 
 	* README:
@@ -122,7 +128,7 @@
 2009-04-30  Stefan Kost  <ensonic@users.sf.net>
 
 	* NEWS:
-	  Preparse for pre-releasing.
+	  Prepare for pre-releasing.
 
 	* src/bmltest_info.c:
 	  Fix wrong warning.

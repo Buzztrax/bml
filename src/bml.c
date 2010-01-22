@@ -456,6 +456,7 @@ void bmlw_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks) {
 // wrapper management
 
 static void bml_stdout_logger(char *str) {
+#ifdef LOG
   static char lbuf[1000];
   static int p=0;
   int i=0;
@@ -471,6 +472,7 @@ static void bml_stdout_logger(char *str) {
     _log_stdout_printf(NULL,0,"%s\n",lbuf);
     p=0;
   }
+#endif
 }
 
 static void bml_null_logger(char *str) {
