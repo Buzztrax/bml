@@ -446,17 +446,17 @@ HMODULE PE_LoadImage( int handle, LPCSTR filename, WORD *version )
     /* BY_HANDLE_FILE_INFORMATION bhfi; -- unused */
     int	i, rawsize, lowest_va, vma_size, file_size = 0;
     DWORD load_addr = 0, aoep, reloc = 0;
-//    struct get_read_fd_request *req = get_req_buffer();
+    //struct get_read_fd_request *req = get_req_buffer();
     int unix_handle = handle;
     int page_size = getpagesize();
 
 
-//    if ( GetFileInformationByHandle( hFile, &bhfi ) )
-//    	file_size = bhfi.nFileSizeLow;
+    //if ( GetFileInformationByHandle( hFile, &bhfi ) )
+    // 	file_size = bhfi.nFileSizeLow;
     file_size=lseek(handle, 0, SEEK_END);
     lseek(handle, 0, SEEK_SET);
 
-//#warning fix CreateFileMappingA
+    //#warning fix CreateFileMappingA
     mapping = CreateFileMappingA( handle, NULL, PAGE_READONLY | SEC_COMMIT,
                                     0, 0, NULL );
     if (!mapping)
@@ -464,9 +464,9 @@ HMODULE PE_LoadImage( int handle, LPCSTR filename, WORD *version )
         WARN("CreateFileMapping error %ld\n", GetLastError() );
         return 0;
     }
-//    hModule = (HMODULE)MapViewOfFile( mapping, FILE_MAP_READ, 0, 0, 0 );
+    //hModule = (HMODULE)MapViewOfFile( mapping, FILE_MAP_READ, 0, 0, 0 );
     hModule=(HMODULE)mapping;
-//    CloseHandle( mapping );
+    //CloseHandle( mapping );
     if (!hModule)
     {
         WARN("MapViewOfFile error %ld\n", GetLastError() );
@@ -978,23 +978,21 @@ WIN_BOOL PE_InitDLL( WINE_MODREF *wm, DWORD type, LPVOID lpReserved )
                        entry, wm->module, type, lpReserved );
 
 
-	TRACE("Entering DllMain(");
 	switch(type)
 	{
 	    case DLL_PROCESS_DETACH:
-	        TRACE("DLL_PROCESS_DETACH) ");
+	      TRACE("Entering DllMain(DLL_PROCESS_DETACH) for %s\n", wm->filename);
 		break;
 	    case DLL_PROCESS_ATTACH:
-	        TRACE("DLL_PROCESS_ATTACH) ");
+	      TRACE("Entering DllMain(DLL_PROCESS_ATTACH) for %s\n", wm->filename);
 		break;
 	    case DLL_THREAD_DETACH:
-	        TRACE("DLL_THREAD_DETACH) ");
+	      TRACE("Entering DllMain(DLL_THREAD_DETACH) for %s\n", wm->filename);
 		break;
 	    case DLL_THREAD_ATTACH:
-	        TRACE("DLL_THREAD_ATTACH) ");
+	      TRACE("Entering DllMain(DLL_THREAD_ATTACH) for %s\n", wm->filename);
 		break;
 	}
-	TRACE("for %s\n", wm->filename);
 	extend_stack_for_dll_alloca();
         retv = entry( wm->module, type, lpReserved );
     }

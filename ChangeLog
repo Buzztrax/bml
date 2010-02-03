@@ -1,3 +1,18 @@
+2010-02-03  Stefan Kost  <ensonic@users.sf.net>
+
+	* TODO:
+	  Update stats.
+
+	* dllwrapper/wine/Makefile.am:
+	  Remove obsolete comment.
+
+	* dllwrapper/wine/pe_image.c:
+	* dllwrapper/wine/stubs.s:
+	  Formatting.
+
+	* tests/testmachine.sh:
+	  Fix example.
+
 2010-01-22  Stefan Kost  <ensonic@users.sf.net>
 
 	* dllwrapper/wine/debugtools.h:

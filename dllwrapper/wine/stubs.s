@@ -22,6 +22,7 @@ unk_exp1:
 	xorl %eax,%eax
 	leave
 	ret
+
 .globl exp_EH_prolog
 exp_EH_prolog:
 	pushl $0xff

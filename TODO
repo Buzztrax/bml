@@ -8,7 +8,7 @@ $Id$
   
 * charsets, should we convert all strings to UTF-8 in here already?
 
-= mode tools =
+= more tools =
 == bmldump_src_skel ==
 dump a source skelleton for rewriting a machine
 
@@ -133,12 +133,17 @@ other-sources/buzz-sources/__BUZZ1PLAYER__NOT_FOR_PUBLIC!/CMachine.cpp
 2008.11.19 : Of 533 machine(s) 458 worked and 75 failed to load.
 2009.01.29 : Of 533 machine(s) 451 worked, 9 did not processed data and 73 failed to load.
 2009.11.02 : Of 537 machine(s) 454 worked, 10 did not processed data and 73 failed to load
+2010.02.03 : Of 517 machine(s) 433 worked, 9 did not processed data and 75 failed to load
 
 == sterni ==
 2008.10.14 : Of 853 machine(s) 759 worked and 94 failed to load.
 2008.11.20 : Of 853 machine(s) 758 worked and 95 failed to load.
 
 In gst-buzztard/src/bml/plugin.c I maintain a black list.
+
+There seems to be several machines failing when calling GetInfo()
+tail -n1 *.fail | grep -B1 "GetInfo"
+
 == Generators ==
 Geonik's PrimiFun.dll
   if we don't have MFC42.dll
@@ -203,4 +208,12 @@ Rout VST Plugin Loader.dll
 Shaman Chorus.dll
 WhiteNoise AuxReturn.dll
   crash
+
+Zu*.dll
+  #0  0xb7fce4e2 in exp_EH_prolog () from /home/ensonic/buzztard/lib/libbml.so.0
+  #1  0xb7c9e38a in ?? ()
+  #2  0x1001a898 in ?? ()
+  #3  0xb7fafad4 in bmlw_open (bm_file_name=0xbfffeffe "/home/ensonic/buzztard/lib/Gear-real/Effects/Zu Parametric EQ.dll") at bml.c:207
+  #4  0x080490cb in bmlw_test_info (libpath=0xbfffeffe "/home/ensonic/buzztard/lib/Gear-real/Effects/Zu Parametric EQ.dll") at bmltest_info.h:34
+  #5  0x0804ab15 in main (argc=2, argv=0xbfffed64) at bmltest_info.c:96
 

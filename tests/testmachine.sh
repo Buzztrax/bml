@@ -7,7 +7,7 @@
 # ./testmachine.sh "machines/*.dll"
 # ./testmachine.sh "/home/ensonic/buzztard/lib/Gear-real/Effects/*.dll"
 # ./testmachine.sh "/home/ensonic/buzztard/lib/Gear-real/Generators/*.dll"
-# ./testmachine.sh "/home/ensonic/buzztard/lib/Gear-real/{G,E}*/*.dll"
+# ./testmachine.sh "/home/ensonic/buzztard/lib/Gear-real/[GE]*/*.dll"
 # ./testmachine.sh "/home/ensonic/buzztard/lib/Gear/*.so"
 #
 # analyze results
