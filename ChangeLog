@@ -1,3 +1,10 @@
+2010-03-29  Stefan Kost  <ensonic@users.sf.net>
+
+	* dllwrapper/wine/ldt_keeper.c:
+	  Remove wrong copyright header. Upstream versions in xine/mplayer
+	  repositories don't have this and the legal notice from xine (included
+	  in README one level up) also states that this code is LGPL.
+
 2010-02-03  Stefan Kost  <ensonic@users.sf.net>
 
 	* TODO:
