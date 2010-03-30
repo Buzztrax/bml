@@ -154,7 +154,7 @@ Configuration
 	Coverage profiling         : ${enable_coverage}
 "
 
-if test ! `echo $PKG_CONFIG_PATH  | grep $prefix` ; then
+if test ! `echo "$PKG_CONFIG_PATH:/usr" | tr \: \\n | grep $prefix` ; then
 echo "
 You are installing buzztard libraries into a location that is not yet known to
 system. In order for other buzztard modules to find them and the application to
