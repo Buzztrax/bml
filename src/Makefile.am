@@ -13,7 +13,8 @@ lib_LTLIBRARIES = libbml.la
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/dllwrapper/wine \
 	-I$(top_srcdir)/src/BuzzMachineLoader \
-	-I$(top_srcdir)/src
+	-I$(top_srcdir)/src \
+	-DNATIVE_BML_DIR="\"$(pkglibdir)\""
 
 AM_CFLAGS = $(PTHREAD_CFLAGS) $(BML_CFLAGS) $(ARCH_CFLAGS)
 

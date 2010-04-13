@@ -1,6 +1,6 @@
 ## $Id$
 
-lib_LTLIBRARIES = libbuzzmachineloader.la
+pkglib_LTLIBRARIES = libbuzzmachineloader.la
 
 libbuzzmachineloader_la_SOURCES = \
     BuzzMachineCallbacks.cpp \

@@ -551,7 +551,7 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
   BMLX(bmlw_set_logger((debug_log_flags&0x1)?bml_stdout_logger:bml_null_logger));
 #endif /* HAVE_X86 */
 
-  if(!(emu_so=dlopen("libbuzzmachineloader.so",RTLD_LAZY))) {
+  if(!(emu_so=dlopen(NATIVE_BML_DIR "/libbuzzmachineloader.so",RTLD_LAZY))) {
 	TRACE("%s:   failed to load native bml : %s\n",__FUNCTION__,dlerror());
 	return(FALSE);
   }
