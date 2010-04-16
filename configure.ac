@@ -9,6 +9,11 @@ AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR(m4)
 AC_CANONICAL_HOST([])
 
+# Support silent build rules, requires at least automake-1.11. Disable
+# by either passing --disable-silent-rules to configure or passing V=1
+# to make
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+
 dnl Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
@@ -130,8 +135,7 @@ AC_SUBST(BML_LIBS)
 AC_SUBST(ARCH_CFLAGS)
 AC_SUBST(ARCH_CCASFLAGS)
 
-SHAVE_INIT([.])
-AC_CONFIG_FILES(Makefile shave shave-libtool \
+AC_CONFIG_FILES(Makefile \
   libbml.pc \
   src/Makefile \
   src/BuzzMachineLoader/Makefile \
