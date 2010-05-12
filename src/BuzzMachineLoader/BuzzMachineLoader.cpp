@@ -371,6 +371,7 @@ extern "C" DE BuzzMachine *bm_new(BuzzMachineHandle *bmh) {
       DBG("  callback instance created\n");
     }
 
+    // FIXME: should we do this earlier?
     bm->machine_iface->pMasterInfo=&master_info;
     bm->machine_iface->pCB=bm->callbacks;
 

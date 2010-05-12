@@ -22,6 +22,9 @@ libbmldir = $(includedir)/libbml
 libbml_HEADERS = bml.h ./BuzzMachineLoader/BuzzMachineLoader.h
 libbml_la_SOURCES = bml.c
 libbml_la_LIBADD = $(LIBM) $(PTHREAD_LIBS) $(BML_LIBS) $(DLLWRAPPER_LIB)
+libbml_la_LDFLAGS = \
+	-export-symbols-regex ^_?\(bml_\|bmlw_\|bmln_\).* \
+	-version-info @BML_VERSION_INFO@
 
 noinst_PROGRAMS=bmltest_info bmltest_process
 

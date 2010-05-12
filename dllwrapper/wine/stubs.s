@@ -23,6 +23,7 @@ unk_exp1:
 	leave
 	ret
 
+# Provided for VC++ binary compatibility only
 .globl exp_EH_prolog
 exp_EH_prolog:
 	pushl $0xff
