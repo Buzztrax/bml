@@ -350,15 +350,12 @@ static WIN_BOOL MODULE_FreeLibrary( WINE_MODREF *wm )
 HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 {
 	WINE_MODREF *wm = 0;
-	char* listpath[] = { "", "", WIN32_PATH, "/usr/local/lib/win32", WIN32_LIB_PATH, NULL };
+	char* listpath[] = { "", "", WIN32_LIB_PATH, WIN32_PATH, "/usr/local/lib/win32", NULL };
 	char path[512];
-	char checked[2000];
 	int i;
     static char *unavailable_lib_names[100];
     static int unavailable_libs=0;
-    
 
-	checked[0] = 0;
 	if(!libname)
 	{
 		SetLastError(ERROR_INVALID_PARAMETER);
@@ -389,12 +386,12 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 
 	    if (i < 2)
 	    {
-          if (i == 0)
-              /* check just original file name */
-              strncpy(path, libname, sizeof(path) - 1);
-          else
-              /* check default user path */
-              strncpy(path, win32_def_path, sizeof(path) - 2);
+            if (i == 0)
+                /* check just original file name */
+                strncpy(path, libname, sizeof(path) - 1);
+            else
+                /* check default user path */
+                strncpy(path, win32_def_path, sizeof(path) - 2);
 	    }
 	    else if (strcmp(win32_def_path, listpath[i]))
             /* path from the list */
@@ -414,10 +411,7 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 
 	    if (!wm)
 	    {
-            if (checked[0])
-                strcat(checked, ", ");
-            strcat(checked, path);
-            checked[1999] = 0;
+	        TRACE("loading module '%s' failed\n", path);
 	    }
 	}
 	if ( wm )

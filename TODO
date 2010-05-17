@@ -191,6 +191,13 @@ Jeskola Raverb (causes distortions)
   BuzzMachineCallbacks::GetEnvSize (wave=-96185375,env=0)
   buzzmachinecallbackspre12.cpp:112:BuzzMachineCallbacksPre12::GetOscillatorTable (waveform=-128840458)
 Jeskola Stereo Reverb (sometimes silences the whole song, NAN?)
+Effects/Jeskola Wave Shaper.dll
+  if we don't have MFC42.DLL
+    Called unk_MFC42.DLL:1176
+    Called unk_MFC42.DLL:1243
+  if we have MFC42.DLL
+    Entering DllMain(DLL_PROCESS_ATTACH) for /home/ensonic/buzztard/lib/win32/mfc42.dll
+    Segmentation fault
 Sonic Verb (seems to work now)
   buzzmachinecallbacks.cpp:199:BuzzMachineCallbacks::GetEnvPoint (wave=-1,env=-1,i=-1076278224,&x,&y,&flags)
   buzzmachinecallbacks.cpp:276:BuzzMachineCallbacks::SetSequenceData (row=-1217504548,ppat=B7A5B3C4)
