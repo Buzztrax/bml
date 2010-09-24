@@ -338,7 +338,7 @@ extern "C" DE void bm_free(BuzzMachine *bm) {
             else {
                 delete (BuzzMachineCallbacks *)callbacks;
                 DBG("  freed callback instance\n");
-            }         
+            }
         }
         free(bm);
     }
@@ -425,6 +425,9 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
 	bm->machine_iface->SetNumTracks(bm->machine_info->minTracks);
     DBG1("  CMachineInterface::SetNumTracks(%d) called\n",bm->machine_info->minTracks);
 
+    // FIXME: CyanPhase DTMF-1 access gval.xxx in mi::Init
+    // -> so we might need to call these before
+
     // initialise global parameters (DefValue or NoValue, Buzz seems to use NoValue)
     for(i=0;i<bm->machine_info->numGlobalParameters;i++) {
         if(bm->machine_info->Parameters[i]->Flags&MPF_STATE) {
@@ -475,7 +478,9 @@ extern "C" DE void * bm_get_track_parameter_location(BuzzMachine *bm,int track,i
     if(!(bm->machine_iface->TrackVals)) return(0);
 
     byte *ptr=(byte *)bm->machine_iface->TrackVals;
-    if(!ptr) DBG(" -> machine->TrackVals is NULL!\n");
+    if(!ptr) {
+      DBG(" -> machine->TrackVals is NULL!\n");
+    }
 
     // @todo prepare pointer array in bm_init
     for(int j=0;j<=track;j++) {
@@ -540,7 +545,9 @@ extern "C" DE void * bm_get_global_parameter_location(BuzzMachine *bm,int index)
     if(!(bm->machine_iface->GlobalVals)) return(0);
 
     byte *ptr=(byte *)bm->machine_iface->GlobalVals;
-    if(!ptr) DBG(" -> machine->GlobalVals is NULL!\n");
+    if(!ptr) {
+      DBG(" -> machine->GlobalVals is NULL!\n");
+    }
 
     // @todo prepare pointer array in bm_init
     for(int i=0;i<=index;i++) {

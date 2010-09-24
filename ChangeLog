@@ -1,3 +1,9 @@
+2010-09-24  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
+	  Use {} for if statements then have a DBG output to fix release
+	  versions with debug turned off.
+
 2010-09-21  Stefan Kost  <ensonic@users.sf.net>
 
 	* Makefile.am:
