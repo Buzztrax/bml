@@ -174,7 +174,7 @@ static void LDT_EntryToBytes( unsigned long *buffer, const struct modify_ldt_ldt
 
 static int _modify_ldt(ldt_fs_t *ldt_fs, struct modify_ldt_ldt_s array)
 {
-    int ret;
+    int ret = 0;
 
     ldt_fs->teb_sel = LDT_SEL(TEB_SEL_IDX);
 

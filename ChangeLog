@@ -1,3 +1,8 @@
+2010-10-06  Stefan Kost  <ensonic@users.sf.net>
+
+	* dllwrapper/wine/ldt_keeper.c:
+	  Init a var.
+
 2010-09-24  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/BuzzMachineLoader/BuzzMachineLoader.cpp:
