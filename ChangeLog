@@ -1,3 +1,8 @@
+2010-11-25  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/bmltest_info.c:
+	  Add a comment about an issue on x86 when not having any win32 dlls.
+
 2010-10-06  Stefan Kost  <ensonic@users.sf.net>
 
 	* dllwrapper/wine/ldt_keeper.c:

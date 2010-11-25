@@ -82,6 +82,7 @@ int main( int argc, char **argv ) {
     int i;
 
 #ifdef HAVE_X86
+    /* FIXME: if people have no real win32 dlls, only emulated things, this will crash here */
     bmlw_set_master_info(120,4,44100);
 #endif
     bmln_set_master_info(120,4,44100);
