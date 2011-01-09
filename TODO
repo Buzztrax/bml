@@ -5,7 +5,7 @@ $Id$
   BuzzMachine -> BMLMachine
   BuzzMachineProperty -> BMLMachineProperty
   ...
-  
+
 * charsets, should we convert all strings to UTF-8 in here already?
 
 = more tools =
@@ -103,7 +103,7 @@ use mingw-binutils to dump win32 binaries
 /usr/i586-mingw32msvc/bin/objdump ...
 
 = test single plugins =
-G_SLICE=always-malloc G_DEBUG=gc-friendly GLIBCPP_FORCE_NEW=1 GLIBCXX_FORCE_NEW=1 valgrind --tool=memcheck --leak-check=full --leak-resolution=high --trace-children=yes --num-callers=20 -v ../src/.libs/bmltest_info ~/buzztard/lib/Gear-real/Effects/Static\ Duafilt\ II.dll 
+G_SLICE=always-malloc G_DEBUG=gc-friendly GLIBCPP_FORCE_NEW=1 GLIBCXX_FORCE_NEW=1 valgrind --tool=memcheck --leak-check=full --leak-resolution=high --trace-children=yes --num-callers=20 -v ../src/.libs/bmltest_info ~/buzztard/lib/Gear-real/Effects/Static\ Duafilt\ II.dll
 ../src/.libs/bmltest_info ~/buzztard/lib/Gear-real/Effects/Static\ Duafilt\ II.dll
 
 = what windows dll to copy and which not =
@@ -119,7 +119,7 @@ msvcp50.dll  msvcp60.dll MFC42.DLL MSVCRT.DLL
  (even though we would always just give one input).
 * before we call WorkXXX() we need to call
   MachineInterfaceEx::Input(float *psamples, int numsamples, float amp)
-  
+
 other-sources/buzz-sources/__BUZZ1PLAYER__NOT_FOR_PUBLIC!/CMachine.cpp
 * stereo output MIF_DOES_INPUT_MIXING machines will get stereo input
 * bm->callbacks->mdkHelper->numChannels
@@ -134,6 +134,7 @@ other-sources/buzz-sources/__BUZZ1PLAYER__NOT_FOR_PUBLIC!/CMachine.cpp
 2009.01.29 : Of 533 machine(s) 451 worked, 9 did not processed data and 73 failed to load.
 2009.11.02 : Of 537 machine(s) 454 worked, 10 did not processed data and 73 failed to load
 2010.02.03 : Of 517 machine(s) 433 worked, 9 did not processed data and 75 failed to load
+2011.01.09 : Of 517 machine(s) 442 worked, 6 did not processed data and 69 failed to load.
 
 == sterni ==
 2008.10.14 : Of 853 machine(s) 759 worked and 94 failed to load.
@@ -176,7 +177,7 @@ Jeskola Tracker.dll
 Ruff SPECCY II.dll
 HD Percussive_FM.dll
   crash after ?
-  
+
 Aeguelles TB4004
   noisy distortion
 
@@ -203,7 +204,7 @@ Sonic Verb (seems to work now)
   buzzmachinecallbacks.cpp:276:BuzzMachineCallbacks::SetSequenceData (row=-1217504548,ppat=B7A5B3C4)
 Dolby Prologic Echo
   Param Direction : val [1 ... d=4096/n=0 ... 255], the def-val for an enum, can't be outside the range
-  
+
 Ynzn's Remote Compressor.dll
 Ynzn's Remote Gate.dll
   both crash (problem with name?)

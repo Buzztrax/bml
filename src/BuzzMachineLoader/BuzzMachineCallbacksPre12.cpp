@@ -39,12 +39,14 @@
 #include "OscTable.h"
 
 CWaveInfo const *BuzzMachineCallbacksPre12::GetWave(int const i) {
+	static CWaveInfo wi={0,};
+
     DBG1("(i=%d)\n",i);
 
     if(host_callbacks && *host_callbacks) {
         return (CWaveInfo *)(*host_callbacks)->GetWave(*host_callbacks,i);
     }
-    return(NULL);
+    return(&wi);
 }
 
 CWaveLevel const *BuzzMachineCallbacksPre12::GetWaveLevel(int const i, int const level) {

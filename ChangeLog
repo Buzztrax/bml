@@ -1,5 +1,16 @@
 2011-01-09  Stefan Kost  <ensonic@users.sf.net>
 
+	* TODO:
+	* src/BuzzMachineLoader.dll:
+	* src/BuzzMachineLoader/BuzzMachineCallbacks.cpp:
+	* src/BuzzMachineLoader/BuzzMachineCallbacksPre12.cpp:
+	* src/BuzzMachineLoader/BuzzMachineLoader.ncb:
+	* src/BuzzMachineLoader/BuzzMachineLoader.suo:
+	  Callbacks::GetWave() should not return NULL, but a empty slot instead.
+	  Fixes a few more machines (e.g. whitenoise looper 2).
+
+2011-01-09  Stefan Kost  <ensonic@users.sf.net>
+
 	* tests/testmachine.sh:
 	  Place all generates files in subdir to easy keeping snapshots.
 
