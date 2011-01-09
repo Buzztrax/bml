@@ -1200,7 +1200,7 @@ static long WINAPI expHeapSize(int heap, int flags, void* pointer)
 }
 static void* WINAPI expHeapReAlloc(HANDLE heap,int flags,void *lpMem,int size)
 {
-    dbgprintf("HeapReAlloc() Size %ld org %d\n",my_size(lpMem),size);
+    dbgprintf("HeapReAlloc() Size %d org %d\n",my_size(lpMem),size);
     return my_realloc(lpMem, size);
 }
 static long WINAPI expGetProcessHeap(void)
@@ -2134,14 +2134,14 @@ static int WINAPI expCloseHandle(long v1)
 
 static const char* WINAPI expGetCommandLineA()
 {
-    dbgprintf("GetCommandLineA() => \"c:\\buzz.exe\"\n");
-    return "c:\\buzz.exe";
+    dbgprintf("GetCommandLineA() => \"C:\\Programme\\Jeskola Buzz\\Buzz.exe\"\n");
+    return "C:\\Programme\\Jeskola Buzz\\Buzz.exe";
 }
 
 static const char* WINAPI expGetCommandLineW()
 {
-    dbgprintf("GetCommandLineW() => \"c:\\buzz.exe\"\n");
-    return "c:\\buzz.exe";
+    dbgprintf("GetCommandLineW() => \"C:\\Programme\\Jeskola Buzz\\Buzz.exe\"\n");
+    return "C:\\Programme\\Jeskola Buzz\\Buzz.exe";
 }
 
 //static short envs[]={'p', 'a', 't', 'h', ' ', 'c', ':', '\\', 0, 0};
@@ -2265,7 +2265,7 @@ static int WINAPI expGetModuleFileNameA(int module, char* s, int len)
     if (module == 0 && len >= 12)
     {
 	/* return caller program name */
-	strcpy(s, "aviplay.dll");
+	strcpy(s, "Buzz.exe");
 	result=1;
     }
     else if(s==0)
@@ -2279,7 +2279,7 @@ static int WINAPI expGetModuleFileNameA(int module, char* s, int len)
 	    strcpy(s, "c:\\windows\\system\\");
 	    mr=MODULE32_LookupHMODULE(module);
 	    if(mr==0)//oops
-		strcat(s, "aviplay.dll");
+		strcat(s, "Buzz.exe");
 	    else
 		if(strrchr(mr->filename, '/')==NULL)
 		    strcat(s, mr->filename);
@@ -5148,6 +5148,9 @@ struct exports exp_kernel32[]=
     FF(TerminateProcess, -1)
     FF(SetCriticalSectionSpinCount, -1)
 };
+/* TODO:
+    FlsAlloc, FlsSetValue, FlsGetVale, FlsFree
+*/
 
 struct exports exp_msvcrt[]={
     FF(malloc, -1)

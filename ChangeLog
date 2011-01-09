@@ -1,3 +1,9 @@
+2011-01-10  Stefan Kost  <ensonic@users.sf.net>
+
+	* TODO:
+	* dllwrapper/wine/win32.c:
+	  Improve faking our indentity. Fixes cheapo spread :).
+
 2011-01-09  Stefan Kost  <ensonic@users.sf.net>
 
 	* TODO:
