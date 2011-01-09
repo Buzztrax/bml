@@ -25,7 +25,7 @@
 #
 # TODO:
 # - allow running under valgrind
-# - if a machine is m2s (fieldFlags), then channels=2 
+# - if a machine is m2s (fieldFlags), then channels=2
 #
 
 . ./bt-cfg.sh
@@ -124,10 +124,10 @@ for machine in $machine_glob ; do
   fieldMathNaN=`egrep -o "some values are nan" bmltest_process.tmp | sed -e 's/some values are \(.*\)$/\1/'`
   fieldMathInf=`egrep -o "some values are inf" bmltest_process.tmp | sed -e 's/some values are \(.*\)$/\1/'`
   fieldMathDen=`egrep -o "some values are denormal" bmltest_process.tmp | sed -e 's/some values are \(.*\)$/\1/'`
-  
+
   cat >>testmachine.body.html <<END_OF_HTML
       <tr bgcolor="$tablecolor">
-        <td><a href="$log_name.$tableresult">$tableresult</a></td>
+        <td><a href="./$name.txt.$tableresult">$tableresult</a></td>
         <td>$fieldCreateTime</td>
         <td>$fieldInitTime</td>
         <td>$name</td>
@@ -156,10 +156,10 @@ done
 
 rm -f bmltest_info.log bmltest_info.tmp
 rm -f bmltest_process.log bmltest_process.tmp
-sort testmachine.failtmp >testmachine.fails
+sort testmachine.failtmp >testmachine/_.fails
 rm testmachine.failtmp
 
-cat >testmachine.html <<END_OF_HTML
+cat >testmachine/_.html <<END_OF_HTML
 <html>
   <head>
     <script src="sorttable.js"></script>
@@ -190,8 +190,8 @@ cat >testmachine.html <<END_OF_HTML
         <th>NaN/Inf/Den</th>
       </tr>
 END_OF_HTML
-cat >>testmachine.html testmachine.body.html
-cat >>testmachine.html <<END_OF_HTML
+cat >>testmachine/_.html testmachine.body.html
+cat >>testmachine/_.html <<END_OF_HTML
     </table>
   </body>
 </html>

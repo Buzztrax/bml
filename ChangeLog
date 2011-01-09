@@ -1,3 +1,8 @@
+2011-01-09  Stefan Kost  <ensonic@users.sf.net>
+
+	* tests/testmachine.sh:
+	  Place all generates files in subdir to easy keeping snapshots.
+
 2010-11-25  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/bmltest_info.c:
