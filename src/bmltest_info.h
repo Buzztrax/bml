@@ -18,7 +18,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
- 
+
 void bml(test_info(char *libpath)) {
   // buzz machine handle
   void *bmh,*bm;
@@ -26,11 +26,11 @@ void bml(test_info(char *libpath)) {
   int type,val,i,num,tracks;
   int maval,mival,noval,ptrval=0;
   double ts1, ts2;
- 
+
   printf("%s(\"%s\")\n",__FUNCTION__,libpath);
-  
+
   ts1=_get_timestamp();
-  
+
   if((bmh=bml(open(libpath)))) {
     if((bm=bml(new(bmh)))) {
       char *machine_types[]={"MT_MASTER","MT_GENERATOR","MT_EFFECT" };
@@ -43,11 +43,20 @@ void bml(test_info(char *libpath)) {
       bml(init(bm,0,NULL));
       ts2=_get_timestamp();
       printf("  machine initialized in %lf sec\n",ts2-ts1);
-  
+
       if(bml(get_machine_info(bmh,BM_PROP_SHORT_NAME,(void *)&str)))           printf("    Short Name: \"%s\"\n",str);
       if(bml(get_machine_info(bmh,BM_PROP_NAME,(void *)&str)))                 printf("    Name: \"%s\"\n",str);
       if(bml(get_machine_info(bmh,BM_PROP_AUTHOR,(void *)&str)))               printf("    Author: \"%s\"\n",str);
-      if(bml(get_machine_info(bmh,BM_PROP_COMMANDS,(void *)&str)))             printf("    Commands: \"%s\"\n",str);
+      if(bml(get_machine_info(bmh,BM_PROP_COMMANDS,(void *)&str))) {
+        if(str) {
+          char *p=str;
+          while(*p) {
+            if(*p=='\n') *p=',';
+            p++;
+          }
+        }
+        printf("    Commands: \"%s\"\n",str?str:"");
+      }
       if(bml(get_machine_info(bmh,BM_PROP_TYPE,(void *)&val)))                 printf("    Type: %i -> \"%s\"\n",val,((val<3)?machine_types[val]:"unknown"));
       if(bml(get_machine_info(bmh,BM_PROP_VERSION,(void *)&val)))              printf("    Version: %3.1f\n",(float)val/10.0);
       if(bml(get_machine_info(bmh,BM_PROP_FLAGS,(void *)&val))) {              printf("    Flags: 0x%x\n",val);
@@ -139,7 +148,7 @@ void bml(test_info(char *libpath)) {
           if(num) {
             printf("      WARNING but tracks=0..0\n");fflush(stdout);
           }
-        }        
+        }
       }
       fflush(stdout);
       if(bml(get_machine_info(bmh,BM_PROP_NUM_ATTRIBUTES,(void *)&val))) {     printf("    NumAttributes: %i\n",val);fflush(stdout);
@@ -153,7 +162,7 @@ void bml(test_info(char *libpath)) {
           val=bml(get_attribute_value(bm,i);printf("        RealValue: %d\n",val));
         }
       }
-  
+
       puts("  done");
       bml(free(bm));
     }

@@ -64,8 +64,6 @@ for machine in $machine_glob ; do
   ext=${name#${name%.*}}
   log_name="./testmachine/$name.txt"
   rm -f "$log_name" "$log_name".okay "$log_name".fail "$log_name".info
-  # collect used dlls
-  fieldLibs=`strings "$machine" | grep -i -F "$ext" | grep -vi "$name" | sort | uniq`
   # try to run it
   sig_segv=0
   sig_int=0
@@ -82,6 +80,7 @@ for machine in $machine_glob ; do
   fieldAuthor=`egrep -o "Author: .*$" bmltest_info.tmp | sed -e 's/Author: "\(.*\)"$/\1/'`
   fieldType=`egrep -o "^    Type: . -> \"MT_.*$" bmltest_info.tmp | sed -e 's/^\ *Type: . -> "\(.*\)"$/\1/'`
   fieldVersion=`egrep -o "Version: .*$" bmltest_info.tmp | sed -e 's/Version: \(.*\)$/\1/'`
+  fieldCommands=`egrep -o "Commands: .*$" bmltest_info.tmp | sed -e 's/Commands: "\(.*\)"$/\1/'`
   fieldFlags=`egrep -o "^    Flags: .*$" bmltest_info.tmp | sed -e 's/^\ *Flags: \(.*\)$/\1/'`
   fieldMinTracks=`egrep -o "MinTracks: .*$" bmltest_info.tmp | sed -e 's/MinTracks: \(.*\)$/\1/'`
   fieldMaxTracks=`egrep -o "MaxTracks: .*$" bmltest_info.tmp | sed -e 's/MaxTracks: \(.*\)$/\1/'`
@@ -129,6 +128,10 @@ for machine in $machine_glob ; do
   fieldMathInf=`egrep -o "some values are inf" bmltest_process.tmp | sed -e 's/some values are \(.*\)$/\1/'`
   fieldMathDen=`egrep -o "some values are denormal" bmltest_process.tmp | sed -e 's/some values are \(.*\)$/\1/'`
 
+  # collect used dlls
+  #fieldLibs=`strings "$machine" | grep -i -F "$ext" | grep -vi "$name" | tr "A-Z" "a-z" | sort | uniq`
+  fieldLibs=`grep "Loading Microsoft style imports for" "$log_name.$tableresult" | cut -d' ' -f12 | tr "A-Z" "a-z" | sort | uniq`
+
   cat >>testmachine.body.html <<END_OF_HTML
       <tr bgcolor="$tablecolor">
         <td><a href="./$name.txt.$tableresult">$tableresult</a></td>
@@ -140,6 +143,7 @@ for machine in $machine_glob ; do
         <td>$fieldType</td>
         <td>$fieldVersion</td>
         <td>$fieldFlags</td>
+        <td>$fieldCommands</td>
         <td>$fieldMinTracks</td>
         <td>$fieldMaxTracks</td>
         <td>$fieldInputChannels</td>
@@ -181,6 +185,7 @@ cat >testmachine/_.html <<END_OF_HTML
         <th>Type</th>
         <th>API Ver.</th>
         <th>Flags</th>
+        <th>Commands</th>
         <th>Min Trk.</th>
         <th>Max Trk.</th>
         <th>Input Ch.</th>
@@ -204,5 +209,5 @@ rm testmachine.body.html
 
 m_all=$((m_fail+m_info+m_okay))
 echo "Of $m_all machine(s) $m_okay worked, $m_info did not processed data and $m_fail failed to load."
-echo "See testmachine.fails and testmachine.html for details"
+echo "See testmachine/_.fails and testmachine/_.html for details"
 
