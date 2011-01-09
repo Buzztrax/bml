@@ -1,5 +1,10 @@
 2011-01-09  Stefan Kost  <ensonic@users.sf.net>
 
+	* tests/testmachine.sh:
+	  Fix link for sortable.js. Add more cmdline tricks for log analysis.
+
+2011-01-09  Stefan Kost  <ensonic@users.sf.net>
+
 	* TODO:
 	* src/BuzzMachineLoader.dll:
 	* src/BuzzMachineLoader/BuzzMachineCallbacks.cpp:

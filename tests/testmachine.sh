@@ -19,6 +19,10 @@
 #  grep -Hn "FIXME" testmachine/*.fail
 # search for "wine/module: Win32 LoadLibrary failed to load:"
 #  grep -ho "wine/module: Win32 LoadLibrary failed to load:.*" testmachine/*.fail | sort -f | uniq -ic
+# search for same last line in fail log
+#  tail -n1 testmachine/*.fail | grep -B1 "GetInfo()" | grep "==>"
+#  tail -n1 testmachine/*.fail | grep -B1 "Entering DllMain(DLL_PROCESS_ATTACH) for /home/ensonic/buzztard/lib/Gear-real/"  | grep "==>"
+#
 # stats
 #  ls -1 testmachine/*.okay | wc -l
 #  ls -1 testmachine/*.fail | wc -l
@@ -162,7 +166,7 @@ rm testmachine.failtmp
 cat >testmachine/_.html <<END_OF_HTML
 <html>
   <head>
-    <script src="sorttable.js"></script>
+    <script src="../sorttable.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   </head>
   <body>
