@@ -1226,7 +1226,7 @@ static int WINAPI expVirtualFree(void* v1, int v2, int v3)
 static SIZE_T WINAPI expVirtualQuery(void *lpAddress, LPMEMORY_BASIC_INFORMATION lpBuffer, SIZE_T dwLength)
 {
   if(!lpBuffer || !dwLength) return 0;
-  
+
   // create fake info to keep FSM::PhatMan happy
   lpBuffer->BaseAddress=lpBuffer->AllocationBase=lpAddress;
   lpBuffer->RegionSize=4;
@@ -2098,7 +2098,7 @@ static HRSRC WINAPI expFindResourceExA(HMODULE module, char* type, char* name, W
     result=FindResourceExA(module, type, name, lang);
     dbgprintf("FindResourceExA(module 0x%x, type %p(%s), name %p(%s), lang %d) => 0x%x\n",
 	module, name, HIWORD(name) ? name : "UNICODE", type, HIWORD(type) ? type : "UNICODE", lang, result);
-    return result;  
+    return result;
 }
 
 extern HRSRC WINAPI LoadResource(HMODULE, HRSRC);
@@ -4316,9 +4316,9 @@ unsigned int exp_control87(unsigned int newval,unsigned int mask)
 #if 0
   //#include <fpu_control.h>
   fpu_control_t cw;
-  
+
   dbgprintf("_control87(%u,%u)\n",newval,mask);
-  
+
   _FPU_GETCW(cw);
   //cw&=~_FPU_EXTENDED;
   //cw|=_FPU_DOUBLE;
@@ -4329,7 +4329,7 @@ unsigned int exp_control87(unsigned int newval,unsigned int mask)
   unsigned int fpword = 0;
   unsigned int flags = 0;
 
- 
+
   //TRACE("(%08x, %08x): Called\n", newval, mask);
 
   /* Get fp control word */
@@ -5392,6 +5392,7 @@ struct libs libraries[]={
 #ifdef QTX
     LL(ddraw)
 #endif
+   {"msvcrtd.dll", sizeof(exp_msvcrt)/sizeof(struct exports), exp_msvcrt},
 //    LL(Dsplib)
 };
 #if defined(__CYGWIN__) || defined(__OS2__) || defined (__OpenBSD__)
