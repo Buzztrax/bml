@@ -19,6 +19,9 @@ eventually improve scrolling:
 result should go to a given directory (use date-time when not provided)
 
 = unemulated used libs =
+
+grep -ho "Win32 LoadLibrary failed to load.*" testmachine/*.txt* | sort | uniq -c | sort -g
+
       3 wine/module: Win32 LoadLibrary failed to load: COMCTL32.dll
      28 wine/module: Win32 LoadLibrary failed to load: comdlg32.dll
       1 wine/module: Win32 LoadLibrary failed to load: DSOUND.dll
@@ -136,9 +139,10 @@ other-sources/buzz-sources/__BUZZ1PLAYER__NOT_FOR_PUBLIC!/CMachine.cpp
 2010.02.03 : Of 517 machine(s) 433 worked, 9 did not processed data and 75 failed to load
 2011.01.09 : Of 517 machine(s) 444 worked, 6 did not processed data and 67 failed to load.
 
-== sterni ==
+== sterni/mautz ==
 2008.10.14 : Of 853 machine(s) 759 worked and 94 failed to load.
 2008.11.20 : Of 853 machine(s) 758 worked and 95 failed to load.
+2011.01.11 : Of 857 machine(s) 760 worked, 7 did not processed data and 90 failed to load.
 
 In gst-buzztard/src/bml/plugin.c I maintain a black list.
 
@@ -182,10 +186,6 @@ Aeguelles TB4004
   noisy distortion
 
 == Effects ==
-cheapo spread
-  hangs after GetInfo()
-  or "Called unk_malloc"
-  after copying msvcr70.dll to libdir "unk_SetCriticalSectionSpinCount" (this is now implemented)
 Arguelles TruePan
 Jeskola XDelay (causes distortions)
 Jeskola Raverb (causes distortions)
