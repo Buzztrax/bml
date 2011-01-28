@@ -1,5 +1,10 @@
 2011-01-29  Stefan Kost  <ensonic@users.sf.net>
 
+	* dllwrapper/wine/win32.c:
+	  Add more API. Emulate GetStartupInfoA more.
+
+2011-01-29  Stefan Kost  <ensonic@users.sf.net>
+
 	* src/bmltest_info.h:
 	* src/bmltest_process.h:
 	  Fix double free.

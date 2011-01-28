@@ -2198,11 +2198,12 @@ static int WINAPI expGetStartupInfoA(STARTUPINFOA *s)
     memset(s, 0, sizeof(*s));
     s->cb=sizeof(*s);
     // s->lpReserved="Reserved";
-    // s->lpDesktop="Desktop";
-    // s->lpTitle="Title";
+    s->lpDesktop="WinSta0\\Default";
+    s->lpTitle="C:\\Programme\\Jeskola Buzz\\Buzz.exe";
     // s->dwX=s->dwY=0;
-    // s->dwXSize=s->dwYSize=200;
-    s->dwFlags=s->wShowWindow=1;
+    s->dwXSize=s->dwYSize=200;
+    s->dwFlags=0x401;
+    s->wShowWindow=1;
     // s->hStdInput=s->hStdOutput=s->hStdError=0x1234;
     dbgprintf("  cb=%ld\n", s->cb);
     dbgprintf("  lpReserved='%s'\n", s->lpReserved);
@@ -4300,16 +4301,6 @@ static time_t exptime(time_t* t)
     return result;
 }
 
-static int exprand(void)
-{
-    return rand();
-}
-
-static void expsrand(int seed)
-{
-    srand(seed);
-}
-
 
 unsigned int exp_control87(unsigned int newval,unsigned int mask)
 {
@@ -5181,8 +5172,9 @@ struct exports exp_msvcrt[]={
     FF(memset, -1)
     FF(memcpy, -1)
     FF(time, -1)
-    FF(rand, -1)
-    FF(srand, -1)
+    {"rand", -1, (void*)&rand},
+    {"srand", -1, (void*)&srand},
+    {"atoi", -1, (void*)&atoi},
     FF(_control87, -1)
     FF(log10, -1)
     FF(pow, -1)
@@ -5273,6 +5265,12 @@ struct exports exp_user32[]={
     FF(DialogBoxParamA, -1)
     FF(RegisterClipboardFormatA, -1)
 };
+/* TODO:
+  BOOL WINAPI EnableWindow(__in  HWND hWnd,__in  BOOL bEnable);
+  BOOL WINAPI IsWindow(__in_opt  HWND hWnd);
+  LRESULT WINAPI SendMessage(__in  HWND hWnd,__in  UINT Msg,__in  WPARAM wParam,__in  LPARAM lParam
+*/
+
 struct exports exp_advapi32[]={
     FF(RegCloseKey, -1)
     FF(RegCreateKeyExA, -1)
