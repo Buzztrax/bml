@@ -1,3 +1,9 @@
+2011-01-29  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/bmltest_info.h:
+	* src/bmltest_process.h:
+	  Fix double free.
+
 2011-01-11  Stefan Kost  <ensonic@users.sf.net>
 
 	* TODO:

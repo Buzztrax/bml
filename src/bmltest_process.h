@@ -23,7 +23,7 @@ void bml(test_process(char *libpath,const char *infilename,const char *outfilena
   // buzz machine handle
   void *bmh,*bm;
 
-  /*  
+  /*
   {
     fpu_control_t cw=0x27F;
     //_FPU_GETCW(cw);
@@ -32,9 +32,9 @@ void bml(test_process(char *libpath,const char *infilename,const char *outfilena
     _FPU_SETCW(cw);
   }
   */
- 
+
   printf("%s(\"%s\")\n",__FUNCTION__,libpath);
-  
+
   if((bmh=bml(open(libpath)))) {
     if((bm=bml(new(bmh)))) {
       FILE *infile,*outfile;
@@ -49,7 +49,7 @@ void bml(test_process(char *libpath,const char *infilename,const char *outfilena
       float ma=0.0;
       int mode=3/*WM_READWRITE*/;
       int triggered=TRUE;
-      
+
       puts("  windows machine created");
       bml(init(bm,0,NULL));
       bml(get_machine_info(bmh,BM_PROP_TYPE,&mtype));
@@ -60,10 +60,10 @@ void bml(test_process(char *libpath,const char *infilename,const char *outfilena
         bml(set_num_tracks(bm,tracks));
         printf("  activated %d tracks\n",tracks);
       }
-      
+
       //bml(stop(bm));
       //bml(attributes_changed(bm));
-  
+
       // open raw files
       infile=fopen(infilename,"rb");
       outfile=fopen(outfilename,"wb");
@@ -71,7 +71,7 @@ void bml(test_process(char *libpath,const char *infilename,const char *outfilena
         printf("    processing ");
         if(mtype==1) {
           int num,ptype,pflags,pmaval;
-  
+
           // trigger a note for generators
           bml(get_machine_info(bmh,BM_PROP_NUM_GLOBAL_PARAMS,&num));
           // set value for trigger parameter(s)
@@ -123,19 +123,19 @@ void bml(test_process(char *libpath,const char *infilename,const char *outfilena
           mode=2/*WM_WRITE*/;
         }
         if((mflags&1)==0) { // MIF_MONO_TO_STEREO
-          buffer_f=buffer_fm;        
+          buffer_f=buffer_fm;
         }
         else {
           buffer_f=buffer_fs;
         }
         while(!feof(infile)) {
           // change a parameter
-          // assumes the first param is of pt_word type 
+          // assumes the first param is of pt_word type
           //bm_set_global_parameter_value(bm,0,ival);
           //oval=bm_get_global_parameter_value(bm,0);printf("        Value: %d\n",oval);
           //ival+=vs;
-          //if(((vs>0) && (ival==1000)) || ((vs<0) && (ival==0))) vs=-vs; 
-          
+          //if(((vs>0) && (ival==1000)) || ((vs<0) && (ival==0))) vs=-vs;
+
           printf(".");
           // set GlobalVals, TrackVals
           bml(tick(bm));
@@ -175,11 +175,11 @@ void bml(test_process(char *libpath,const char *infilename,const char *outfilena
             }
             r_size=fwrite(buffer_w,2,o_size,outfile);
           }
-          
+
           // reset trigger
           if((mtype==1) && triggered) {
             int num,ptype,pflags,pnoval;
-    
+
             // trigger a note for generators
             bml(get_machine_info(bmh,BM_PROP_NUM_GLOBAL_PARAMS,&num));
             // set value for trigger parameter(s)
@@ -242,7 +242,6 @@ void bml(test_process(char *libpath,const char *infilename,const char *outfilena
       if(den) puts("some values are denormal");
       printf("Clipped: %d\n",clipped);
       printf("MaxAmp: %f\n",ma);
-      bml(free(bm));
     }
     bml(close(bmh));
   }
