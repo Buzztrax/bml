@@ -4219,13 +4219,19 @@ static char* expstrcpy(char* str1, const char* str2)
     dbgprintf("strcpy(%p, %p='%s') => %p\n", str1, str2, str2, result);
     return result;
 }
+static char* expstrncpy(char* str1, const char* str2, int x)
+{
+    char* result= strncpy(str1, str2, x);
+    dbgprintf("strncpy(%p, %p='%s', %d) => %p\n", str1, str2, str2, x, result);
+    return result;
+}
 static int expstrcmp(const char* str1, const char* str2)
 {
     int result=strcmp(str1, str2);
     dbgprintf("strcmp(%p='%s', %p='%s') => %d\n", str1, str1, str2, str2, result);
     return result;
 }
-static int expstrncmp(const char* str1, const char* str2,int x)
+static int expstrncmp(const char* str1, const char* str2, int x)
 {
     int result=strncmp(str1, str2,x);
     dbgprintf("strcmp(%p='%s', %p='%s') => %d\n", str1, str1, str2, str2, result);
@@ -4489,6 +4495,18 @@ static void exp_ftol(void)
 	 //      knows that ebp=esp
 	 "movl %ebp, %esp       \n\t"
 	);
+}
+
+static double explog(double x)
+{
+    /*dbgprintf("Log %f => %f    0x%Lx\n", x, log(x), *((int64_t*)&x));*/
+    return log(x);
+}
+
+static double expexp(double x)
+{
+    /*dbgprintf("Exp %f => %f    0x%Lx\n", x, exp(x), *((int64_t*)&x));*/
+    return exp(x);
 }
 
 #define FPU_DOUBLES(var1,var2) double var1,var2; \
@@ -4931,6 +4949,38 @@ static double exp_CIsinh(void)
     return sinh(x);
 }
 
+static double exp_CItanh(void)
+{
+    FPU_DOUBLE(x);
+
+    /*dbgprintf("_CItanh(%lf)\n", x);*/
+    return tanh(x);
+}
+
+static double exp_CIacos(void)
+{
+    FPU_DOUBLE(x);
+
+    /*dbgprintf("_CIacos(%lf)\n", x);*/
+    return acos(x);
+}
+
+static double exp_CIasin(void)
+{
+    FPU_DOUBLE(x);
+
+    /*dbgprintf("_CIasin(%lf)\n", x);*/
+    return asin(x);
+}
+
+static double exp_CIfmod(void)
+{
+    FPU_DOUBLES(x,y);
+
+    /*dbgprintf("_CIfmod(%lf)\n", x);*/
+    return fmod(x,y);
+}
+
 /*
 //static void exp_CxxThrowException( void *object, cxx_exception_type *type )
 static void exp_CxxThrowException( void *object, void *type )
@@ -5156,6 +5206,7 @@ struct exports exp_msvcrt[]={
     FF(strchr, -1)
     FF(strlen, -1)
     FF(strcpy, -1)
+    FF(strncpy, -1)
     FF(wcscpy, -1)
     FF(strcmp, -1)
     FF(strncmp, -1)
@@ -5177,15 +5228,21 @@ struct exports exp_msvcrt[]={
     {"atoi", -1, (void*)&atoi},
     FF(_control87, -1)
     FF(log10, -1)
+    FF(log, -1)
     FF(pow, -1)
     FF(sin, -1)
     FF(cos, -1)
+    FF(exp, -1)
     FF(_ftol,-1)
     FF(_CIpow,-1)
     FF(_CIcos,-1)
     FF(_CIsin,-1)
-    FF(_CIsinh,-1)
     FF(_CIcosh,-1)
+    FF(_CIsinh,-1)
+    FF(_CItanh,-1)
+    FF(_CIacos,-1)
+    FF(_CIasin,-1)
+    FF(_CIfmod,-1)
     FF(ldexp,-1)
     FF(frexp,-1)
     FF(sprintf,-1)

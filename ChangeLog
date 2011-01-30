@@ -1,3 +1,8 @@
+2011-01-30  Stefan Kost  <ensonic@users.sf.net>
+
+	* dllwrapper/wine/win32.c:
+	  Emulate more functions.
+
 2011-01-29  Stefan Kost  <ensonic@users.sf.net>
 
 	* dllwrapper/wine/win32.c:
