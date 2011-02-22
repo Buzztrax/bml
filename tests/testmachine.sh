@@ -47,7 +47,7 @@ m_okay=0;
 m_info=0;
 m_fail=0;
 trap "sig_segv=1" SIGSEGV
-trap "sig_int=1" INT
+trap "sig_int=1" SIGINT
 touch testmachine.failtmp
 rm -f testmachine.body.html
 touch testmachine.body.html

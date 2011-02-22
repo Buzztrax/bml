@@ -40,7 +40,25 @@ static ldt_fs_t *ldt_fs;
 #define GetSymbol(dll,name) GetProcAddress(dll,name)
 #define FreeDLL(dll) FreeLibrary(dll)
 #define BMLX(a) fptr_ ## a
-pthread_mutex_t ldt_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+// FIXME: things seem to work without the mutex and the Check_FS_Segment()
+// and thats obviously faster
+#if 1
+static pthread_mutex_t ldt_mutex = PTHREAD_MUTEX_INITIALIZER;
+#define win32_prolog(_nop_) \
+  pthread_mutex_lock(&ldt_mutex); \
+  Check_FS_Segment(ldt_fs)
+
+#define win32_eliplog(_nop_) \
+  pthread_mutex_unlock(&ldt_mutex)
+#else
+#define win32_prolog(_nop_) \
+  do {} while(0)
+
+#define win32_eliplog(_nop_) \
+  do {} while(0)
+#endif
+
 #endif  /* HAVE_X86 */
 static void *emu_so=NULL;
 
@@ -191,10 +209,9 @@ BMSetCallbacks bmln_set_callbacks;
 // global API
 
 void bmlw_set_master_info(long bpm, long tpb, long srat) {
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	BMLX(bmlw_set_master_info(bpm,tpb,srat));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 }
 
 // library api
@@ -202,79 +219,71 @@ void bmlw_set_master_info(long bpm, long tpb, long srat) {
 BuzzMachineHandle *bmlw_open(char *bm_file_name) {
 	BuzzMachineHandle *bmh;
 
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	bmh=BMLX(bmlw_open(bm_file_name));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 	return(bmh);
 }
 
 void bmlw_close(BuzzMachineHandle *bmh) {
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	BMLX(bmlw_close(bmh));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 }
 
 
 int bmlw_get_machine_info(BuzzMachineHandle *bmh, BuzzMachineProperty key, void *value) {
 	int ret;
 
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	ret=BMLX(bmlw_get_machine_info(bmh,key,value));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 	return(ret);
 }
 
 int bmlw_get_global_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachineParameter key,void *value) {
 	int ret;
 
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	ret=BMLX(bmlw_get_global_parameter_info(bmh,index,key,value));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 	return(ret);
 }
 
 int bmlw_get_track_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachineParameter key,void *value) {
 	int ret;
 
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	ret=BMLX(bmlw_get_track_parameter_info(bmh,index,key,value));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 	return(ret);
 }
 
 int bmlw_get_attribute_info(BuzzMachineHandle *bmh,int index,BuzzMachineAttribute key,void *value) {
 	int ret;
 
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	ret=BMLX(bmlw_get_attribute_info(bmh,index,key,value));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 	return(ret);
 }
 
 
 const char *bmlw_describe_global_value(BuzzMachineHandle *bmh, int const param,int const value) {
 	const char *ret;
-	
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+
+	win32_prolog();
 	ret=BMLX(bmlw_describe_global_value(bmh,param,value));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 	return(ret);
 }
 
 const char *bmlw_describe_track_value(BuzzMachineHandle *bmh, int const param,int const value) {
 	const char *ret;
-	
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+
+	win32_prolog();
 	ret=BMLX(bmlw_describe_track_value(bmh,param,value));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 	return(ret);
 }
 
@@ -284,171 +293,152 @@ const char *bmlw_describe_track_value(BuzzMachineHandle *bmh, int const param,in
 BuzzMachine *bmlw_new(BuzzMachineHandle *bmh) {
 	BuzzMachine *bm;
 
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	bm=BMLX(bmlw_new(bmh));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 	return(bm);
 }
 
 void bmlw_free(BuzzMachine *bm) {
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	BMLX(bmlw_free(bm));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 }
 
 
 void bmlw_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data) {
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	BMLX(bmlw_init(bm,blob_size,blob_data));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 }
 
 
 void *bmlw_get_track_parameter_location(BuzzMachine *bm,int track,int index) {
 	void *ret;
 
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	ret=BMLX(bmlw_get_track_parameter_location(bm,track,index));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 	return(ret);
 }
 
 int bmlw_get_track_parameter_value(BuzzMachine *bm,int track,int index) {
 	int ret;
 
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	ret=BMLX(bmlw_get_track_parameter_value(bm,track,index));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 	return(ret);
 }
 
 void bmlw_set_track_parameter_value(BuzzMachine *bm,int track,int index,int value) {
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	BMLX(bmlw_set_track_parameter_value(bm,track,index,value));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 }
 
 
 void *bmlw_get_global_parameter_location(BuzzMachine *bm,int index) {
 	void *ret;
 
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	ret=BMLX(bmlw_get_global_parameter_location(bm,index));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 	return(ret);
 }
 
 int bmlw_get_global_parameter_value(BuzzMachine *bm,int index) {
 	int ret;
 
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	ret=BMLX(bmlw_get_global_parameter_value(bm,index));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 	return(ret);
 }
 
 void bmlw_set_global_parameter_value(BuzzMachine *bm,int index,int value) {
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	BMLX(bmlw_set_global_parameter_value(bm,index,value));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 }
 
 
 void *bmlw_get_attribute_location(BuzzMachine *bm,int index) {
 	void *ret;
 
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	ret=BMLX(bmlw_get_attribute_location(bm,index));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 	return(ret);
 }
 
 int bmlw_get_attribute_value(BuzzMachine *bm,int index) {
 	int ret;
 
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	ret=BMLX(bmlw_get_attribute_value(bm,index));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 	return(ret);
 }
 
 void bmlw_set_attribute_value(BuzzMachine *bm,int index,int value) {
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	BMLX(bmlw_set_attribute_value(bm,index,value));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 }
 
 
 void bmlw_tick(BuzzMachine *bm) {
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	BMLX(bmlw_tick(bm));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 }
 
 int bmlw_work(BuzzMachine *bm,float *psamples, int numsamples, int const mode) {
 	int ret;
 
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	ret=BMLX(bmlw_work(bm,psamples,numsamples,mode));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 	return(ret);
 }
 
 int bmlw_work_m2s(BuzzMachine *bm,float *pin, float *pout, int numsamples, int const mode) {
 	int ret;
-	
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+
+	win32_prolog();
 	ret=BMLX(bmlw_work_m2s(bm,pin,pout,numsamples,mode));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 	return(ret);
 }
 
 void bmlw_stop(BuzzMachine *bm) {
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	BMLX(bmlw_stop(bm));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 }
 
 
 void bmlw_attributes_changed(BuzzMachine *bm) {
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	BMLX(bmlw_attributes_changed(bm));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 }
 
 
 void bmlw_set_num_tracks(BuzzMachine *bm, int num) {
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+	win32_prolog();
 	BMLX(bmlw_set_num_tracks(bm,num));
-	pthread_mutex_unlock(&ldt_mutex);
+	win32_eliplog();
 }
 
 
 void bmlw_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks) {
-	pthread_mutex_lock(&ldt_mutex);
-	Check_FS_Segment(ldt_fs);
+    win32_prolog();
     // @todo: remove after rebuild
     if(BMLX(bmlw_set_callbacks)!=NULL)
       BMLX(bmlw_set_callbacks(bm,callbacks));
-	pthread_mutex_unlock(&ldt_mutex);  
+    win32_eliplog();
 }
 
 #endif /* HAVE_X86 */
@@ -460,10 +450,10 @@ static void bml_stdout_logger(char *str) {
   static char lbuf[1000];
   static int p=0;
   int i=0;
-  
+
   if(!str)
     return;
-  
+
   while((str[i]!='\0') && (str[i]!='\n')) {
     if(p<1000) lbuf[p++]=str[i++];
   }
@@ -481,16 +471,16 @@ static void bml_null_logger(char *str) {
 int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
   const char *debug_log_flag_str=getenv("BML_DEBUG");
   const int debug_log_flags=debug_log_flag_str?atoi(debug_log_flag_str):0;
- 
+
 #ifdef LOG
   _first_ts = _get_timestamp();
   if (debug_log_flags&0x2) {
     _log_printf=_log_stdout_printf;
   }
 #endif
-  
+
   TRACE("%s\n",__FUNCTION__);
-  
+
 #ifdef HAVE_X86
   ldt_fs=Setup_LDT_Keeper();
   TRACE("%s:   wrapper initialized: 0x%p\n",__FUNCTION__,ldt_fs);
@@ -604,7 +594,7 @@ int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
 
   TRACE("%s:   symbols connected\n",__FUNCTION__);
   bmln_set_logger((debug_log_flags&0x1)?bml_stdout_logger:bml_null_logger);
-  
+
   return(TRUE);
 }
 
