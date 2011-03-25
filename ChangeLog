@@ -1,3 +1,10 @@
+2011-03-25  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/bml.c:
+	  Investigate the crashers with the locking and Check_FS_Segment()
+	  deactivated. The locking seems to be not needed, but the
+	  Check_FS_Segment().
+
 2011-02-22  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/bml.c:

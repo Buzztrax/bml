@@ -41,9 +41,10 @@ static ldt_fs_t *ldt_fs;
 #define FreeDLL(dll) FreeLibrary(dll)
 #define BMLX(a) fptr_ ## a
 
-// FIXME: things seem to work without the mutex and the Check_FS_Segment()
-// and thats obviously faster
-#if 1
+// FIXME: without the mutex and the Check_FS_Segment() things are obviously faster
+// it seems to work more or less, but some songs crash when disposing them without
+// without the Check_FS_Segment(ldt_fs)
+#if 0
 static pthread_mutex_t ldt_mutex = PTHREAD_MUTEX_INITIALIZER;
 #define win32_prolog(_nop_) \
   pthread_mutex_lock(&ldt_mutex); \
@@ -53,7 +54,7 @@ static pthread_mutex_t ldt_mutex = PTHREAD_MUTEX_INITIALIZER;
   pthread_mutex_unlock(&ldt_mutex)
 #else
 #define win32_prolog(_nop_) \
-  do {} while(0)
+  Check_FS_Segment(ldt_fs)
 
 #define win32_eliplog(_nop_) \
   do {} while(0)
@@ -108,7 +109,7 @@ void (*_log_printf)(const char *file, const int line, const char *fmt, ...)=_log
 
 #  define TRACE(...) _log_printf(__FILE__,__LINE__,__VA_ARGS__)
 #else
-#  define TRACE(__FILE__,__LINE__,...)
+#  define TRACE(...)
 #endif
 
 typedef void (*BMLDebugLogger)(char *str);
