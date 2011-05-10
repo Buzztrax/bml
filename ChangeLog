@@ -1,3 +1,8 @@
+2011-05-10  Stefan Kost  <ensonic@users.sf.net>
+
+	* src/Makefile.am:
+	  Also link tools against LIBM.
+
 2011-03-25  Stefan Kost  <ensonic@users.sf.net>
 
 	* src/bml.c:

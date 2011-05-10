@@ -29,10 +29,10 @@ libbml_la_LDFLAGS = \
 noinst_PROGRAMS=bmltest_info bmltest_process
 
 bmltest_info_SOURCES= bmltest_info.c bmltest_info.h
-bmltest_info_LDADD = $(PTHREAD_LIBS) $(BML_LIBS) libbml.la
+bmltest_info_LDADD = $(LIBM) $(PTHREAD_LIBS) $(BML_LIBS) libbml.la
 
 bmltest_process_SOURCES= bmltest_process.c  bmltest_process.h
-bmltest_process_LDADD = $(PTHREAD_LIBS) $(BML_LIBS) libbml.la
+bmltest_process_LDADD = $(LIBM) $(PTHREAD_LIBS) $(BML_LIBS) libbml.la
 
 if USE_X86
 dlldir = $(libdir)/win32
