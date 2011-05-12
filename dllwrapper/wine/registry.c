@@ -341,7 +341,7 @@ static void init_registry(void)
 	open_registry();
 	insert_handle(HKEY_LOCAL_MACHINE, "HKLM");
 	insert_handle(HKEY_CURRENT_USER, "HKCU");
-	
+
 	/* FIXME: fake a buzz registry
       jeskola\buzz\settings\audio
       jeskola\buzz\settings\theme
@@ -376,7 +376,7 @@ long RegOpenKeyExA(long key, const char* subkey, long reserved, long access, int
 {
     char* full_name;
     reg_handle_t* t;
-    struct reg_value* v;
+    /*struct reg_value* v;*/
 
     if(!regs)
         init_registry();
@@ -395,7 +395,7 @@ long RegOpenKeyExA(long key, const char* subkey, long reserved, long access, int
     if(!full_name)
         return -1;
     TRACE("Opening key Fullname %s\n", full_name);
-    v=find_value_by_name(full_name);
+    /*v=*/find_value_by_name(full_name);
 
     t=insert_handle(generate_handle(), full_name);
     *newkey=t->handle;
@@ -478,7 +478,7 @@ long RegCreateKeyExA(long key, const char* name, long reserved,
     if(v==0)
     {
 	int qw=45708;
-	v=insert_reg_value(key, name, DIR, &qw, 4);
+	/*v=*/insert_reg_value(key, name, DIR, &qw, 4);
 	if (status) *status=REG_CREATED_NEW_KEY;
 	//		return 0;
     }

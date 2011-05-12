@@ -375,7 +375,7 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 
     //if(fs_installed==0)
     //    install_fs();
-    
+
 	TRACE("module '%s' not already loaded\n", libname);
 
     i = -1;
@@ -421,9 +421,9 @@ HMODULE WINAPI LoadLibraryExA(LPCSTR libname, HANDLE hfile, DWORD flags)
 		if ( !MODULE_DllProcessAttach( wm, NULL ) )
 		{
 			WARN_(module)("Attach failed for module '%s', \n", libname);
+			MODULE_RemoveFromList(wm);
 			MODULE_FreeLibrary(wm);
 			SetLastError(ERROR_DLL_INIT_FAILED);
-			MODULE_RemoveFromList(wm);
 			wm = NULL;
 		}
 	}
@@ -567,6 +567,8 @@ WIN_BOOL WINAPI FreeLibrary(HINSTANCE hLibModule)
 
     wm=MODULE32_LookupHMODULE(hLibModule);
 
+    MODULE_RemoveFromList(wm);
+
     if ( !wm || !hLibModule )
     {
         SetLastError( ERROR_INVALID_HANDLE );
@@ -574,8 +576,6 @@ WIN_BOOL WINAPI FreeLibrary(HINSTANCE hLibModule)
     }
     else
         retv = MODULE_FreeLibrary( wm );
-
-    MODULE_RemoveFromList(wm);
 
     /* garbage... */
     if (local_wm == NULL) my_garbagecollection();
@@ -1038,12 +1038,14 @@ void CodecRelease(void)
     {
 	for (;;)
 	{
+	    WINE_MODREF* wm;
 	    modref_list* list = local_wm;
 	    if (!local_wm)
 		break;
 	    //printf("CODECRELEASE %p\n", list);
-            MODULE_FreeLibrary(list->wm);
-	    MODULE_RemoveFromList(list->wm);
+	    wm=list->wm;
+	    MODULE_RemoveFromList(wm);
+            MODULE_FreeLibrary(wm);
             if (local_wm == NULL)
 		my_garbagecollection();
 	}

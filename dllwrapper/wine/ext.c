@@ -376,7 +376,7 @@ HANDLE WINAPI CreateFileMappingA(HANDLE handle, LPSECURITY_ATTRIBUTES lpAttr,
 				 LPCSTR name)
 {
     int hFile = (int)handle;
-    unsigned int len;
+    unsigned int len=dwMaxLow;
     LPVOID answer;
     int anon=0;
     int mmap_access=0;
@@ -391,10 +391,11 @@ HANDLE WINAPI CreateFileMappingA(HANDLE handle, LPSECURITY_ATTRIBUTES lpAttr,
     }
     if(!anon)
     {
-        len=lseek(hFile, 0, SEEK_END);
+        off_t ret=lseek(hFile, 0, SEEK_END);
+        if(ret!=-1)
+            len=ret;
 	lseek(hFile, 0, SEEK_SET);
     }
-    else len=dwMaxLow;
 
     if(flProtect & PAGE_READONLY)
 	mmap_access |=PROT_READ;

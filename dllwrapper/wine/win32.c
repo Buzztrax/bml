@@ -680,8 +680,6 @@ static void* WINAPI expCreateEventA(void* pSecAttr, char bManualReset,
 	strncpy(mlist->name, name, 127);
     else
 	mlist->name[0]=0;
-    if(pm==NULL)
-	dbgprintf("ERROR::: CreateEventA failure\n");
     /*
      if(bInitialState)
      pthread_mutex_lock(pm);
@@ -1491,7 +1489,7 @@ static void* WINAPI expTlsGetValue(DWORD index)
       return NULL;
 
     /* qt passes -1 here. probably a side effect of some bad patching */
-    if( index < 0 ) {
+    if( (int)index < 0 ) {
       return tls_minus_one;
     }
 
@@ -1812,8 +1810,6 @@ static HANDLE WINAPI expCreateSemaphoreA(char* v1, long init_count,
 	strncpy(mlist->name, name, 64);
     else
 	mlist->name[0]=0;
-    if(pm==NULL)
-	dbgprintf("ERROR::: CreateSemaphoreA failure\n");
     if(name)
 	dbgprintf("CreateSemaphoreA(%p, init_count %ld, max_count %ld, name %p='%s') => %p\n",
 		  v1, init_count, max_count, name, name, mlist);
@@ -3604,9 +3600,10 @@ static HANDLE WINAPI expCreateFileA(LPCSTR cs1,DWORD i1,DWORD i2,
       r=open(cs1, flg);
       return r;
     }
-//#endif
+//#else
 
-    return atoi(cs1+2);
+//  return atoi(cs1+2);
+//#endif
 }
 
 static HANDLE WINAPI expCreateFileW(LPCWSTR filename,DWORD access,DWORD sharing,
