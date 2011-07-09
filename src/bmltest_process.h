@@ -173,7 +173,8 @@ void bml(test_process(char *libpath,const char *infilename,const char *outfilena
                 buffer_w[i]=(short int)(buffer_f[i]);
               }
             }
-            r_size=fwrite(buffer_w,2,o_size,outfile);
+            if((r_size=fwrite(buffer_w,2,o_size,outfile))<o_size)
+            	break;
           }
 
           // reset trigger
