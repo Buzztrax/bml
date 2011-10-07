@@ -1,9 +1,7 @@
 Original Authors
 ----------------
-Stefan Kost              <ensonic@users.sourceforge.net>
+Stefan Sauer             <ensonic@users.sourceforge.net>
 
 Based on the work of
 --------------------
-Paul Davis               <paul@linuxaudiosystems.com>
-Torben Hohn              <torbenh@gmx.de>
-and various authors of the winelib project
+various authors of the winelib and xine projects
