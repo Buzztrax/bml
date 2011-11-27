@@ -571,21 +571,21 @@ LPVOID WINAPI VirtualAlloc(LPVOID address, DWORD size, DWORD type,  DWORD protec
 WIN_BOOL WINAPI VirtualFree(LPVOID  address, SIZE_T dwSize, DWORD dwFreeType)//not sure
 {
     virt_alloc* str=vm;
-    int answer;
+
     while(str)
     {
-	if(address!=str->address)
-	{
-	    str=str->prev;
-	    continue;
-	}
-	//printf("VirtualFree(0x%08X, %d - %d)\n", str->address, dwSize, str->mapping_size);
-	answer=munmap(str->address, str->mapping_size);
-	if(str->next)str->next->prev=str->prev;
-	if(str->prev)str->prev->next=str->next;
-	if(vm==str)vm=str->prev;
-	free(str);
-	return 0;
+        if(address!=str->address)
+	    {
+	        str=str->prev;
+	        continue;
+	    }
+        //printf("VirtualFree(0x%08X, %d - %d)\n", str->address, dwSize, str->mapping_size);
+	    munmap(str->address, str->mapping_size);
+        if(str->next) str->next->prev=str->prev;
+        if(str->prev) str->prev->next=str->next;
+        if(vm==str) vm=str->prev;
+        free(str);
+        return 0;
     }
     return -1;
 }

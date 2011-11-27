@@ -135,7 +135,6 @@ FARPROC PE_FindExportedFunction(
 	IMAGE_EXPORT_DIRECTORY 		*exports = pem->pe_export;
 	unsigned int			load_addr = wm->module;
 	u_long				rva_start, rva_end, addr;
-	char				* forward;
 
 	if (HIWORD(funcName))
 		TRACE("FindExportedFunction(%s)\n",funcName);
@@ -152,7 +151,6 @@ FARPROC PE_FindExportedFunction(
 	ordinals= (u_short*)  RVA(exports->AddressOfNameOrdinals);
 	function= (u_long*)   RVA(exports->AddressOfFunctions);
 	name	= (u_char **) RVA(exports->AddressOfNames);
-	forward = NULL;
 	rva_start = PE_HEADER(wm->module)->OptionalHeader
 		.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress;
 	rva_end = rva_start + PE_HEADER(wm->module)->OptionalHeader
@@ -255,15 +253,9 @@ static DWORD fixup_imports( WINE_MODREF *wm )
     PE_MODREF			*pem;
     unsigned int load_addr	= wm->module;
     int				i,characteristics_detection=1;
-    char			*modname;
 
     assert(wm->type==MODULE32_PE);
     pem = &(wm->binfmt.pe);
-    if (pem->pe_export)
-    	modname = (char*) RVA(pem->pe_export->Name);
-    else
-        modname = "<unknown>";
-
 
     //TRACE("Dumping imports list\n");
     pe_imp = pem->pe_import;

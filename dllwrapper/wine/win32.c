@@ -1604,16 +1604,20 @@ static void* WINAPI expLocalAlloc(int flags, int size)
 static void* WINAPI expLocalReAlloc(int handle,int size, int flags)
 {
     void *newpointer;
+#ifdef DETAILED_OUT
     int oldsize;
+#endif
 
     newpointer=NULL;
     if (flags & LMEM_MODIFY) {
 	dbgprintf("LocalReAlloc MODIFY\n");
 	return (void *)handle;
     }
+#ifdef DETAILED_OUT
     oldsize = my_size((void *)handle);
+#endif
     newpointer = my_realloc((void *)handle,size);
-    dbgprintf("LocalReAlloc(%x %d(old %d), flags 0x%x) => %p\n", handle,size,oldsize, flags,newpointer);
+    dbgprintf("LocalReAlloc(%x %d(old %d), flags 0x%x) => %p\n", handle, size, oldsize, flags,newpointer);
 
     return newpointer;
 }

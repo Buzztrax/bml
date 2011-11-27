@@ -113,12 +113,16 @@ static void open_registry(void)
 		regs[i].value=(char*)malloc(regs[i].len+1);
 		if(regs[i].value==0)
 		{
-		        free(regs[i].name);
+            free(regs[i].name);
 			reg_size=i+1;
 			goto error;
 		}
 		res=read(fd, regs[i].value, regs[i].len);
 		regs[i].value[regs[i].len]=0;
+	}
+	if (res==-1)
+	{
+	    printf("Error reading registry\n");
 	}
 error:
 	close(fd);
@@ -148,6 +152,10 @@ static void save_registry(void)
 		res=write(fd, regs[i].name, len);
 		res=write(fd, &regs[i].len, 4);
 		res=write(fd, regs[i].value, regs[i].len);
+	}
+	if (res==-1)
+	{
+	    printf("Error writing registry\n");
 	}
 	close(fd);
 }
