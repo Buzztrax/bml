@@ -109,9 +109,27 @@ use mingw-binutils to dump win32 binaries
 /usr/local/i386-mingw32/bin/objdump -t MSVCRT.DLL
 /usr/i586-mingw32msvc/bin/objdump ...
 
+
+= x86_64 bit support for native plugins =
+- we need to build a launcher+libbml with -m32
+- in libbml's #ifdef HAVE_X86 section, we need to have alternative implementations
+  for 64bit
+  - the 32bit build would use the one we have there
+  - the 64bit build would need to do IPC
+  - the 32bit launcher would need to receive IPC and dispatch
+- the front-env tests (bmltest_*) would remain as they are
+- will we launch 1 helper per using process or 1 herlper per machine
+  - 1 helper per process: 1 shm key
+- creating the BuzzMachineHandle / BuzzMachine will create proxy structures with
+  the ids for the launcher (index values to arrays on the launcher side)
+- for the IPC we need to marshall (function, parameters, data)
+  - we can just enumerate the API calls
+  - the parameters will be hardcoded for each function
+
 = test single plugins =
 G_SLICE=always-malloc G_DEBUG=gc-friendly GLIBCPP_FORCE_NEW=1 GLIBCXX_FORCE_NEW=1 valgrind --tool=memcheck --leak-check=full --leak-resolution=high --trace-children=yes --num-callers=20 -v ../src/.libs/bmltest_info ~/buzztard/lib/Gear-real/Effects/Static\ Duafilt\ II.dll
 ../src/.libs/bmltest_info ~/buzztard/lib/Gear-real/Effects/Static\ Duafilt\ II.dll
+
 
 = what windows dll to copy and which not =
 == don't (we need to emulate) ==
