@@ -46,7 +46,7 @@
 //extern "C" {
 //#endif
 
-extern int bml_setup(void (*sighandler)(int,siginfo_t*,void*));
+extern int bml_setup(void);
 extern void bml_finalize(void);
 
 // dll passthrough API method pointer types

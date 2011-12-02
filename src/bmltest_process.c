@@ -73,7 +73,7 @@ int main( int argc, char **argv ) {
   setlinebuf(stderr);
   puts("main beg");
 
-  if(bml_setup(0)) {
+  if(bml_setup()) {
     char *lib_name;
     int sl;
 

@@ -469,7 +469,7 @@ static void bml_stdout_logger(char *str) {
 static void bml_null_logger(char *str) {
 }
 
-int bml_setup(void (*sighandler)(int,siginfo_t*,void*)) {
+int bml_setup(void) {
   const char *debug_log_flag_str=getenv("BML_DEBUG");
   const int debug_log_flags=debug_log_flag_str?atoi(debug_log_flag_str):0;
 

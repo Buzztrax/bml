@@ -1,5 +1,13 @@
 2011-12-02  Stefan Sauer  <ensonic@users.sf.net>
 
+	* src/bml.c:
+	* src/bml.h:
+	* src/bmltest_info.c:
+	* src/bmltest_process.c:
+	  Remove unused parameter.
+
+2011-12-02  Stefan Sauer  <ensonic@users.sf.net>
+
 	* TODO:
 	  Add idea + links for dgb script.
 
