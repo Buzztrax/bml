@@ -1,3 +1,8 @@
+2011-12-02  Stefan Sauer  <ensonic@users.sf.net>
+
+	* TODO:
+	  Add idea + links for dgb script.
+
 2011-11-27  Stefan Sauer  <ensonic@users.sf.net>
 
 	* dllwrapper/wine/ext.c:

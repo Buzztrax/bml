@@ -12,6 +12,10 @@ $Id$
 == bmldump_src_skel ==
 dump a source skelleton for rewriting a machine
 
+== debugging ==
+write a gdb script that enhances backtraces like:https://github.com/shinh/maloader/blob/master/gdb_maloader.py
+https://github.com/shinh/maloader/blob/master/gdb_maloader.py
+
 = testing =
 modify tests/testmachine.sh
 eventually improve scrolling:
