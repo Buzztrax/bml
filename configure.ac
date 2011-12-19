@@ -109,7 +109,7 @@ else
 fi
 AM_CONDITIONAL(USE_LCOV, test ! x$lcov_path = xyes)
 
-dnl chek for heaers
+dnl chek for headers
 AC_HEADER_STDC([])
 AC_CHECK_HEADERS( \
   alloca.h assert.h byteswap.h dirent.h execinfo.h kstat.h libgen.h malloc.h \
