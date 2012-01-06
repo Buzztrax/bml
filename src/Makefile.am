@@ -39,5 +39,6 @@ dlldir = $(libdir)/win32
 dll_DATA = BuzzMachineLoader.dll
 endif
 
-EXTRA_DIST = $(dll_DATA)
+# unconditionally dist the dll
+EXTRA_DIST = BuzzMachineLoader.dll
 
