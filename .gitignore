@@ -9,7 +9,7 @@ autom4te.cache
 aclocal.m4
 stamp-h.in
 INSTALL
-install.sh
+install?sh
 missing
 Makefile
 Makefile.in
