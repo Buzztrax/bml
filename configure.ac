@@ -1,5 +1,3 @@
-dnl $Id$
-
 dnl Initialise the autoconf/automake tool
 AC_PREREQ(2.61)
 AC_INIT([bml],[0.7.0],[buzztard-devel@lists.sourceforge.net])

@@ -1,5 +1,3 @@
-## $Id$
-
 pkglib_LTLIBRARIES = libbuzzmachineloader.la
 
 libbuzzmachineloader_la_SOURCES = \

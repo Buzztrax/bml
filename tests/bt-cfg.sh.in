@@ -1,4 +1,2 @@
 #!/bin/sh
-# $Id$
-
 LIBDIR="@prefix@/lib"

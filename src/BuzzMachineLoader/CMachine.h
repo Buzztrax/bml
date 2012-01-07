@@ -1,6 +1,4 @@
-/* $Id$
- *
- * Buzz Machine Loader
+/* Buzz Machine Loader
  * Copyright (C) 2003-2007 Anders Ervik <calvin@countzero.no>
  * Copyright (C) 2008 Buzztard team <buzztard-devel@lists.sf.net>*
  * 

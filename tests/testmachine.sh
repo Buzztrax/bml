@@ -1,5 +1,4 @@
 #!/bin/bash
-# $Id$
 # iterates over the given directory and tries all buzz machines
 #
 # if machines hang, they can be skipped by pressing ctrl-c

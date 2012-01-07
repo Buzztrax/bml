@@ -1,5 +1,3 @@
-$Id$
-
 = general =
 * rename public API in BuzzMachineLoader.h
   BuzzMachine -> BMLMachine

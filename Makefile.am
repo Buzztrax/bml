@@ -1,5 +1,3 @@
-## $Id$
-
 if USE_X86
   DLLWRAPPER=dllwrapper
 else

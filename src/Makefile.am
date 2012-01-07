@@ -1,5 +1,3 @@
-## $Id$
-
 SUBDIRS = BuzzMachineLoader
 
 if USE_X86
