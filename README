@@ -91,6 +91,10 @@ http://www.digitalmars.com/ctg/win32programming.html
 what about using winegcc - e.g.:
 winegcc -shared XXX.dll.spec -mnocygwin -o XXX.dll.so abc.o def.o -lole32 -lwinmm -lpthread -luuid
 
+= inspecting the dlls =
+winedump -x $HOME/buzztard/lib/Gear-real/Effects/Shaman\ Chorus.dll
+
+
 = problems =
 == /dev/zero needs to be executable ==
 make sure your /dev/zero is executable (needed for mmap() )

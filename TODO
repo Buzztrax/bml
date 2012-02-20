@@ -158,6 +158,7 @@ other-sources/buzz-sources/__BUZZ1PLAYER__NOT_FOR_PUBLIC!/CMachine.cpp
 2009.11.02 : Of 537 machine(s) 454 worked, 10 did not processed data and 73 failed to load
 2010.02.03 : Of 517 machine(s) 433 worked, 9 did not processed data and 75 failed to load
 2011.01.09 : Of 517 machine(s) 444 worked, 6 did not processed data and 67 failed to load.
+2012.02.20 : Of 517 machine(s) 439 worked, 6 did not processed data and 72 failed to load.
 
 == sterni/mautz ==
 2008.10.14 : Of 853 machine(s) 759 worked and 94 failed to load.
@@ -219,6 +220,10 @@ Effects/Jeskola Wave Shaper.dll
   if we have MFC42.DLL
     Entering DllMain(DLL_PROCESS_ATTACH) for /home/ensonic/buzztard/lib/win32/mfc42.dll
     Segmentation fault
+Shaman Chorus.dll
+  #3  0xb7fb48e8 in LookupExternalByName (library=0xb7fbce28 "kernel32.dll", name=0x37f7f9c2 <Address 0x37f7f9c2 out of bounds>) at win32.c:5650
+  #4  0xb7fb4abe in expGetProcAddress (mod=288, name=0x37f7f9c2 <Address 0x37f7f9c2 out of bounds>) at win32.c:2374
+  #5  0xb7f843ba in ?? ()
 Sonic Verb (seems to work now)
   buzzmachinecallbacks.cpp:199:BuzzMachineCallbacks::GetEnvPoint (wave=-1,env=-1,i=-1076278224,&x,&y,&flags)
   buzzmachinecallbacks.cpp:276:BuzzMachineCallbacks::SetSequenceData (row=-1217504548,ppat=B7A5B3C4)
