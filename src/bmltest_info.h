@@ -21,7 +21,7 @@ void bml(test_info(char *libpath)) {
   // buzz machine handle
   void *bmh,*bm;
   char *str;
-  int type,val,i,num,tracks;
+  int type,val,i,num,tracks,numtrig;
   int maval,mival,noval,ptrval=0;
   double ts1, ts2;
 
@@ -72,10 +72,13 @@ void bml(test_info(char *libpath)) {
       tracks=val;
       if(bml(get_machine_info(bmh,BM_PROP_MAX_TRACKS,(void *)&val)))           printf("    MaxTracks: %i\n",val);
       if(bml(get_machine_info(bmh,BM_PROP_NUM_INPUT_CHANNELS,(void *)&val)))   printf("    InputChannels: %d\n",val);
-      if(bml(get_machine_info(bmh,BM_PROP_NUM_OUTPUT_CHANNELS,(void *)&val)))  printf("    OutputChannels: %d\n",val);
-      fflush(stdout);
+      if(bml(get_machine_info(bmh,BM_PROP_NUM_OUTPUT_CHANNELS,(void *)&val)))  printf("    OutputChannels: %d\n",val);fflush(stdout);
       if(bml(get_machine_info(bmh,BM_PROP_NUM_GLOBAL_PARAMS,(void *)&val))) {  printf("    NumGlobalParams: %i\n",val);fflush(stdout);
-        num=val;
+        num=val;numtrig=0;
+        for(i=0;i<num;i++)
+          if(bml(get_global_parameter_info(bmh,i,BM_PARA_FLAGS,(void *)&val)))
+            if(val&&(1<<1)==0) numtrig++;
+        printf("    NumGlobalTriggerParams: %i\n",numtrig);fflush(stdout);
         for(i=0;i<num;i++) {
           printf("      GlobalParam=%02i\n",i);
           if(bml(get_global_parameter_info(bmh,i,BM_PARA_TYPE,(void *)&type)))        printf("        Type: %i -> \"%s\"\n",type,((type<4)?parameter_types[type]:"unknown"));
@@ -107,9 +110,16 @@ void bml(test_info(char *libpath)) {
           printf("        RealValue: %d %s (%p -> %d)\n",val,str,addr,ptrval);
         }
       }
+      else {
+        puts("    NumGlobalTriggerParams: 0");
+      }
       fflush(stdout);
       if(bml(get_machine_info(bmh,BM_PROP_NUM_TRACK_PARAMS,(void *)&val))) {   printf("    NumTrackParams: %i\n",val);fflush(stdout);
-        num=val;
+        num=val;numtrig=0;
+        for(i=0;i<num;i++)
+          if(bml(get_track_parameter_info(bmh,i,BM_PARA_FLAGS,(void *)&val)))
+            if(val&&(1<<1)==0) numtrig++;
+        printf("    NumTrackTriggerParams: %i\n",numtrig);fflush(stdout);
         if(num && tracks) {
           for(i=0;i<num;i++) {
             printf("      TrackParam=%02i\n",i);
@@ -147,6 +157,9 @@ void bml(test_info(char *libpath)) {
             printf("      WARNING but tracks=0..0\n");fflush(stdout);
           }
         }
+      }
+      else {
+        puts("    NumTrackTriggerParams: 0");
       }
       fflush(stdout);
       if(bml(get_machine_info(bmh,BM_PROP_NUM_ATTRIBUTES,(void *)&val))) {     printf("    NumAttributes: %i\n",val);fflush(stdout);
