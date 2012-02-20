@@ -27,12 +27,12 @@ The default value for the --prefix configure option is /usr/local. Also in that
 case the variables mentioned in the last example need to be exported.
 
 = machines =
-Export the path we you have the machine, e.g.:
+Export the path we you have the machines, e.g.:
   export BML_PATH=$HOME/buzztard/lib/Gear:$HOME/buzztard/lib/Gear/Effects:\
     $HOME/buzztard/lib/Gear/Generators
 
 I have the native ones in Gear and the windows ones under Gear/Effects and Gear/
-Generators.
+Generators. libbml will look by default under $prefix/lib/Gear.
 
 = windows machines =
 The emulation uses some parts of wine at runtime. It needs kernel32.dll, e.g.
@@ -100,4 +100,7 @@ http://www.x86-64.org/documentation/assembly.html
 wget kegel.com/wine/winetricks 
 sh winetricks mfc42 
 
+= win32 / c++ links =
+http://www.codeproject.com/Articles/4210/C-Reverse-Disassembly
+http://www.pvdasm.tk-labs.com/
 
