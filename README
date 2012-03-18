@@ -93,7 +93,9 @@ winegcc -shared XXX.dll.spec -mnocygwin -o XXX.dll.so abc.o def.o -lole32 -lwinm
 
 = inspecting the dlls =
 winedump -x $HOME/buzztard/lib/Gear-real/Effects/Shaman\ Chorus.dll
-
+./objconv -fgasm ~/projects/buzztard/win32/Gear/Effects/Arguelles\ TruePan.dll
+/usr/bin/i586-mingw32msvc-objdump -x ~/projects/buzztard/win32/Gear/Effects/Arguelles\ TruePan.dll
+/usr/bin/i586-mingw32msvc-objdump -d ~/projects/buzztard/win32/Gear/Effects/Arguelles\ TruePan.dll
 
 = problems =
 == /dev/zero needs to be executable ==

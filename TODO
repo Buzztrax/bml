@@ -224,6 +224,10 @@ Shaman Chorus.dll
   #3  0xb7fb48e8 in LookupExternalByName (library=0xb7fbce28 "kernel32.dll", name=0x37f7f9c2 <Address 0x37f7f9c2 out of bounds>) at win32.c:5650
   #4  0xb7fb4abe in expGetProcAddress (mod=288, name=0x37f7f9c2 <Address 0x37f7f9c2 out of bounds>) at win32.c:2374
   #5  0xb7f843ba in ?? ()
+  -> mangled/corrupted exports name table
+     winedump -x ~/projects/buzztard/win32/Gear/Effects/Shaman\ Chorus.dll
+     objconv -d Effects/Shaman\ Chorus.dll 
+     objconv -v2 -ew2035 -fgasm Effects/Shaman\ Chorus.dll
 Sonic Verb (seems to work now)
   buzzmachinecallbacks.cpp:199:BuzzMachineCallbacks::GetEnvPoint (wave=-1,env=-1,i=-1076278224,&x,&y,&flags)
   buzzmachinecallbacks.cpp:276:BuzzMachineCallbacks::SetSequenceData (row=-1217504548,ppat=B7A5B3C4)
