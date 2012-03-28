@@ -2,7 +2,7 @@ dnl Initialise the autoconf/automake tool
 AC_PREREQ(2.61)
 AC_INIT([bml],[0.7.0],[buzztard-devel@lists.sourceforge.net])
 AM_INIT_AUTOMAKE([-Wall -Werror check-news std-options])
-AC_CONFIG_SRCDIR([ChangeLog])
+AC_CONFIG_SRCDIR([README])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR(m4)
 AC_CANONICAL_HOST([])
@@ -11,6 +11,7 @@ AC_CANONICAL_HOST([])
 # by either passing --disable-silent-rules to configure or passing V=1
 # to make
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+
 
 BML_MAJOR_VERSION=0
 BML_MINOR_VERSION=7
@@ -28,6 +29,8 @@ AC_SUBST(BML_VERSION_NUMBER)
 
 AC_DEFINE_UNQUOTED(PACKAGE_VERSION_NUMBER, ${BML_VERSION_NUMBER}, [version as a number])
 
+VERSION=${BML_VERSION}
+
 
 dnl Checks for programs.
 AC_PROG_CXX
@@ -40,26 +43,8 @@ AC_PROG_LIBTOOL
 AM_PROG_AS
 AM_PROG_CC_C_O
 
-dnl check target cpu architecture
-ARCH_CFLAGS=""
-ARCH_CCASFLAGS=""
-case "x${host_cpu}" in
-  xi?86 | k?)
-    HAVE_X86=yes
-    ;;
-  xx86_64|xamd64)
-    HAVE_X86=no
-    #ARCH_CFLAGS="-m32"
-    #ARCH_CCASFLAGS="-m32"
-    ;;
-  *)
-    HAVE_X86=no
-    ;;
-esac
-if test x$HAVE_X86 = xyes; then
-  AC_DEFINE(HAVE_X86, 1, [Defined if host is x86])
-fi
-AM_CONDITIONAL(USE_X86, test x$HAVE_X86 = xyes)
+
+dnl common switches for all buzztard modules
 
 dnl enable runtime debugging code
 AC_MSG_CHECKING(whether to enable runtime debugging code)
@@ -75,6 +60,7 @@ if test "$enable_debug" = "yes"; then
 else
   DEBUG_CFLAGS=""
 fi
+
 
 dnl enable coverage analysis
 AC_MSG_CHECKING(whether to enable coverage analysis)
@@ -107,7 +93,30 @@ else
 fi
 AM_CONDITIONAL(USE_LCOV, test ! x$lcov_path = xyes)
 
-dnl chek for headers
+
+dnl check target cpu architecture
+ARCH_CFLAGS=""
+ARCH_CCASFLAGS=""
+case "x${host_cpu}" in
+  xi?86 | k?)
+    HAVE_X86=yes
+    ;;
+  xx86_64|xamd64)
+    HAVE_X86=no
+    #ARCH_CFLAGS="-m32"
+    #ARCH_CCASFLAGS="-m32"
+    ;;
+  *)
+    HAVE_X86=no
+    ;;
+esac
+if test x$HAVE_X86 = xyes; then
+  AC_DEFINE(HAVE_X86, 1, [Defined if host is x86])
+fi
+AM_CONDITIONAL(USE_X86, test x$HAVE_X86 = xyes)
+
+
+dnl check for headers
 AC_HEADER_STDC([])
 AC_CHECK_HEADERS( \
   alloca.h assert.h byteswap.h dirent.h execinfo.h kstat.h libgen.h malloc.h \
@@ -120,6 +129,7 @@ AC_CHECK_DECL(sysi86,[
       ],,[
 #include <sys/sysi86.h>
 ])
+
 
 dnl check for libraries
 AC_CHECK_LIBM
@@ -149,6 +159,7 @@ AC_SUBST(BML_CXXFLAGS)
 AC_SUBST(BML_LIBS)
 AC_SUBST(ARCH_CFLAGS)
 AC_SUBST(ARCH_CCASFLAGS)
+
 
 AC_CONFIG_FILES(Makefile \
   libbml.pc \
