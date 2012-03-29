@@ -7,12 +7,19 @@ AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR(m4)
 AC_CANONICAL_HOST([])
 
-# Support silent build rules, requires at least automake-1.11. Disable
-# by either passing --disable-silent-rules to configure or passing V=1
-# to make
+# Support silent build rules, requires at least automake-1.11. Disable by
+# either passing --disable-silent-rules to configure or passing V=1 to make
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
-
+dnl
+dnl current  : the interface         : MAJOR + MINOR
+dnl revision : of the same interface : MICRO
+dnl age      : MINOR
+dnl
+dnl 1: when releasing a changed version : MICRO++
+dnl 2: when the interface has changed (adding functions) : MINOR++, MICRO=0
+dnl 3: when the interface has changed (removing functions) : MAJOR++, MINOR=0, MICRO=0
+dnl
 BML_MAJOR_VERSION=0
 BML_MINOR_VERSION=7
 BML_MICRO_VERSION=0
