@@ -71,12 +71,12 @@ public:
         mdkHelper=NULL;
         host_callbacks=_host_callbacks;
     }
-    ~BuzzMachineCallbacksPre12() {
-      /* done in CMDKMachineInterface::~CMDKMachineInterface()
-      if (mdkHelper) {
-        delete mdkHelper;
-      }*/
-    }
+//    ~BuzzMachineCallbacksPre12() {
+//      /* done in CMDKMachineInterface::~CMDKMachineInterface()
+//      if (mdkHelper) {
+//        delete mdkHelper;
+//      }*/
+//    }
 
     CWaveInfo const *GetWave(int const i);
     CWaveLevel const *GetWaveLevel(int const i, int const level);
