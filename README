@@ -8,9 +8,9 @@ composer Buzz, so that Linux/Unix applications can use them.
 It also supports open source buzz machines on any platform.
 
 = building =
-Please note that loading the windows dlls only works on x86 systems.
-If one build on a non x86 system, the library can only support native
-buzzmachines (see buzzmachines module in same svn).
+Please note that loading the windows dlls only works on x86-32bit systems.
+If one builds on a different system, the library can only support native
+buzzmachines (see notes below).
 
 = installing localy =
 Use following options for ./autogen.sh or ./configure
@@ -33,6 +33,17 @@ Export the path we you have the machines, e.g.:
 
 I have the native ones in Gear and the windows ones under Gear/Effects and Gear/
 Generators. libbml will look by default under $prefix/lib/Gear.
+
+= native machines =
+As we manage to receive or find the sources of buzzmacines, we make them
+available in the buzzmachine.sf.net project. The machines in this repository
+have been ported, so that they can be build on on many platforms and
+architectures.
+
+svn co https://buzzmachines.svn.sourceforge.net/svnroot/buzzmachines/trunk/\
+buzzmachines buzzmachines
+cd buzzmachines
+./autogen.sh --prefix=$HOME/buzztard; make; sudo make install
 
 = windows machines =
 The emulation uses some parts of wine at runtime. It needs kernel32.dll, e.g.
