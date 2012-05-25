@@ -1,6 +1,9 @@
 // Copyright (C) 1997-2000 Oskari Tammelin (ot@iki.fi)
 // This header file may be used to write _freeware_ DLL "machines" for Buzz
 // Using it for anything else is not allowed without a permission from the author
+//
+// The buzztard project owns a buzzlib license to use this header for a machine
+// host. Talk to Stefan Sauer <ensonic@users.sf.net> for details.
 
 #ifndef __MACHINE_INTERFACE_H
 #define __MACHINE_INTERFACE_H
