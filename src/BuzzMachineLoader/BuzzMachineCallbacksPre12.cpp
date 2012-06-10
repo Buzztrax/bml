@@ -69,6 +69,10 @@ CWaveLevel const *BuzzMachineCallbacksPre12::GetNearestWaveLevel(int const i, in
         DBG1("return the mdk helper, %p\n",mdkHelper);
         return((CWaveLevel *)mdkHelper);
     }
+    if((i==-2) && (note==-2)) {
+      // if(pCB->GetHostVersion() >= 2) { newbuzz = 1; }
+      FIXME;
+    }
 
     if(host_callbacks && *host_callbacks) {
         return (CWaveLevel *)(*host_callbacks)->GetNearestWaveLevel(*host_callbacks,i,note);
