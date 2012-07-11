@@ -30,7 +30,6 @@
 #include <stdio.h>
 #include "debug.h"
 
-#include "MachineInterface.h"
 #include "BuzzMachineCallbacks.h"
 //#include "BuzzMDKHelper.h"
 #include "mdkimp.h"

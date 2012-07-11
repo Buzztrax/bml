@@ -1,6 +1,14 @@
-// Copyright (C) 2000 Oskari Tammelin (ot@iki.fi)
-// This header file and the library may be used to write _freeware_ DLL "machines" for Buzz
-// Using it for anything else is not allowed without a permission from the author
+/*
+ * Copyright (C) 2000 Oskari Tammelin (ot@iki.fi)
+ *
+ * This header file may be used to write _freeware_ DLL "machines" for Buzz.
+ * Using it for anything else is not allowed without a permission from the
+ * author.
+ *
+ * The buzztard project owns a buzzlib license to use this header
+ * inside libbml.
+ * Contact: Stefan Sauer <ensonic@users.sf.net>
+ */
      
 #ifndef __BUZZ_MDK
 #define __BUZZ_MDK

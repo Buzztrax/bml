@@ -29,7 +29,6 @@
 #include <stdio.h>
 #include "debug.h"
 
-#include "MachineInterface.h"
 #include "BuzzMachineCallbacksPre12.h"
 //#include "BuzzMDKHelper.h"
 #include "mdkimp.h"

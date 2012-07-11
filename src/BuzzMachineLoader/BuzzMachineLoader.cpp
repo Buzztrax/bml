@@ -32,7 +32,6 @@
 #include <exception>
 #include "debug.h"
 
-#include "MachineInterface.h"
 #include "BuzzMachineCallbacks.h"
 #include "BuzzMachineCallbacksPre12.h"
 #include "MachineDataImpl.h"
