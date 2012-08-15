@@ -35,7 +35,7 @@ void CMachineDataOutput::Write(void * pmem, const int n_size) {
 // Implementation of Read/Write classes for internal machine data load/save operations
 
 CMachineDataInputImpl::CMachineDataInputImpl(HANDLE hFile) : m_hFile(hFile), m_pbyBuffer(NULL), m_dwBufferLen(0) {};
-CMachineDataInputImpl::CMachineDataInputImpl(BYTE * pbyBuffer, DWORD dwBufferLen) : m_hFile(NULL), m_pbyBuffer(pbyBuffer), m_dwBufferLen(dwBufferLen) {};
+CMachineDataInputImpl::CMachineDataInputImpl(BYTE * pbyBuffer, DWORD dwBufferLen) : m_hFile(0), m_pbyBuffer(pbyBuffer), m_dwBufferLen(dwBufferLen) {};
 CMachineDataInputImpl::~CMachineDataInputImpl() {
 	//
 }
@@ -69,7 +69,7 @@ void CMachineDataInputImpl::Read(void* pmem, const int n_size) {
 
 
 CMachineDataOutputImpl::CMachineDataOutputImpl(HANDLE hFile) : m_hFile(hFile), m_pbyBuffer(NULL), m_dwBufferLen(0) {};
-CMachineDataOutputImpl::CMachineDataOutputImpl(void) : m_hFile(NULL), m_pbyBuffer(NULL), m_dwBufferLen(0) {};
+CMachineDataOutputImpl::CMachineDataOutputImpl(void) : m_hFile(0), m_pbyBuffer(NULL), m_dwBufferLen(0) {};
 
 DWORD CMachineDataOutputImpl::GetCount() const {
 	return m_dwBufferLen;
