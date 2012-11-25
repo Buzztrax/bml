@@ -32,7 +32,6 @@
 #include <exception>
 #include "debug.h"
 
-#include "MachineInterface.h"
 #include "BuzzMachineCallbacks.h"
 #include "BuzzMachineCallbacksPre12.h"
 #include "MachineDataImpl.h"
@@ -328,15 +327,6 @@ extern "C" DE void bm_free(BuzzMachine *bm) {
         if(callbacks) {
             int version = bm->machine_info->Version;
             DBG1("freeing callbacks 0x%04x\n",version);
-        
-            if((version & 0xff) < 15) {
-                delete (BuzzMachineCallbacksPre12 *)callbacks;
-                DBG("  freed old callback instance\n");
-            }
-            else {
-                delete (BuzzMachineCallbacks *)callbacks;
-                DBG("  freed callback instance\n");
-            }
         }
         free(bm);
     }

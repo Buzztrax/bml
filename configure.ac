@@ -1,11 +1,11 @@
 dnl Initialise autoconf/automake/libtool
 AC_PREREQ(2.61)
 AC_INIT([bml],[0.7.0],[buzztard-devel@lists.sourceforge.net])
+AC_CANONICAL_TARGET([])
 AM_INIT_AUTOMAKE([-Wall -Werror check-news std-options])
 AC_CONFIG_SRCDIR([README])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR(m4)
-AC_CANONICAL_HOST([])
 LT_PREREQ([2.2])
 LT_INIT
 
@@ -47,10 +47,10 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
-AC_ISC_POSIX
 AM_PROG_AS
 AM_PROG_CC_C_O
 
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 
 dnl common switches for all buzztard modules
 
@@ -105,7 +105,7 @@ AM_CONDITIONAL(USE_LCOV, test ! x$lcov_path = xyes)
 dnl check target cpu architecture
 ARCH_CFLAGS=""
 ARCH_CCASFLAGS=""
-case "x${host_cpu}" in
+case "x${target_cpu}" in
   xi?86 | k?)
     HAVE_X86=yes
     ;;
@@ -119,7 +119,7 @@ case "x${host_cpu}" in
     ;;
 esac
 if test x$HAVE_X86 = xyes; then
-  AC_DEFINE(HAVE_X86, 1, [Defined if host is x86])
+  AC_DEFINE(HAVE_X86, 1, [Defined if target is x86])
 fi
 AM_CONDITIONAL(USE_X86, test x$HAVE_X86 = xyes)
 
