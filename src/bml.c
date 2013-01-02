@@ -112,7 +112,7 @@ typedef void (*BMLDebugLogger)(char *str);
 typedef void (*BMSetLogger)(BMLDebugLogger func);
 
 #ifdef HAVE_X86
-// windows plugin API method pointers
+// windows plugin API method pointers (called through local wrappers)
 BMSetLogger BMLX(bmlw_set_logger);
 BMSetMasterInfo BMLX(bmlw_set_master_info);
 

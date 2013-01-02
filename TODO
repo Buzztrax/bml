@@ -109,20 +109,50 @@ use mingw-binutils to dump win32 binaries
 
 
 = x86_64 bit support for native plugins =
+== IPC based ==
+- see http://www.tldp.org/LDP/lpg/node7.html
 - we need to build a launcher+libbml with -m32
 - in libbml's #ifdef HAVE_X86 section, we need to have alternative implementations
   for 64bit
   - the 32bit build would use the one we have there
-  - the 64bit build would need to do IPC
+  - the 64bit build would need to do IPC (shm for data sharing)
   - the 32bit launcher would need to receive IPC and dispatch
 - the front-env tests (bmltest_*) would remain as they are
-- will we launch 1 helper per using process or 1 herlper per machine
+- will we launch 1 helper per using process or 1 helper per machine
   - 1 helper per process: 1 shm key
 - creating the BuzzMachineHandle / BuzzMachine will create proxy structures with
   the ids for the launcher (index values to arrays on the launcher side)
 - for the IPC we need to marshall (function, parameters, data)
   - we can just enumerate the API calls
   - the parameters will be hardcoded for each function
+
+== calling into 32bit code from 64bit code ==
+- with a specific trampoline, we can call into 32bit code:
+  http://blog.oxff.net/#xwuqt3dgysac6jqbro5q
+  if(!allocateLowStack(m_stack32)) {
+    throw;
+  }
+  /* mov r8, rsp */
+  * (uint16_t *) &m_trampoline[0] = 0x8949;
+  m_trampoline[2] = 0xe0;
+  /* mov rsp, ... */
+  * (uint16_t *) &m_trampoline[3] = 0xbc48;
+  * (uint64_t *) &m_trampoline[5] = (uint64_t) m_stack32;
+  /* call far [rip+4] */
+  * (uint16_t *) &m_trampoline[13] = 0x1dff;
+  * (uint32_t *) &m_trampoline[15] = 4;
+  /* mov rsp, r8 */
+  * (uint16_t *) &m_trampoline[19] = 0x894c;
+  m_trampoline[21] = 0xc4;                
+  /* ret */
+  m_trampoline[22] = 0xc3;      
+  /* m16:32 call far destination */
+  * (uint32_t *) &m_trampoline[23] =
+          (uint32_t) (uint64_t) m_32bitCode;
+  * (uint16_t *) &m_trampoline[27] = codeSelector;
+- for this the whole win32 emulation stuff should be build as 32bit code as well
+  to avoid calling back into 64bit
+
 
 = test single plugins =
 G_SLICE=always-malloc G_DEBUG=gc-friendly GLIBCPP_FORCE_NEW=1 GLIBCXX_FORCE_NEW=1 valgrind --tool=memcheck --leak-check=full --leak-resolution=high --trace-children=yes --num-callers=20 -v ../src/.libs/bmltest_info ~/buzztard/lib/Gear-real/Effects/Static\ Duafilt\ II.dll
