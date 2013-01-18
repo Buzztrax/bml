@@ -1,7 +1,7 @@
 SUBDIRS = BuzzMachineLoader
 
 if USE_X86
-  DLLWRAPPER_LIB=$(top_builddir)/dllwrapper/wine/libloader.la
+  DLLWRAPPER_LIB=$(top_builddir)/dllwrapper/libloader.la
 else
   DLLWRAPPER_LIB=
 endif
@@ -9,7 +9,7 @@ endif
 lib_LTLIBRARIES = libbml.la
 
 AM_CPPFLAGS = \
-	-I$(top_srcdir)/dllwrapper/wine \
+	-I$(top_srcdir)/dllwrapper \
 	-I$(top_srcdir)/src/BuzzMachineLoader \
 	-I$(top_srcdir)/src \
 	-DNATIVE_BML_DIR="\"$(pkglibdir)\""
