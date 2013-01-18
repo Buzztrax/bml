@@ -174,7 +174,6 @@ AC_CONFIG_FILES(Makefile \
   src/Makefile \
   src/BuzzMachineLoader/Makefile \
   dllwrapper/Makefile \
-  dllwrapper/wine/Makefile \
   tests/bt-cfg.sh \
 )
 AC_OUTPUT

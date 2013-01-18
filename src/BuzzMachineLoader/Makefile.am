@@ -31,5 +31,5 @@ libbuzzmachineloader_la_LIBADD = $(LIBM) $(PTHREAD_LIBS) $(BML_LIBS) -lstdc++
 libbuzzmachineloader_la_LDFLAGS = -module -avoid-version
 libbuzzmachineloader_la_LIBTOOLFLAGS = --tag=disable-static
 
-AM_CPPFLAGS = -I$(top_srcdir)/dllwrapper/wine
+AM_CPPFLAGS = -I$(top_srcdir)/dllwrapper
 
