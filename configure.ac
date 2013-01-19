@@ -1,6 +1,6 @@
 dnl Initialise autoconf/automake/libtool
 AC_PREREQ(2.61)
-AC_INIT([bml],[0.7.0],[buzztard-devel@lists.sourceforge.net])
+AC_INIT([bml],[0.8.0],[buzztard-devel@lists.sourceforge.net])
 AC_CANONICAL_TARGET([])
 AM_INIT_AUTOMAKE([-Wall -Werror check-news std-options])
 AC_CONFIG_SRCDIR([README])
@@ -23,7 +23,7 @@ dnl 2: when the interface has changed (adding functions) : MINOR++, MICRO=0
 dnl 3: when the interface has changed (removing functions) : MAJOR++, MINOR=0, MICRO=0
 dnl
 BML_MAJOR_VERSION=0
-BML_MINOR_VERSION=7
+BML_MINOR_VERSION=8
 BML_MICRO_VERSION=0
 BML_VERSION=$BML_MAJOR_VERSION.$BML_MINOR_VERSION.$BML_MICRO_VERSION
 BML_VERSION_INFO=`expr $BML_MAJOR_VERSION + $BML_MINOR_VERSION`:$BML_MICRO_VERSION:$BML_MINOR_VERSION
