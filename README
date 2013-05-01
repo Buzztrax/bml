@@ -1,6 +1,6 @@
 = quick info =
-Please turn you browser to http://www.buzztard.org to learn what this project
-is about. Buzztard is free software and distributed under the LGPL.
+Please turn you browser to http://www.buzztrax.org to learn what this project
+is about. Buzztrax is free software and distributed under the LGPL.
 
 = intro =
 The libbml is a library that loads buzz machines from the windows music composer
@@ -20,13 +20,13 @@ buzzmachines (see notes below).
 
 = installing localy =
 Use following options for ./autogen.sh or ./configure
-  --prefix=$HOME/buzztard
-when installing the package to e.g. $HOME/buzztard remember to set these
+  --prefix=$HOME/buzztrax
+when installing the package to e.g. $HOME/buzztrax remember to set these
 environment variables:
 libraries:
-  export LD_LIBRARY_PATH=$HOME/buzztard/lib:$LD_LIBRARY_PATH
+  export LD_LIBRARY_PATH=$HOME/buzztrax/lib:$LD_LIBRARY_PATH
 pkg-config:
-  export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$HOME/buzztard/lib/pkgconfig"
+  export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$HOME/buzztrax/lib/pkgconfig"
 
 = installing in /usr/local =
 The default value for the --prefix configure option is /usr/local. Also in that
@@ -34,8 +34,8 @@ case the variables mentioned in the last example need to be exported.
 
 = machines =
 Export the path we you have the machines, e.g.:
-  export BML_PATH=$HOME/buzztard/lib/Gear:$HOME/buzztard/lib/Gear/Effects:\
-    $HOME/buzztard/lib/Gear/Generators
+  export BML_PATH=$HOME/buzztrax/lib/Gear:$HOME/buzztrax/lib/Gear/Effects:\
+    $HOME/buzztrax/lib/Gear/Generators
 
 I have the native ones in Gear and the windows ones under Gear/Effects and Gear/
 Generators. libbml will look by default under $prefix/lib/Gear.
@@ -49,7 +49,7 @@ architectures.
 svn co https://buzzmachines.svn.sourceforge.net/svnroot/buzzmachines/trunk/\
 buzzmachines buzzmachines
 cd buzzmachines
-./autogen.sh --prefix=$HOME/buzztard; make; sudo make install
+./autogen.sh --prefix=$HOME/buzztrax; make; sudo make install
 
 = windows machines =
 The emulation uses some parts of wine at runtime. It needs kernel32.dll, e.g.
@@ -57,10 +57,10 @@ kernel32.dll.so, MFC42.DLL, MSVCRT.DLL.
 The original windows dll should also work.
 
 Then you need to copy the all *.dll libraries from a windows buzz installation
-to your LD_LIBARY_PATH. We recommend to copy them to buzztard-prefix/lib/win32.
+to your LD_LIBARY_PATH. We recommend to copy them to buzztrax-prefix/lib/win32.
 
 Next copy the machines. You can e.g. just copy the whole Gear folder to
-buzztard-prefix/lib as well.
+buzztrax-prefix/lib as well.
 You might need to fix some machine names (e.g. names with '?' in them).
 
 = usage =
@@ -109,10 +109,10 @@ what about using winegcc - e.g.:
 winegcc -shared XXX.dll.spec -mnocygwin -o XXX.dll.so abc.o def.o -lole32 -lwinmm -lpthread -luuid
 
 = inspecting the dlls =
-winedump -x $HOME/buzztard/lib/Gear-real/Effects/Shaman\ Chorus.dll
-./objconv -fgasm ~/projects/buzztard/win32/Gear/Effects/Arguelles\ TruePan.dll
-/usr/bin/i586-mingw32msvc-objdump -x ~/projects/buzztard/win32/Gear/Effects/Arguelles\ TruePan.dll
-/usr/bin/i586-mingw32msvc-objdump -d ~/projects/buzztard/win32/Gear/Effects/Arguelles\ TruePan.dll
+winedump -x $HOME/buzztrax/lib/Gear-real/Effects/Shaman\ Chorus.dll
+./objconv -fgasm ~/projects/buzztrax/win32/Gear/Effects/Arguelles\ TruePan.dll
+/usr/bin/i586-mingw32msvc-objdump -x ~/projects/buzztrax/win32/Gear/Effects/Arguelles\ TruePan.dll
+/usr/bin/i586-mingw32msvc-objdump -d ~/projects/buzztrax/win32/Gear/Effects/Arguelles\ TruePan.dll
 
 = problems =
 == /dev/zero needs to be executable ==

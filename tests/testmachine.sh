@@ -4,10 +4,10 @@
 # if machines hang, they can be skipped by pressing ctrl-c
 #
 # ./testmachine.sh "machines/*.dll"
-# ./testmachine.sh "/home/ensonic/buzztard/lib/Gear-real/Effects/*.dll"
-# ./testmachine.sh "/home/ensonic/buzztard/lib/Gear-real/Generators/*.dll"
-# ./testmachine.sh "/home/ensonic/buzztard/lib/Gear-real/[GE]*/*.dll"
-# ./testmachine.sh "/home/ensonic/buzztard/lib/Gear/*.so"
+# ./testmachine.sh "/home/ensonic/buzztrax/lib/Gear-real/Effects/*.dll"
+# ./testmachine.sh "/home/ensonic/buzztrax/lib/Gear-real/Generators/*.dll"
+# ./testmachine.sh "/home/ensonic/buzztrax/lib/Gear-real/[GE]*/*.dll"
+# ./testmachine.sh "/home/ensonic/buzztrax/lib/Gear/*.so"
 #
 # analyze results
 #
@@ -20,7 +20,7 @@
 #  grep -ho "wine/module: Win32 LoadLibrary failed to load:.*" testmachine/*.fail | sort -f | uniq -ic
 # search for same last line in fail log
 #  tail -n1 testmachine/*.fail | grep -B1 "GetInfo()" | grep "==>"
-#  tail -n1 testmachine/*.fail | grep -B1 "Entering DllMain(DLL_PROCESS_ATTACH) for /home/ensonic/buzztard/lib/Gear-real/"  | grep "==>"
+#  tail -n1 testmachine/*.fail | grep -B1 "Entering DllMain(DLL_PROCESS_ATTACH) for /home/ensonic/buzztrax/lib/Gear-real/"  | grep "==>"
 #
 # stats
 #  ls -1 testmachine/*.okay | wc -l

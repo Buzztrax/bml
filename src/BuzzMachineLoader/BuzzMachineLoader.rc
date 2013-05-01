@@ -69,7 +69,7 @@ BEGIN
     BEGIN
         BLOCK "000004b0"
         BEGIN
-            VALUE "CompanyName", "buzztard.org"
+            VALUE "CompanyName", "buzztrax.org"
             VALUE "FileDescription", "BuzzMach Dynamic Link Library (DLL)"
             VALUE "FileVersion", "1, 0, 0, 1"
             VALUE "InternalName", "BuzzMach"

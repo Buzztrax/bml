@@ -1,5 +1,5 @@
 /* Buzz Machine Loader
- * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
+ * Copyright (C) 2006 Buzztrax team <buzztrax-devel@lists.sf.net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -447,7 +447,7 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
      * - tick AFTER AttributesChanged, and after we've set initial track and
      *   global data for machine)
      */
-	bm->machine_iface->Tick();
+    bm->machine_iface->Tick();
     DBG("  CMachineInterface::Tick() called\n");
 
     if(bm->machine_info->Flags&MIF_USES_LIB_INTERFACE) {

@@ -89,10 +89,10 @@ Gdi32.lib
   unk_GetStockObject : http://msdn.microsoft.com/en-us/library/ms533223.aspx
 
 = list missing machine for songs =
-for file in *.bmx; do ~/buzztard/bin/bt-cmd 2>/dev/null --command=info --input-file=$file | grep "  bml-"; done | sort | uniq -c | sort -n
+for file in *.bmx; do ~/buzztrax/bin/bt-cmd 2>/dev/null --command=info --input-file=$file | grep "  bml-"; done | sort | uniq -c | sort -n
 
 = list songs that have no missing machines =
-for file in *.bmx; do ~/buzztard/bin/bt-cmd 2>/dev/null --command=info --input-file=$file | grep -q "  bml-" || echo $file; done
+for file in *.bmx; do ~/buzztrax/bin/bt-cmd 2>/dev/null --command=info --input-file=$file | grep -q "  bml-" || echo $file; done
 
 = missing features =
 * getting access to Patterns/Sequence
@@ -155,8 +155,8 @@ use mingw-binutils to dump win32 binaries
 
 
 = test single plugins =
-G_SLICE=always-malloc G_DEBUG=gc-friendly GLIBCPP_FORCE_NEW=1 GLIBCXX_FORCE_NEW=1 valgrind --tool=memcheck --leak-check=full --leak-resolution=high --trace-children=yes --num-callers=20 -v ../src/.libs/bmltest_info ~/buzztard/lib/Gear-real/Effects/Static\ Duafilt\ II.dll
-../src/.libs/bmltest_info ~/buzztard/lib/Gear-real/Effects/Static\ Duafilt\ II.dll
+G_SLICE=always-malloc G_DEBUG=gc-friendly GLIBCPP_FORCE_NEW=1 GLIBCXX_FORCE_NEW=1 valgrind --tool=memcheck --leak-check=full --leak-resolution=high --trace-children=yes --num-callers=20 -v ../src/.libs/bmltest_info ~/buzztrax/lib/Gear-real/Effects/Static\ Duafilt\ II.dll
+../src/.libs/bmltest_info ~/buzztrax/lib/Gear-real/Effects/Static\ Duafilt\ II.dll
 
 
 = what windows dll to copy and which not =
@@ -195,7 +195,7 @@ other-sources/buzz-sources/__BUZZ1PLAYER__NOT_FOR_PUBLIC!/CMachine.cpp
 2008.11.20 : Of 853 machine(s) 758 worked and 95 failed to load.
 2011.01.11 : Of 857 machine(s) 760 worked, 7 did not processed data and 90 failed to load.
 
-In gst-buzztard/src/bml/plugin.c I maintain a black list.
+In gst-buzztrax/src/bml/plugin.c I maintain a black list.
 
 There seems to be several machines failing when calling GetInfo()
 tail -n1 *.fail | grep -B1 "GetInfo"
@@ -248,14 +248,14 @@ Effects/Jeskola Wave Shaper.dll
     Called unk_MFC42.DLL:1176
     Called unk_MFC42.DLL:1243
   if we have MFC42.DLL
-    Entering DllMain(DLL_PROCESS_ATTACH) for /home/ensonic/buzztard/lib/win32/mfc42.dll
+    Entering DllMain(DLL_PROCESS_ATTACH) for /home/ensonic/buzztrax/lib/win32/mfc42.dll
     Segmentation fault
 Shaman Chorus.dll
   #3  0xb7fb48e8 in LookupExternalByName (library=0xb7fbce28 "kernel32.dll", name=0x37f7f9c2 <Address 0x37f7f9c2 out of bounds>) at win32.c:5650
   #4  0xb7fb4abe in expGetProcAddress (mod=288, name=0x37f7f9c2 <Address 0x37f7f9c2 out of bounds>) at win32.c:2374
   #5  0xb7f843ba in ?? ()
   -> mangled/corrupted exports name table
-     winedump -x ~/projects/buzztard/win32/Gear/Effects/Shaman\ Chorus.dll
+     winedump -x ~/projects/buzztrax/win32/Gear/Effects/Shaman\ Chorus.dll
      objconv -d Effects/Shaman\ Chorus.dll 
      objconv -v2 -ew2035 -fgasm Effects/Shaman\ Chorus.dll
 Sonic Verb (seems to work now)
@@ -277,10 +277,10 @@ WhiteNoise AuxReturn.dll
   crash
 
 Zu*.dll
-  #0  0xb7fce4e2 in exp_EH_prolog () from /home/ensonic/buzztard/lib/libbml.so.0
+  #0  0xb7fce4e2 in exp_EH_prolog () from /home/ensonic/buzztrax/lib/libbml.so.0
   #1  0xb7c9e38a in ?? ()
   #2  0x1001a898 in ?? ()
-  #3  0xb7fafad4 in bmlw_open (bm_file_name=0xbfffeffe "/home/ensonic/buzztard/lib/Gear-real/Effects/Zu Parametric EQ.dll") at bml.c:207
-  #4  0x080490cb in bmlw_test_info (libpath=0xbfffeffe "/home/ensonic/buzztard/lib/Gear-real/Effects/Zu Parametric EQ.dll") at bmltest_info.h:34
+  #3  0xb7fafad4 in bmlw_open (bm_file_name=0xbfffeffe "/home/ensonic/buzztrax/lib/Gear-real/Effects/Zu Parametric EQ.dll") at bml.c:207
+  #4  0x080490cb in bmlw_test_info (libpath=0xbfffeffe "/home/ensonic/buzztrax/lib/Gear-real/Effects/Zu Parametric EQ.dll") at bmltest_info.h:34
   #5  0x0804ab15 in main (argc=2, argv=0xbfffed64) at bmltest_info.c:96
 

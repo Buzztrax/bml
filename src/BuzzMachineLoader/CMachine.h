@@ -1,6 +1,6 @@
 /* Buzz Machine Loader
  * Copyright (C) 2003-2007 Anders Ervik <calvin@countzero.no>
- * Copyright (C) 2008 Buzztard team <buzztard-devel@lists.sf.net>*
+ * Copyright (C) 2008 Buzztrax team <buzztrax-devel@lists.sf.net>*
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

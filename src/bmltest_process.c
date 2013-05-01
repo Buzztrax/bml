@@ -1,5 +1,5 @@
 /* Buzz Machine Loader
- * Copyright (C) 2006 Buzztard team <buzztard-devel@lists.sf.net>
+ * Copyright (C) 2006 Buzztrax team <buzztrax-devel@lists.sf.net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -20,8 +20,8 @@
  * invoke it e.g. as
  *   LD_LIBRARY_PATH=".:./BuzzMachineLoader/.libs" ./bmltest_process ../machines/elak_svf.dll input.raw output1.raw
  *   LD_LIBRARY_PATH=".:./BuzzMachineLoader/.libs" ./bmltest_process ../../buzzmachines/Elak/SVF/libelak_svf.so input.raw output2.raw
- *   LD_LIBRARY_PATH=".:./BuzzMachineLoader/.libs" ./bmltest_process ~/buzztard/lib/Gear/Effects/Jeskola\ NiNjA\ dElaY.dll input.raw output1.raw
- *   LD_LIBRARY_PATH=".:./BuzzMachineLoader/.libs" ./bmltest_process ~/buzztard/lib/Gear/Jeskola_Ninja.so input.raw output1.raw
+ *   LD_LIBRARY_PATH=".:./BuzzMachineLoader/.libs" ./bmltest_process ~/buzztrax/lib/Gear/Effects/Jeskola\ NiNjA\ dElaY.dll input.raw output1.raw
+ *   LD_LIBRARY_PATH=".:./BuzzMachineLoader/.libs" ./bmltest_process ~/buzztrax/lib/Gear/Jeskola_Ninja.so input.raw output1.raw
  *
  * aplay -fS16_LE -r44100 input.raw
  * aplay -fS16_LE -r44100 output1.raw

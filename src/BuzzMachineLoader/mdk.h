@@ -5,7 +5,7 @@
  * Using it for anything else is not allowed without a permission from the
  * author.
  *
- * The buzztard project owns a buzzlib license to use this header
+ * The buzztrax project owns a buzzlib license to use this header
  * inside libbml.
  * Contact: Stefan Sauer <ensonic@users.sf.net>
  */

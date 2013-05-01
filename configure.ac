@@ -1,6 +1,6 @@
 dnl Initialise autoconf/automake/libtool
 AC_PREREQ(2.61)
-AC_INIT([bml],[0.8.0],[buzztard-devel@lists.sourceforge.net])
+AC_INIT([bml],[0.8.0],[buzztrax-devel@lists.sourceforge.net])
 AC_CANONICAL_TARGET([])
 AM_INIT_AUTOMAKE([-Wall -Werror check-news std-options])
 AC_CONFIG_SRCDIR([README])
@@ -52,7 +52,7 @@ AM_PROG_CC_C_O
 
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 
-dnl common switches for all buzztard modules
+dnl common switches for all buzztrax modules
 
 dnl enable runtime debugging code
 AC_MSG_CHECKING(whether to enable runtime debugging code)
@@ -193,8 +193,8 @@ Configuration
 
 if test ! `echo "$PKG_CONFIG_PATH:/usr" | tr \: \\n | grep $prefix` ; then
 echo "
-You are installing buzztard libraries into a location that is not yet known to
-system. In order for other buzztard modules to find them and the application to
+You are installing buzztrax libraries into a location that is not yet known to
+system. In order for other buzztrax modules to find them and the application to
 work with all features please register the location (see README for details):
 export LD_LIBRARY_PATH=$prefix/lib:\$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH="\$PKG_CONFIG_PATH:$prefix/lib/pkgconfig"
