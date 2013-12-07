@@ -54,11 +54,11 @@
 // like MachineInterface.h::MAX_BUFFER_LENGTH
 #define BUFFER_SIZE 256
 
-#ifdef HAVE_X86
+#ifdef USE_DLLWRAPPER
 #define bml(a) bmlw_ ## a
 #include "bmltest_process.h"
 #undef bml
-#endif  /* HAVE_X86 */
+#endif  /* USE_DLLWRAPPER */
 
 #define bml(a) bmln_ ## a
 #include "bmltest_process.h"
@@ -73,9 +73,9 @@ int main( int argc, char **argv ) {
     char *lib_name;
     int sl;
 
-#ifdef HAVE_X86
+#ifdef USE_DLLWRAPPER
     bmlw_set_master_info(120,4,44100);
-#endif
+#endif  /* USE_DLLWRAPPER */
     bmln_set_master_info(120,4,44100);
     puts("  master info initialized");
 
@@ -84,11 +84,11 @@ int main( int argc, char **argv ) {
       sl=strlen(lib_name);
       if(sl>4) {
         if(!strcmp(&lib_name[sl-4],".dll")) {
-#ifdef HAVE_X86
+#ifdef USE_DLLWRAPPER
           bmlw_test_process(lib_name,argv[2],argv[3]);
 #else
           puts("no dll emulation on non x86 platforms");
-#endif  /* HAVE_X86 */
+#endif  /* USE_DLLWRAPPER */
         }
         else {
           bmln_test_process(lib_name,argv[2],argv[3]);

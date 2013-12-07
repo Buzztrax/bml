@@ -17,11 +17,11 @@
 
 #include "config.h"
 
-#ifdef HAVE_X86
+#ifdef USE_DLLWRAPPER
 #include "win32.h"
 #include "windef.h"
 #include "ldt_keeper.h"
-#endif  /* HAVE_X86 */
+#endif  /* USE_DLLWRAPPER */
 
 #include <dlfcn.h>
 
@@ -29,7 +29,7 @@
 #include "bml.h"
 
 // buzz machine loader handle and dll handling
-#ifdef HAVE_X86
+#ifdef USE_DLLWRAPPER
 static HINSTANCE emu_dll=0L;
 static ldt_fs_t *ldt_fs;
 #define LoadDLL(name) LoadLibraryA(name)
@@ -56,7 +56,7 @@ static pthread_mutex_t ldt_mutex = PTHREAD_MUTEX_INITIALIZER;
   do {} while(0)
 #endif
 
-#endif  /* HAVE_X86 */
+#endif  /* USE_DLLWRAPPER */
 static void *emu_so=NULL;
 
 /* we can configure the packge with --enable-debug to get LOG defined
@@ -111,7 +111,7 @@ void (*_log_printf)(const char *file, const int line, const char *fmt, ...)=_log
 typedef void (*BMLDebugLogger)(char *str);
 typedef void (*BMSetLogger)(BMLDebugLogger func);
 
-#ifdef HAVE_X86
+#ifdef USE_DLLWRAPPER
 // windows plugin API method pointers (called through local wrappers)
 BMSetLogger BMLX(bmlw_set_logger);
 BMSetMasterInfo BMLX(bmlw_set_master_info);
@@ -155,7 +155,7 @@ BMDescribeTrackValue BMLX(bmlw_describe_track_value);
 
 BMSetCallbacks BMLX(bmlw_set_callbacks);
 
-#endif /* HAVE_X86 */
+#endif /* USE_DLLWRAPPER */
 
 // native plugin API method pointers
 BMSetLogger bmln_set_logger;
@@ -200,7 +200,7 @@ BMDescribeTrackValue bmln_describe_track_value;
 
 BMSetCallbacks bmln_set_callbacks;
 
-#ifdef HAVE_X86
+#ifdef USE_DLLWRAPPER
 // passthrough functions
 
 // global API
@@ -438,7 +438,7 @@ void bmlw_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks) {
     win32_eliplog();
 }
 
-#endif /* HAVE_X86 */
+#endif /* USE_DLLWRAPPER */
 
 // wrapper management
 
@@ -478,7 +478,7 @@ int bml_setup(void) {
 
   TRACE("%s\n",__FUNCTION__);
 
-#ifdef HAVE_X86
+#ifdef USE_DLLWRAPPER
   ldt_fs=Setup_LDT_Keeper();
   TRACE("%s:   wrapper initialized: 0x%p\n",__FUNCTION__,ldt_fs);
   //Check_FS_Segment(ldt_fs);
@@ -536,7 +536,7 @@ int bml_setup(void) {
 
   TRACE("%s:   symbols connected\n",__FUNCTION__);
   BMLX(bmlw_set_logger((debug_log_flags&0x1)?bml_stdout_logger:bml_null_logger));
-#endif /* HAVE_X86 */
+#endif /* USE_DLLWRAPPER */
 
   if(!(emu_so=dlopen(NATIVE_BML_DIR "/libbuzzmachineloader.so",RTLD_LAZY))) {
 	TRACE("%s:   failed to load native bml : %s\n",__FUNCTION__,dlerror());
@@ -596,10 +596,10 @@ int bml_setup(void) {
 }
 
 void bml_finalize(void) {
-#ifdef HAVE_X86
+#ifdef USE_DLLWRAPPER
   FreeDLL(emu_dll);
   Restore_LDT_Keeper(ldt_fs);
-#endif /* HAVE_X86 */
+#endif /* USE_DLLWRAPPER */
   dlclose(emu_so);
   TRACE("%s:   bml unloaded\n",__FUNCTION__);
 }

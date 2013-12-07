@@ -57,11 +57,11 @@ _get_timestamp (void)
 #endif
 }
 
-#ifdef HAVE_X86
+#ifdef USE_DLLWRAPPER
 #define bml(a) bmlw_ ## a
 #include "bmltest_info.h"
 #undef bml
-#endif  /* HAVE_X86 */
+#endif  /* USE_DLLWRAPPER */
 
 #define bml(a) bmln_ ## a
 #include "bmltest_info.h"
@@ -77,10 +77,10 @@ int main( int argc, char **argv ) {
     int sl;
     int i;
 
-#ifdef HAVE_X86
+#ifdef USE_DLLWRAPPER
     /* FIXME: if people have no real win32 dlls, only emulated things, this will crash here */
     bmlw_set_master_info(120,4,44100);
-#endif
+#endif  /* USE_DLLWRAPPER */
     bmln_set_master_info(120,4,44100);
     puts("  master info initialized");
 
@@ -89,11 +89,11 @@ int main( int argc, char **argv ) {
       sl=strlen(lib_name);
       if(sl>4) {
         if(!strcmp(&lib_name[sl-4],".dll")) {
-#ifdef HAVE_X86
+#ifdef USE_DLLWRAPPER
           bmlw_test_info(lib_name);
 #else
           puts("no dll emulation on non x86 platforms");
-#endif  /* HAVE_X86 */
+#endif  /* USE_DLLWRAPPER */
         }
         else {
           bmln_test_info(lib_name);

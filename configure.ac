@@ -101,7 +101,6 @@ else
 fi
 AM_CONDITIONAL(USE_LCOV, test ! x$lcov_path = xyes)
 
-
 dnl check target cpu architecture
 ARCH_CFLAGS=""
 ARCH_CCASFLAGS=""
@@ -118,11 +117,23 @@ case "x${target_cpu}" in
     HAVE_X86=no
     ;;
 esac
-if test x$HAVE_X86 = xyes; then
-  AC_DEFINE(HAVE_X86, 1, [Defined if target is x86])
-fi
-AM_CONDITIONAL(USE_X86, test x$HAVE_X86 = xyes)
 
+AC_MSG_CHECKING(whether to include the emulation for buzzmachine dlls)
+AC_ARG_ENABLE(
+	dllwrapper,
+	AS_HELP_STRING([--enable-dllwrapper],[enable emulation for buzzmachine dlls (default=auto)]),
+	,
+	[enable_dllwrapper="auto"])
+if test "$enable_dllwrapper" != "no"; then
+  if test x$HAVE_X86 = xno; then
+    enable_dllwrapper="no"
+  fi
+fi
+AC_MSG_RESULT($enable_dllwrapper)
+if test "$enable_dllwrapper" = "yes"; then
+  AC_DEFINE(USE_DLLWRAPPER, 1, [Defined if emulation for buzzmachine dlls is enabled])
+fi
+AM_CONDITIONAL(USE_DLLWRAPPER, test x$enable_dllwrapper = xyes)
 
 dnl check for headers
 AC_HEADER_STDC([])
@@ -185,7 +196,7 @@ Configuration
 	Prefix                     : ${prefix}
 	Compiler                   : ${CC}
 
-	x86 win32 buzzmachines     : $HAVE_X86
+	x86 win32 buzzmachines     : ${enable_dllwrapper}
 
 	Debug                      : ${enable_debug}
 	Coverage profiling         : ${enable_coverage}

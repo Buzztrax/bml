@@ -1,4 +1,4 @@
-if USE_X86
+if USE_DLLWRAPPER
   DLLWRAPPER=dllwrapper
 else
   DLLWRAPPER=

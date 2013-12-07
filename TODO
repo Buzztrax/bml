@@ -112,7 +112,8 @@ use mingw-binutils to dump win32 binaries
 == IPC based ==
 - see http://www.tldp.org/LDP/lpg/node7.html
 - we need to build a launcher+libbml with -m32
-- in libbml's #ifdef HAVE_X86 section, we need to have alternative implementations
+- in libbml's #ifdef USE_DLLWRAPPER section, we need to have alternative
+  implementations
   for 64bit
   - the 32bit build would use the one we have there
   - the 64bit build would need to do IPC (shm for data sharing)

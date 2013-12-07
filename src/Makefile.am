@@ -1,6 +1,6 @@
 SUBDIRS = BuzzMachineLoader
 
-if USE_X86
+if USE_DLLWRAPPER
   DLLWRAPPER_LIB=$(top_builddir)/dllwrapper/libloader.la
 else
   DLLWRAPPER_LIB=
@@ -32,7 +32,7 @@ bmltest_info_LDADD = $(LIBM) $(PTHREAD_LIBS) $(BML_LIBS) libbml.la
 bmltest_process_SOURCES= bmltest_process.c  bmltest_process.h
 bmltest_process_LDADD = $(LIBM) $(PTHREAD_LIBS) $(BML_LIBS) libbml.la
 
-if USE_X86
+if USE_DLLWRAPPER
 dlldir = $(libdir)/win32
 dll_DATA = BuzzMachineLoader.dll
 endif
