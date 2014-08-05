@@ -21,13 +21,22 @@ libbml_la_LDFLAGS = \
 	-export-symbols-regex ^_?\(bml_\|bmlw_\|bmln_\).* \
 	-version-info @BML_VERSION_INFO@
 
+if USE_DLLWRAPPER_IPC
+bin_PROGRAMS = bmlhost
+
+bmlhost_SOURCES = src/bmlhost.c
+bmlhost_CFLAGS = $(BML_CFLAGS) $(ARCH_CFLAGS)
+bmlhost_LDADD = libloader.la
+
+endif
+
 noinst_PROGRAMS=bmltest_info bmltest_process
 
-bmltest_info_SOURCES= src/bmltest_info.c src/bmltest_info.h
+bmltest_info_SOURCES = src/bmltest_info.c src/bmltest_info.h
 bmltest_info_CFLAGS = $(PTHREAD_CFLAGS) $(BML_CFLAGS)
 bmltest_info_LDADD = $(LIBM) $(PTHREAD_LIBS) $(BML_LIBS) libbml.la
 
-bmltest_process_SOURCES= src/bmltest_process.c  src/bmltest_process.h
+bmltest_process_SOURCES = src/bmltest_process.c  src/bmltest_process.h
 bmltest_process_CFLAGS = $(PTHREAD_CFLAGS) $(BML_CFLAGS)
 bmltest_process_LDADD = $(LIBM) $(PTHREAD_LIBS) $(BML_LIBS) libbml.la
 
