@@ -21,7 +21,8 @@ different compilers). This would not be needed for native open source machines, 
 the code is easier this way.
 
 ## requirements
-* libc6-dev-x32 for support of 32bit windows dlls on x86-64bit systems
+* libc6-dev-x32/glibc-devel-32bit
+  for support of 32bit windows dlls on x86-64bit systems
 
 ## building
 Please note that loading the windows dlls only works on x86-32bit systems.
