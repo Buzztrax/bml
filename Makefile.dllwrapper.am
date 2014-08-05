@@ -1,22 +1,20 @@
 noinst_LTLIBRARIES = libloader.la
 
-CCAS = $(CC)
-
 libloader_la_SOURCES = \
-	dllrwapper/ldt_keeper.c \
-	dllrwapper/pe_image.c \
-	dllrwapper/module.c \
-	dllrwapper/ext.c \
-	dllrwapper/win32.c \
-	dllrwapper/driver.c \
-	dllrwapper/pe_resource.c \
-	dllrwapper/resource.c \
-	dllrwapper/registry.c \
-	dllrwapper/elfdll.c \
-	dllrwapper/afl.c \
-	dllrwapper/vfl.c \
-	dllrwapper/stubs.s \
-	dllrwapper/wrapper.S
+	dllwrapper/ldt_keeper.c \
+	dllwrapper/pe_image.c \
+	dllwrapper/module.c \
+	dllwrapper/ext.c \
+	dllwrapper/win32.c \
+	dllwrapper/driver.c \
+	dllwrapper/pe_resource.c \
+	dllwrapper/resource.c \
+	dllwrapper/registry.c \
+	dllwrapper/elfdll.c \
+	dllwrapper/afl.c \
+	dllwrapper/vfl.c \
+	dllwrapper/stubs.s \
+	dllwrapper/wrapper.S
 
 libloader_la_CFLAGS = $(BML_CFLAGS) $(ARCH_CFLAGS) -ffast-math
 libloader_la_CCASFLAGS = $(ARCH_CCASFLAGS)
@@ -25,43 +23,43 @@ libloader_la_CPPFLAGS =  \
 	-DWIN32_PATH=\"/usr/lib/win32\" \
 	-DWIN32_LIB_PATH=\"$(libdir)/win32\"
 
-noinst_HEADERS = \
-	dllrwapper/avifmt.h \
-	dllrwapper/basetsd.h \
-	dllrwapper/com.h \
-	dllrwapper/debugtools.h \
-	dllrwapper/driver.h \
-	dllrwapper/elfdll.h \
-	dllrwapper/ext.h \
-	dllrwapper/heap.h \
-	dllrwapper/ldt.h \
-	dllrwapper/ldt_keeper.h \
-	dllrwapper/loader.h \
-	dllrwapper/mmreg.h \
-	dllrwapper/module.h \
-	dllrwapper/msacmdrv.h \
-	dllrwapper/msacm.h \
-	dllrwapper/ntdef.h \
-	dllrwapper/pe_image.h \
-	dllrwapper/poppack.h \
-	dllrwapper/pshpack1.h \
-	dllrwapper/pshpack2.h \
-	dllrwapper/pshpack4.h \
-	dllrwapper/pshpack8.h \
-	dllrwapper/registry.h \
-	dllrwapper/resource.h \
-	dllrwapper/vfw.h \
-	dllrwapper/win32.h \
-	dllrwapper/winbase.h \
-	dllrwapper/windef.h \
-	dllrwapper/windows.h \
-	dllrwapper/wineacm.h \
-	dllrwapper/winerror.h \
-	dllrwapper/winestring.h \
-	dllrwapper/winnt.h \
-	dllrwapper/winreg.h \
-	dllrwapper/winuser.h \
-	dllrwapper/wrapper.h
+noinst_HEADERS += \
+	dllwrapper/avifmt.h \
+	dllwrapper/basetsd.h \
+	dllwrapper/com.h \
+	dllwrapper/debugtools.h \
+	dllwrapper/driver.h \
+	dllwrapper/elfdll.h \
+	dllwrapper/ext.h \
+	dllwrapper/heap.h \
+	dllwrapper/ldt.h \
+	dllwrapper/ldt_keeper.h \
+	dllwrapper/loader.h \
+	dllwrapper/mmreg.h \
+	dllwrapper/module.h \
+	dllwrapper/msacmdrv.h \
+	dllwrapper/msacm.h \
+	dllwrapper/ntdef.h \
+	dllwrapper/pe_image.h \
+	dllwrapper/poppack.h \
+	dllwrapper/pshpack1.h \
+	dllwrapper/pshpack2.h \
+	dllwrapper/pshpack4.h \
+	dllwrapper/pshpack8.h \
+	dllwrapper/registry.h \
+	dllwrapper/resource.h \
+	dllwrapper/vfw.h \
+	dllwrapper/win32.h \
+	dllwrapper/winbase.h \
+	dllwrapper/windef.h \
+	dllwrapper/windows.h \
+	dllwrapper/wineacm.h \
+	dllwrapper/winerror.h \
+	dllwrapper/winestring.h \
+	dllwrapper/winnt.h \
+	dllwrapper/winreg.h \
+	dllwrapper/winuser.h \
+	dllwrapper/wrapper.h
 
 EXTRA_DIST += README
 

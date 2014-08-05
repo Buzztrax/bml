@@ -1,4 +1,5 @@
 SUBDIRS =
+noinst_HEADERS =
 
 ACLOCAL_AMFLAGS = -I m4
 
@@ -14,7 +15,7 @@ CLEANFILES = \
   $(pkgconfig_DATA)
 
 if USE_DLLWRAPPER
-  include $(top_srcdir)/Makefile.dllwrapper.am
+include $(top_srcdir)/Makefile.dllwrapper.am
 endif
 include $(top_srcdir)/Makefile.src.am
 

@@ -1,5 +1,5 @@
 if USE_DLLWRAPPER_DIRECT
-  DLLWRAPPER_LIB=$(top_builddir)/dllwrapper/libloader.la
+  DLLWRAPPER_LIB=libloader.la
 else
   DLLWRAPPER_LIB=
 endif
@@ -44,7 +44,7 @@ libbuzzmachineloader_la_SOURCES = \
     src/BuzzMachineLoader/mdkimp.cpp \
     src/BuzzMachineLoader/debug.cpp
 	
-noinst_HEADERS = \
+noinst_HEADERS += \
     src/BuzzMachineLoader/BuzzMachine.h \
     src/BuzzMachineLoader/BuzzMachineCallbacks.h \
     src/BuzzMachineLoader/BuzzMachineCallbacksPre12.h \
