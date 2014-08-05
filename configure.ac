@@ -106,14 +106,18 @@ ARCH_CCASFLAGS=""
 case "x${target_cpu}" in
   xi?86 | k?)
     HAVE_X86=yes
+    CALLING_MODE=direct
     ;;
   xx86_64|xamd64)
+    # switch this to yes to try building it for 32bit using the ipc wrapper
     HAVE_X86=no
-    #ARCH_CFLAGS="-m32"
-    #ARCH_CCASFLAGS="-m32"
+    ARCH_CFLAGS="-m32"
+    ARCH_CCASFLAGS="-m32"
+    CALLING_MODE=ipc
     ;;
   *)
     HAVE_X86=no
+    CALLING_MODE=void
     ;;
 esac
 
@@ -126,13 +130,23 @@ AC_ARG_ENABLE(
 if test "$enable_dllwrapper" != "no"; then
   if test x$HAVE_X86 = xno; then
     enable_dllwrapper="no"
+  else
+    enable_dllwrapper="yes"
   fi
 fi
 AC_MSG_RESULT($enable_dllwrapper)
 if test "$enable_dllwrapper" = "yes"; then
   AC_DEFINE(USE_DLLWRAPPER, 1, [Defined if emulation for buzzmachine dlls is enabled])
 fi
+if test "$CALLING_MODE" = "direct"; then
+  AC_DEFINE(USE_DLLWRAPPER_DIRECT, 1, [Defined if emulation for buzzmachine dlls is using direct calls])
+fi
+if test "$CALLING_MODE" = "ipc"; then
+  AC_DEFINE(USE_DLLWRAPPER_IPC, 1, [Defined if emulation for buzzmachine dlls is using ipc])
+fi
 AM_CONDITIONAL(USE_DLLWRAPPER, test x$enable_dllwrapper = xyes)
+AM_CONDITIONAL(USE_DLLWRAPPER_DIRECT, test x$CALLING_MODE = xdirect)
+AM_CONDITIONAL(USE_DLLWRAPPER_IPC, test x$CALLING_MODE = xipc)
 
 dnl check for headers
 AC_HEADER_STDC([])

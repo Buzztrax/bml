@@ -17,11 +17,11 @@
 
 #include "config.h"
 
-#ifdef USE_DLLWRAPPER
+#ifdef USE_DLLWRAPPER_DIRECT
 #include "win32.h"
 #include "windef.h"
 #include "ldt_keeper.h"
-#endif  /* USE_DLLWRAPPER */
+#endif  /* USE_DLLWRAPPER_DIRECT */
 
 #include <dlfcn.h>
 
@@ -29,7 +29,7 @@
 #include "bml.h"
 
 // buzz machine loader handle and dll handling
-#ifdef USE_DLLWRAPPER
+#ifdef USE_DLLWRAPPER_DIRECT
 static HINSTANCE emu_dll=0L;
 static ldt_fs_t *ldt_fs;
 #define LoadDLL(name) LoadLibraryA(name)
@@ -56,7 +56,7 @@ static pthread_mutex_t ldt_mutex = PTHREAD_MUTEX_INITIALIZER;
   do {} while(0)
 #endif
 
-#endif  /* USE_DLLWRAPPER */
+#endif  /* USE_DLLWRAPPER_DIRECT */
 static void *emu_so=NULL;
 
 /* we can configure the packge with --enable-debug to get LOG defined
@@ -111,7 +111,7 @@ void (*_log_printf)(const char *file, const int line, const char *fmt, ...)=_log
 typedef void (*BMLDebugLogger)(char *str);
 typedef void (*BMSetLogger)(BMLDebugLogger func);
 
-#ifdef USE_DLLWRAPPER
+#ifdef USE_DLLWRAPPER_DIRECT
 // windows plugin API method pointers (called through local wrappers)
 BMSetLogger BMLX(bmlw_set_logger);
 BMSetMasterInfo BMLX(bmlw_set_master_info);
@@ -155,7 +155,7 @@ BMDescribeTrackValue BMLX(bmlw_describe_track_value);
 
 BMSetCallbacks BMLX(bmlw_set_callbacks);
 
-#endif /* USE_DLLWRAPPER */
+#endif /* USE_DLLWRAPPER_DIRECT */
 
 // native plugin API method pointers
 BMSetLogger bmln_set_logger;
@@ -200,7 +200,7 @@ BMDescribeTrackValue bmln_describe_track_value;
 
 BMSetCallbacks bmln_set_callbacks;
 
-#ifdef USE_DLLWRAPPER
+#ifdef USE_DLLWRAPPER_DIRECT
 // passthrough functions
 
 // global API
@@ -438,7 +438,134 @@ void bmlw_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks) {
     win32_eliplog();
 }
 
-#endif /* USE_DLLWRAPPER */
+#endif /* USE_DLLWRAPPER_DIRECT */
+
+#ifdef USE_DLLWRAPPER_IPC
+// ipc wrapper functions
+
+// global API
+
+void bmlw_set_master_info(long bpm, long tpb, long srat) {
+}
+
+// library api
+
+BuzzMachineHandle *bmlw_open(char *bm_file_name) {
+	BuzzMachineHandle *bmh = NULL;
+
+	return(bmh);
+}
+
+void bmlw_close(BuzzMachineHandle *bmh) {
+}
+
+
+int bmlw_get_machine_info(BuzzMachineHandle *bmh, BuzzMachineProperty key, void *value) {
+	return(0);
+}
+
+int bmlw_get_global_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachineParameter key,void *value) {
+	return(0);
+}
+
+int bmlw_get_track_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachineParameter key,void *value) {
+	return(0);
+}
+
+int bmlw_get_attribute_info(BuzzMachineHandle *bmh,int index,BuzzMachineAttribute key,void *value) {
+	return(0);
+}
+
+
+const char *bmlw_describe_global_value(BuzzMachineHandle *bmh, int const param,int const value) {
+	const char *ret = "";
+
+	return(ret);
+}
+
+const char *bmlw_describe_track_value(BuzzMachineHandle *bmh, int const param,int const value) {
+	const char *ret = "";
+
+	return(ret);
+}
+
+
+// instance api
+
+BuzzMachine *bmlw_new(BuzzMachineHandle *bmh) {
+	BuzzMachine *bm = NULL;
+
+	return(bm);
+}
+
+void bmlw_free(BuzzMachine *bm) {
+}
+
+
+void bmlw_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data) {
+}
+
+
+void *bmlw_get_track_parameter_location(BuzzMachine *bm,int track,int index) {
+	return(NULL);
+}
+
+int bmlw_get_track_parameter_value(BuzzMachine *bm,int track,int index) {
+	return(0);
+}
+
+void bmlw_set_track_parameter_value(BuzzMachine *bm,int track,int index,int value) {
+}
+
+
+void *bmlw_get_global_parameter_location(BuzzMachine *bm,int index) {
+	return(NULL);
+}
+
+int bmlw_get_global_parameter_value(BuzzMachine *bm,int index) {
+	return(0);
+}
+
+void bmlw_set_global_parameter_value(BuzzMachine *bm,int index,int value) {
+}
+
+
+void *bmlw_get_attribute_location(BuzzMachine *bm,int index) {
+	return(NULL);
+}
+
+int bmlw_get_attribute_value(BuzzMachine *bm,int index) {
+	return(0);
+}
+
+void bmlw_set_attribute_value(BuzzMachine *bm,int index,int value) {
+}
+
+
+void bmlw_tick(BuzzMachine *bm) {
+}
+
+int bmlw_work(BuzzMachine *bm,float *psamples, int numsamples, int const mode) {
+	return(0);
+}
+
+int bmlw_work_m2s(BuzzMachine *bm,float *pin, float *pout, int numsamples, int const mode) {
+	return(0);
+}
+
+void bmlw_stop(BuzzMachine *bm) {
+}
+
+void bmlw_attributes_changed(BuzzMachine *bm) {
+}
+
+void bmlw_set_num_tracks(BuzzMachine *bm, int num) {
+}
+
+void bmlw_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks) {
+}
+
+#endif /* USE_DLLWRAPPER_IPC */
 
 // wrapper management
 
@@ -478,7 +605,7 @@ int bml_setup(void) {
 
   TRACE("%s\n",__FUNCTION__);
 
-#ifdef USE_DLLWRAPPER
+#ifdef USE_DLLWRAPPER_DIRECT
   ldt_fs=Setup_LDT_Keeper();
   TRACE("%s:   wrapper initialized: 0x%p\n",__FUNCTION__,ldt_fs);
   //Check_FS_Segment(ldt_fs);
@@ -536,7 +663,7 @@ int bml_setup(void) {
 
   TRACE("%s:   symbols connected\n",__FUNCTION__);
   BMLX(bmlw_set_logger((debug_log_flags&0x1)?bml_stdout_logger:bml_null_logger));
-#endif /* USE_DLLWRAPPER */
+#endif /* USE_DLLWRAPPER_DIRECT */
 
   if(!(emu_so=dlopen(NATIVE_BML_DIR "/libbuzzmachineloader.so",RTLD_LAZY))) {
 	TRACE("%s:   failed to load native bml : %s\n",__FUNCTION__,dlerror());
@@ -596,10 +723,10 @@ int bml_setup(void) {
 }
 
 void bml_finalize(void) {
-#ifdef USE_DLLWRAPPER
+#ifdef USE_DLLWRAPPER_DIRECT
   FreeDLL(emu_dll);
   Restore_LDT_Keeper(ldt_fs);
-#endif /* USE_DLLWRAPPER */
+#endif /* USE_DLLWRAPPER_DIRECT */
   dlclose(emu_so);
   TRACE("%s:   bml unloaded\n",__FUNCTION__);
 }

@@ -1,4 +1,4 @@
-if USE_DLLWRAPPER
+if USE_DLLWRAPPER_DIRECT
   DLLWRAPPER_LIB=$(top_builddir)/dllwrapper/libloader.la
 else
   DLLWRAPPER_LIB=
@@ -12,11 +12,10 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src \
 	-DNATIVE_BML_DIR="\"$(pkglibdir)\""
 
-AM_CFLAGS = $(PTHREAD_CFLAGS) $(BML_CFLAGS) $(ARCH_CFLAGS)
-
 libbmldir = $(includedir)/libbml
 libbml_HEADERS = src/bml.h src/BuzzMachineLoader/BuzzMachineLoader.h
 libbml_la_SOURCES = src/bml.c
+libbml_la_CFLAGS = $(PTHREAD_CFLAGS) $(BML_CFLAGS)
 libbml_la_LIBADD = $(LIBM) $(PTHREAD_LIBS) $(BML_LIBS) $(DLLWRAPPER_LIB)
 libbml_la_LDFLAGS = \
 	-export-symbols-regex ^_?\(bml_\|bmlw_\|bmln_\).* \
@@ -25,9 +24,11 @@ libbml_la_LDFLAGS = \
 noinst_PROGRAMS=bmltest_info bmltest_process
 
 bmltest_info_SOURCES= src/bmltest_info.c src/bmltest_info.h
+bmltest_info_CFLAGS = $(PTHREAD_CFLAGS) $(BML_CFLAGS)
 bmltest_info_LDADD = $(LIBM) $(PTHREAD_LIBS) $(BML_LIBS) libbml.la
 
 bmltest_process_SOURCES= src/bmltest_process.c  src/bmltest_process.h
+bmltest_process_CFLAGS = $(PTHREAD_CFLAGS) $(BML_CFLAGS)
 bmltest_process_LDADD = $(LIBM) $(PTHREAD_LIBS) $(BML_LIBS) libbml.la
 
 # buzzmachine loader (native adapter)
@@ -68,9 +69,9 @@ libbuzzmachineloader_la_LIBTOOLFLAGS = --tag=disable-static
 
 if USE_DLLWRAPPER
 dlldir = $(libdir)/win32
-dll_DATA = BuzzMachineLoader.dll
+dll_DATA = src/BuzzMachineLoader.dll
 endif
 
 # unconditionally dist the dll
-EXTRA_DIST += BuzzMachineLoader.dll
+EXTRA_DIST += src/BuzzMachineLoader.dll
 
