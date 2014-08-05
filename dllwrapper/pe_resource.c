@@ -22,7 +22,7 @@
 //#include "process.h"
 //#include "stackframe.h"
 #include "debugtools.h"
-#include <ext.h>
+#include "ext.h"
 
 /**********************************************************************
  *  HMODULE32toPE_MODREF
