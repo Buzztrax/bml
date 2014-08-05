@@ -32,4 +32,10 @@ ltmain.sh
 *.cache
 *.log
 *.tar.gz
+*.la
+.libs
+.dirstamp
+bmlhost
+bmltest_info
+bmltest_process
 
