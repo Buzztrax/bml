@@ -100,6 +100,19 @@ else
 fi
 AM_CONDITIONAL(USE_LCOV, test ! x$lcov_path = xyes)
 
+dnl check if we have 32-bit headers installed
+ac_cppflags_save="$CPPFLAGS"
+CPPFLAGS="-m32"
+AC_CHECK_HEADERS([features.h],
+  [
+    have_x32_h=yes
+  ],
+  [
+    have_x32_h=no
+  ]
+)
+CPPFLAGS="$ac_cppflags_save"
+
 dnl check target cpu architecture
 ARCH_CFLAGS=""
 ARCH_CCASFLAGS=""
@@ -109,11 +122,16 @@ case "x${target_cpu}" in
     CALLING_MODE=direct
     ;;
   xx86_64|xamd64)
-    # switch this to yes to try building it for 32bit using the ipc wrapper
-    HAVE_X86=no
-    ARCH_CFLAGS="-m32"
-    ARCH_CCASFLAGS="-m32"
-    CALLING_MODE=ipc
+    if test "$have_x32_h" = "yes"; then
+      dnl switch this to 'yes' to try building it for 32bit using the ipc wrapper
+      HAVE_X86=no
+      ARCH_CFLAGS="-m32"
+      ARCH_CCASFLAGS="-m32"
+      CALLING_MODE=ipc
+    else
+      HAVE_X86=no
+      CALLING_MODE=void
+    fi
     ;;
   *)
     HAVE_X86=no

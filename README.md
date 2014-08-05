@@ -20,6 +20,9 @@ buzzmachine api to c (to circumvent the different c++ abi of objects built with
 different compilers). This would not be needed for native open source machines, but
 the code is easier this way.
 
+## requirements
+* libc6-dev-x32 for support of 32bit windows dlls on x86-64bit systems
+
 ## building
 Please note that loading the windows dlls only works on x86-32bit systems.
 If one builds on a different system, the library can only support native
