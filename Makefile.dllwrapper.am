@@ -1,0 +1,67 @@
+noinst_LTLIBRARIES = libloader.la
+
+CCAS = $(CC)
+
+libloader_la_SOURCES = \
+	dllrwapper/ldt_keeper.c \
+	dllrwapper/pe_image.c \
+	dllrwapper/module.c \
+	dllrwapper/ext.c \
+	dllrwapper/win32.c \
+	dllrwapper/driver.c \
+	dllrwapper/pe_resource.c \
+	dllrwapper/resource.c \
+	dllrwapper/registry.c \
+	dllrwapper/elfdll.c \
+	dllrwapper/afl.c \
+	dllrwapper/vfl.c \
+	dllrwapper/stubs.s \
+	dllrwapper/wrapper.S
+
+libloader_la_CFLAGS = $(BML_CFLAGS) $(ARCH_CFLAGS) -ffast-math
+libloader_la_CCASFLAGS = $(ARCH_CCASFLAGS)
+libloader_la_CPPFLAGS =  \
+	-D__WINE__ \
+	-DWIN32_PATH=\"/usr/lib/win32\" \
+	-DWIN32_LIB_PATH=\"$(libdir)/win32\"
+
+noinst_HEADERS = \
+	dllrwapper/avifmt.h \
+	dllrwapper/basetsd.h \
+	dllrwapper/com.h \
+	dllrwapper/debugtools.h \
+	dllrwapper/driver.h \
+	dllrwapper/elfdll.h \
+	dllrwapper/ext.h \
+	dllrwapper/heap.h \
+	dllrwapper/ldt.h \
+	dllrwapper/ldt_keeper.h \
+	dllrwapper/loader.h \
+	dllrwapper/mmreg.h \
+	dllrwapper/module.h \
+	dllrwapper/msacmdrv.h \
+	dllrwapper/msacm.h \
+	dllrwapper/ntdef.h \
+	dllrwapper/pe_image.h \
+	dllrwapper/poppack.h \
+	dllrwapper/pshpack1.h \
+	dllrwapper/pshpack2.h \
+	dllrwapper/pshpack4.h \
+	dllrwapper/pshpack8.h \
+	dllrwapper/registry.h \
+	dllrwapper/resource.h \
+	dllrwapper/vfw.h \
+	dllrwapper/win32.h \
+	dllrwapper/winbase.h \
+	dllrwapper/windef.h \
+	dllrwapper/windows.h \
+	dllrwapper/wineacm.h \
+	dllrwapper/winerror.h \
+	dllrwapper/winestring.h \
+	dllrwapper/winnt.h \
+	dllrwapper/winreg.h \
+	dllrwapper/winuser.h \
+	dllrwapper/wrapper.h
+
+EXTRA_DIST += README
+

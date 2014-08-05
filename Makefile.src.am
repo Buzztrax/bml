@@ -1,0 +1,76 @@
+if USE_DLLWRAPPER
+  DLLWRAPPER_LIB=$(top_builddir)/dllwrapper/libloader.la
+else
+  DLLWRAPPER_LIB=
+endif
+
+lib_LTLIBRARIES = libbml.la
+
+AM_CPPFLAGS = \
+	-I$(top_srcdir)/dllwrapper \
+	-I$(top_srcdir)/src/BuzzMachineLoader \
+	-I$(top_srcdir)/src \
+	-DNATIVE_BML_DIR="\"$(pkglibdir)\""
+
+AM_CFLAGS = $(PTHREAD_CFLAGS) $(BML_CFLAGS) $(ARCH_CFLAGS)
+
+libbmldir = $(includedir)/libbml
+libbml_HEADERS = src/bml.h src/BuzzMachineLoader/BuzzMachineLoader.h
+libbml_la_SOURCES = src/bml.c
+libbml_la_LIBADD = $(LIBM) $(PTHREAD_LIBS) $(BML_LIBS) $(DLLWRAPPER_LIB)
+libbml_la_LDFLAGS = \
+	-export-symbols-regex ^_?\(bml_\|bmlw_\|bmln_\).* \
+	-version-info @BML_VERSION_INFO@
+
+noinst_PROGRAMS=bmltest_info bmltest_process
+
+bmltest_info_SOURCES= src/bmltest_info.c src/bmltest_info.h
+bmltest_info_LDADD = $(LIBM) $(PTHREAD_LIBS) $(BML_LIBS) libbml.la
+
+bmltest_process_SOURCES= src/bmltest_process.c  src/bmltest_process.h
+bmltest_process_LDADD = $(LIBM) $(PTHREAD_LIBS) $(BML_LIBS) libbml.la
+
+# buzzmachine loader (native adapter)
+pkglib_LTLIBRARIES = libbuzzmachineloader.la
+
+libbuzzmachineloader_la_SOURCES = \
+    src/BuzzMachineLoader/BuzzMachineCallbacks.cpp \
+    src/BuzzMachineLoader/BuzzMachineCallbacksPre12.cpp \
+    src/BuzzMachineLoader/BuzzMachineLoader.cpp \
+    src/BuzzMachineLoader/BuzzMachineVirtualCallbacks.cpp \
+    src/BuzzMachineLoader/MachineDataImpl.cpp \
+    src/BuzzMachineLoader/OscTable.cpp \
+    src/BuzzMachineLoader/mdkimp.cpp \
+    src/BuzzMachineLoader/debug.cpp
+	
+noinst_HEADERS = \
+    src/BuzzMachineLoader/BuzzMachine.h \
+    src/BuzzMachineLoader/BuzzMachineCallbacks.h \
+    src/BuzzMachineLoader/BuzzMachineCallbacksPre12.h \
+    src/BuzzMachineLoader/BuzzMachineLoader.h \
+    src/BuzzMachineLoader/CMachine.h \
+    src/BuzzMachineLoader/MachineDataImpl.h \
+    src/BuzzMachineLoader/MachineInterface.h \
+    src/BuzzMachineLoader/OscTable.h \
+    src/BuzzMachineLoader/mdk.h \
+    src/BuzzMachineLoader/mdkimp.h \
+    src/BuzzMachineLoader/bw.h \
+    src/BuzzMachineLoader/debug.h \
+    src/BuzzMachineLoader/dsplib.h \
+    src/BuzzMachineLoader/resample.h
+
+libbuzzmachineloader_la_CXXFLAGS = $(PTHREAD_CFLAGS) $(BML_CXXFLAGS) -I$(top_srcdir)/dllwrapper
+libbuzzmachineloader_la_LIBADD = $(LIBM) $(PTHREAD_LIBS) $(BML_LIBS) -lstdc++
+libbuzzmachineloader_la_LDFLAGS = -module -avoid-version
+libbuzzmachineloader_la_LIBTOOLFLAGS = --tag=disable-static
+
+# buzzmachine loader (wrapped adapter)
+
+if USE_DLLWRAPPER
+dlldir = $(libdir)/win32
+dll_DATA = BuzzMachineLoader.dll
+endif
+
+# unconditionally dist the dll
+EXTRA_DIST += BuzzMachineLoader.dll
+

@@ -2,7 +2,7 @@ dnl Initialise autoconf/automake/libtool
 AC_PREREQ(2.61)
 AC_INIT([bml],[0.8.0],[buzztrax-devel@lists.sourceforge.net])
 AC_CANONICAL_TARGET([])
-AM_INIT_AUTOMAKE([-Wall -Werror check-news std-options foreign])
+AM_INIT_AUTOMAKE([-Wall -Werror check-news std-options foreign subdir-objects])
 AC_CONFIG_SRCDIR([README.md])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR(m4)
@@ -182,9 +182,6 @@ AC_SUBST(ARCH_CCASFLAGS)
 
 AC_CONFIG_FILES(Makefile \
   libbml.pc \
-  src/Makefile \
-  src/BuzzMachineLoader/Makefile \
-  dllwrapper/Makefile \
   tests/bt-cfg.sh \
 )
 AC_OUTPUT
