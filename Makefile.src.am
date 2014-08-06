@@ -28,7 +28,7 @@ bin_PROGRAMS = bmlhost
 
 bmlhost_SOURCES = src/bmlhost.c src/bmllog.c src/bmlw.c
 bmlhost_CFLAGS = $(BML_CFLAGS) $(ARCH_CFLAGS)
-bmlhost_LDADD = libloader.la $(PTHREAD_LIBS) $(BML_LIBS) -lpthread
+bmlhost_LDADD = $(PTHREAD_LIBS) $(BML_LIBS) libloader.la 
 
 endif
 
