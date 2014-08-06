@@ -1,7 +1,9 @@
 if USE_DLLWRAPPER_DIRECT
   DLLWRAPPER_LIB=libloader.la
+  DLLWRAPPER_SRC=src/bmlw.c
 else
   DLLWRAPPER_LIB=
+  DLLWRAPPER_SRC=
 endif
 
 lib_LTLIBRARIES = libbml.la
@@ -14,7 +16,7 @@ AM_CPPFLAGS = \
 
 libbmldir = $(includedir)/libbml
 libbml_HEADERS = src/bml.h src/BuzzMachineLoader/BuzzMachineLoader.h
-libbml_la_SOURCES = src/bml.c
+libbml_la_SOURCES = src/bml.c src/bmllog.c $(DLLWRAPPER_SRC)
 libbml_la_CFLAGS = $(PTHREAD_CFLAGS) $(BML_CFLAGS)
 libbml_la_LIBADD = $(LIBM) $(PTHREAD_LIBS) $(BML_LIBS) $(DLLWRAPPER_LIB)
 libbml_la_LDFLAGS = \
@@ -24,11 +26,14 @@ libbml_la_LDFLAGS = \
 if USE_DLLWRAPPER_IPC
 bin_PROGRAMS = bmlhost
 
-bmlhost_SOURCES = src/bmlhost.c
+bmlhost_SOURCES = src/bmlhost.c src/bmllog.c src/bmlw.c
 bmlhost_CFLAGS = $(BML_CFLAGS) $(ARCH_CFLAGS)
-bmlhost_LDADD = libloader.la
+bmlhost_LDADD = libloader.la $(PTHREAD_LIBS) $(BML_LIBS) -lpthread
 
 endif
+
+noinst_HEADERS += \
+    src/bmllog.h
 
 noinst_PROGRAMS=bmltest_info bmltest_process
 

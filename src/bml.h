@@ -18,17 +18,6 @@
 #ifndef BML_H
 #define BML_H
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <signal.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "BuzzMachineLoader.h"
 
 #ifndef FALSE
@@ -45,9 +34,11 @@
 extern int bml_setup(void);
 extern void bml_finalize(void);
 
-// dll passthrough API method pointer types
-typedef void (*BMSetMasterInfo)(long bpm, long tpb, long srat);
+typedef void (*BMLDebugLogger)(char *str);
 
+// dll passthrough API method pointer types
+typedef void (*BMSetLogger)(BMLDebugLogger func);
+typedef void (*BMSetMasterInfo)(long bpm, long tpb, long srat);
 
 typedef BuzzMachineHandle * (*BMOpen)(char *bm_file_name);
 typedef void (*BMClose)(BuzzMachineHandle *bmh);

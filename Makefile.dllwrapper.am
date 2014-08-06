@@ -22,6 +22,7 @@ libloader_la_CPPFLAGS =  \
 	-D__WINE__ \
 	-DWIN32_PATH=\"/usr/lib/win32\" \
 	-DWIN32_LIB_PATH=\"$(libdir)/win32\"
+libloader_la_LIBADD = $(LIBM) $(PTHREAD_LIBS) -ldl
 
 noinst_HEADERS += \
 	dllwrapper/avifmt.h \

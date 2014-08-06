@@ -14,29 +14,24 @@
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
+ 
+#ifndef BMLLOG_H
+#define BMLLOG_H
 
-#include "config.h"
+#include "bml.h"
 
-#include <stdio.h>
-#include <stdlib.h>
+typedef void (*BmlLogger)(const char *file, const int line, const char *func, const char *fmt, ...);
 
-#include "bmllog.h"
+extern BmlLogger _log_printf;
 
-int _bmlw_setup(BMLDebugLogger logger);
+BMLDebugLogger _bmllog_init (int debug_log_flags);
 
-int main( int argc, char **argv ) {
-  const char *debug_log_flag_str=getenv("BML_DEBUG");
-  const int debug_log_flags=debug_log_flag_str?atoi(debug_log_flag_str):0;
-  BMLDebugLogger logger;
+#ifdef LOG
+#  define TRACE_INIT(flags) _bmllog_init(flags)
+#  define TRACE(...) _log_printf(__FILE__,__LINE__,__FUNCTION__,__VA_ARGS__)
+#else
+#  define TRACE_INIT(flags)
+#  define TRACE(...)
+#endif
 
-  logger = TRACE_INIT(debug_log_flags);
-  TRACE("beg\n");
-
-  if (!_bmlw_setup(logger)) {
-    return FALSE;
-  }
-  // TODO(ensonic): more code here
-    
-  TRACE("end\n");
-  return 0;
-}
+#endif /* BMLLOG_H */
