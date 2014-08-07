@@ -23,6 +23,7 @@
 #include "bmllog.h"
 
 int _bmlw_setup(BMLDebugLogger logger);
+void _bmlw_finalize(void);
 
 int main( int argc, char **argv ) {
   const char *debug_log_flag_str=getenv("BML_DEBUG");
@@ -36,7 +37,8 @@ int main( int argc, char **argv ) {
     return FALSE;
   }
   // TODO(ensonic): more code here
-    
+
+  _bmlw_finalize();
   TRACE("end\n");
   return 0;
 }

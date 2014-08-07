@@ -394,3 +394,8 @@ int _bmlw_setup(BMLDebugLogger logger) {
   
   return TRUE;
 }
+
+void _bmlw_finalize(void) {
+  FreeDLL(emu_dll);
+  Restore_LDT_Keeper(ldt_fs);
+}

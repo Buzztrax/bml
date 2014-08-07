@@ -210,6 +210,7 @@ void bmlw_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks) {
 
 #ifdef USE_DLLWRAPPER_DIRECT
 int _bmlw_setup(BMLDebugLogger logger);
+void _bmlw_finalize(void);
 #endif
 
 int bml_setup(void) {
@@ -285,8 +286,7 @@ int bml_setup(void) {
 
 void bml_finalize(void) {
 #ifdef USE_DLLWRAPPER_DIRECT
-  FreeDLL(emu_dll);
-  Restore_LDT_Keeper(ldt_fs);
+  _bmlw_finalize();
 #endif /* USE_DLLWRAPPER_DIRECT */
   dlclose(emu_so);
   TRACE("   bml unloaded\n");
