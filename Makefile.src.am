@@ -3,7 +3,7 @@ if USE_DLLWRAPPER_DIRECT
   DLLWRAPPER_SRC=src/bmlw.c
 else
   DLLWRAPPER_LIB=
-  DLLWRAPPER_SRC=
+  DLLWRAPPER_SRC=src/bmlipc.c src/strpool.c
 endif
 
 lib_LTLIBRARIES = libbml.la
@@ -26,14 +26,17 @@ libbml_la_LDFLAGS = \
 if USE_DLLWRAPPER_IPC
 bin_PROGRAMS = bmlhost
 
-bmlhost_SOURCES = src/bmlhost.c src/bmllog.c src/bmlw.c
+bmlhost_SOURCES = src/bmlhost.c src/bmllog.c src/bmlw.c src/bmlipc.c
 bmlhost_CFLAGS = $(BML_CFLAGS) $(ARCH_CFLAGS)
 bmlhost_LDADD = $(PTHREAD_LIBS) $(BML_LIBS) libloader.la 
 
 endif
 
 noinst_HEADERS += \
-    src/bmllog.h
+    src/bmlipc.h \
+    src/bmllog.h \
+    src/bmlw.h \
+    src/strpool.h
 
 noinst_PROGRAMS=bmltest_info bmltest_process
 

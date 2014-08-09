@@ -23,7 +23,7 @@ void bml(test_info(char *libpath)) {
   int maval,mival,noval,ptrval=0;
   double ts1, ts2;
 
-  printf("%s(\"%s\")\n",__FUNCTION__,libpath);
+  printf("%s: loading \"%s\"\n",__FUNCTION__,libpath);
 
   ts1=_get_timestamp();
 
@@ -173,7 +173,11 @@ void bml(test_info(char *libpath)) {
       }
 
       puts("  done");
+    } else {
+      printf("%s: can't instantiate plugin \"%s\"\n",__FUNCTION__,libpath);
     }
     bml(close(bmh));
+  } else {
+    printf("%s: can't open plugin \"%s\"\n",__FUNCTION__,libpath);
   }
 }

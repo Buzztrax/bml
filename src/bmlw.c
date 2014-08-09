@@ -344,50 +344,50 @@ int _bmlw_setup(BMLDebugLogger logger) {
   }
   TRACE("   windows bml loaded\n");
 
-  if(!(BMLX(bmlw_set_logger)=(BMSetLogger)GetSymbol(emu_dll,"bm_set_logger"))) { puts("bm_set_logger is missing");return(FALSE);}
+  if(!(BMLX(bmlw_set_logger)=(BMSetLogger)GetSymbol(emu_dll,"bm_set_logger"))) { TRACE("bm_set_logger is missing\n");return(FALSE);}
 
-  if(!(BMLX(bmlw_set_master_info)=(BMSetMasterInfo)GetSymbol(emu_dll,"bm_set_master_info"))) { puts("bm_set_master_info is missing");return(FALSE);}
-
-
-  if(!(BMLX(bmlw_open)=(BMOpen)GetSymbol(emu_dll,"bm_open"))) { puts("bm_open is missing");return(FALSE);}
-  if(!(BMLX(bmlw_close)=(BMClose)GetSymbol(emu_dll,"bm_close"))) { puts("bm_close is missing");return(FALSE);}
-
-  if(!(BMLX(bmlw_get_machine_info)=(BMGetMachineInfo)GetSymbol(emu_dll,"bm_get_machine_info"))) { puts("bm_get_machine_info is missing");return(FALSE);}
-  if(!(BMLX(bmlw_get_global_parameter_info)=(BMGetGlobalParameterInfo)GetSymbol(emu_dll,"bm_get_global_parameter_info"))) { puts("bm_get_global_parameter_info is missing");return(FALSE);}
-  if(!(BMLX(bmlw_get_track_parameter_info)=(BMGetTrackParameterInfo)GetSymbol(emu_dll,"bm_get_track_parameter_info"))) { puts("bm_get_track_parameter_info is missing");return(FALSE);}
-  if(!(BMLX(bmlw_get_attribute_info)=(BMGetAttributeInfo)GetSymbol(emu_dll,"bm_get_attribute_info"))) { puts("bm_get_attribute_info is missing");return(FALSE);}
-
-  if(!(BMLX(bmlw_describe_global_value)=(BMDescribeGlobalValue)GetSymbol(emu_dll,"bm_describe_global_value"))) { puts("bm_describe_global_value is missing");return(FALSE);}
-  if(!(BMLX(bmlw_describe_track_value)=(BMDescribeTrackValue)GetSymbol(emu_dll,"bm_describe_track_value"))) { puts("bm_describe_track_value is missing");return(FALSE);}
+  if(!(BMLX(bmlw_set_master_info)=(BMSetMasterInfo)GetSymbol(emu_dll,"bm_set_master_info"))) { TRACE("bm_set_master_info is missing\n");return(FALSE);}
 
 
-  if(!(BMLX(bmlw_new)=(BMNew)GetSymbol(emu_dll,"bm_new"))) { puts("bm_new is missing");return(FALSE);}
-  if(!(BMLX(bmlw_free)=(BMFree)GetSymbol(emu_dll,"bm_free"))) { puts("bm_free is missing");return(FALSE);}
+  if(!(BMLX(bmlw_open)=(BMOpen)GetSymbol(emu_dll,"bm_open"))) { TRACE("bm_open is missing\n");return(FALSE);}
+  if(!(BMLX(bmlw_close)=(BMClose)GetSymbol(emu_dll,"bm_close"))) { TRACE("bm_close is missing\n");return(FALSE);}
 
-  if(!(BMLX(bmlw_init)=(BMInit)GetSymbol(emu_dll,"bm_init"))) { puts("bm_init is missing");return(FALSE);}
+  if(!(BMLX(bmlw_get_machine_info)=(BMGetMachineInfo)GetSymbol(emu_dll,"bm_get_machine_info"))) { TRACE("bm_get_machine_info is missing\n");return(FALSE);}
+  if(!(BMLX(bmlw_get_global_parameter_info)=(BMGetGlobalParameterInfo)GetSymbol(emu_dll,"bm_get_global_parameter_info"))) { TRACE("bm_get_global_parameter_info is missing\n");return(FALSE);}
+  if(!(BMLX(bmlw_get_track_parameter_info)=(BMGetTrackParameterInfo)GetSymbol(emu_dll,"bm_get_track_parameter_info"))) { TRACE("bm_get_track_parameter_info is missing\n");return(FALSE);}
+  if(!(BMLX(bmlw_get_attribute_info)=(BMGetAttributeInfo)GetSymbol(emu_dll,"bm_get_attribute_info"))) { TRACE("bm_get_attribute_info is missing\n");return(FALSE);}
 
-  if(!(BMLX(bmlw_get_track_parameter_location)=(BMGetTrackParameterLocation)GetSymbol(emu_dll,"bm_get_track_parameter_location"))) { puts("bm_get_track_parameter_location is missing");return(FALSE);}
-  if(!(BMLX(bmlw_get_track_parameter_value)=(BMGetTrackParameterValue)GetSymbol(emu_dll,"bm_get_track_parameter_value"))) { puts("bm_get_track_parameter_value is missing");return(FALSE);}
-  if(!(BMLX(bmlw_set_track_parameter_value)=(BMSetTrackParameterValue)GetSymbol(emu_dll,"bm_set_track_parameter_value"))) { puts("bm_set_track_parameter_value is missing");return(FALSE);}
+  if(!(BMLX(bmlw_describe_global_value)=(BMDescribeGlobalValue)GetSymbol(emu_dll,"bm_describe_global_value"))) { TRACE("bm_describe_global_value is missing\n");return(FALSE);}
+  if(!(BMLX(bmlw_describe_track_value)=(BMDescribeTrackValue)GetSymbol(emu_dll,"bm_describe_track_value"))) { TRACE("bm_describe_track_value is missing\n");return(FALSE);}
 
-  if(!(BMLX(bmlw_get_global_parameter_location)=(BMGetGlobalParameterLocation)GetSymbol(emu_dll,"bm_get_global_parameter_location"))) { puts("bm_get_global_parameter_location is missing");return(FALSE);}
-  if(!(BMLX(bmlw_get_global_parameter_value)=(BMGetGlobalParameterValue)GetSymbol(emu_dll,"bm_get_global_parameter_value"))) { puts("bm_get_global_parameter_value is missing");return(FALSE);}
-  if(!(BMLX(bmlw_set_global_parameter_value)=(BMSetGlobalParameterValue)GetSymbol(emu_dll,"bm_set_global_parameter_value"))) { puts("bm_set_global_parameter_value is missing");return(FALSE);}
 
-  if(!(BMLX(bmlw_get_attribute_location)=(BMGetAttributeLocation)GetSymbol(emu_dll,"bm_get_attribute_location"))) { puts("bm_get_attribute_location is missing");return(FALSE);}
-  if(!(BMLX(bmlw_get_attribute_value)=(BMGetAttributeValue)GetSymbol(emu_dll,"bm_get_attribute_value"))) { puts("bm_get_attribute_value is missing");return(FALSE);}
-  if(!(BMLX(bmlw_set_attribute_value)=(BMSetAttributeValue)GetSymbol(emu_dll,"bm_set_attribute_value"))) { puts("bm_set_attribute_value is missing");return(FALSE);}
+  if(!(BMLX(bmlw_new)=(BMNew)GetSymbol(emu_dll,"bm_new"))) { TRACE("bm_new is missing\n");return(FALSE);}
+  if(!(BMLX(bmlw_free)=(BMFree)GetSymbol(emu_dll,"bm_free"))) { TRACE("bm_free is missing\n");return(FALSE);}
 
-  if(!(BMLX(bmlw_tick)=(BMTick)GetSymbol(emu_dll,"bm_tick"))) { puts("bm_tick is missing");return(FALSE);}
-  if(!(BMLX(bmlw_work)=(BMWork)GetSymbol(emu_dll,"bm_work"))) { puts("bm_work is missing");return(FALSE);}
-  if(!(BMLX(bmlw_work_m2s)=(BMWorkM2S)GetSymbol(emu_dll,"bm_work_m2s"))) { puts("bm_work_m2s is missing");return(FALSE);}
-  if(!(BMLX(bmlw_stop)=(BMStop)GetSymbol(emu_dll,"bm_stop"))) { puts("bm_stop is missing");return(FALSE);}
+  if(!(BMLX(bmlw_init)=(BMInit)GetSymbol(emu_dll,"bm_init"))) { TRACE("bm_init is missing\n");return(FALSE);}
 
-  if(!(BMLX(bmlw_attributes_changed)=(BMAttributesChanged)GetSymbol(emu_dll,"bm_attributes_changed"))) { puts("bm_attributes_changed is missing");return(FALSE);}
+  if(!(BMLX(bmlw_get_track_parameter_location)=(BMGetTrackParameterLocation)GetSymbol(emu_dll,"bm_get_track_parameter_location"))) { TRACE("bm_get_track_parameter_location is missing\n");return(FALSE);}
+  if(!(BMLX(bmlw_get_track_parameter_value)=(BMGetTrackParameterValue)GetSymbol(emu_dll,"bm_get_track_parameter_value"))) { TRACE("bm_get_track_parameter_value is missing\n");return(FALSE);}
+  if(!(BMLX(bmlw_set_track_parameter_value)=(BMSetTrackParameterValue)GetSymbol(emu_dll,"bm_set_track_parameter_value"))) { TRACE("bm_set_track_parameter_value is missing\n");return(FALSE);}
 
-  if(!(BMLX(bmlw_set_num_tracks)=(BMSetNumTracks)GetSymbol(emu_dll,"bm_set_num_tracks"))) { puts("bm_set_num_tracks is missing");return(FALSE);}
+  if(!(BMLX(bmlw_get_global_parameter_location)=(BMGetGlobalParameterLocation)GetSymbol(emu_dll,"bm_get_global_parameter_location"))) { TRACE("bm_get_global_parameter_location is missing\n");return(FALSE);}
+  if(!(BMLX(bmlw_get_global_parameter_value)=(BMGetGlobalParameterValue)GetSymbol(emu_dll,"bm_get_global_parameter_value"))) { TRACE("bm_get_global_parameter_value is missing\n");return(FALSE);}
+  if(!(BMLX(bmlw_set_global_parameter_value)=(BMSetGlobalParameterValue)GetSymbol(emu_dll,"bm_set_global_parameter_value"))) { TRACE("bm_set_global_parameter_value is missing\n");return(FALSE);}
 
-  if(!(BMLX(bmlw_set_callbacks)=(BMSetCallbacks)GetSymbol(emu_dll,"bm_set_callbacks"))) { puts("bm_set_callbacks is missing");return(FALSE);}
+  if(!(BMLX(bmlw_get_attribute_location)=(BMGetAttributeLocation)GetSymbol(emu_dll,"bm_get_attribute_location"))) { TRACE("bm_get_attribute_location is missing\n");return(FALSE);}
+  if(!(BMLX(bmlw_get_attribute_value)=(BMGetAttributeValue)GetSymbol(emu_dll,"bm_get_attribute_value"))) { TRACE("bm_get_attribute_value is missing\n");return(FALSE);}
+  if(!(BMLX(bmlw_set_attribute_value)=(BMSetAttributeValue)GetSymbol(emu_dll,"bm_set_attribute_value"))) { TRACE("bm_set_attribute_value is missing\n");return(FALSE);}
+
+  if(!(BMLX(bmlw_tick)=(BMTick)GetSymbol(emu_dll,"bm_tick"))) { TRACE("bm_tick is missing\n");return(FALSE);}
+  if(!(BMLX(bmlw_work)=(BMWork)GetSymbol(emu_dll,"bm_work"))) { TRACE("bm_work is missing\n");return(FALSE);}
+  if(!(BMLX(bmlw_work_m2s)=(BMWorkM2S)GetSymbol(emu_dll,"bm_work_m2s"))) { TRACE("bm_work_m2s is missing\n");return(FALSE);}
+  if(!(BMLX(bmlw_stop)=(BMStop)GetSymbol(emu_dll,"bm_stop"))) { TRACE("bm_stop is missing\n");return(FALSE);}
+
+  if(!(BMLX(bmlw_attributes_changed)=(BMAttributesChanged)GetSymbol(emu_dll,"bm_attributes_changed"))) { TRACE("bm_attributes_changed is missing\n");return(FALSE);}
+
+  if(!(BMLX(bmlw_set_num_tracks)=(BMSetNumTracks)GetSymbol(emu_dll,"bm_set_num_tracks"))) { TRACE("bm_set_num_tracks is missing\n");return(FALSE);}
+
+  if(!(BMLX(bmlw_set_callbacks)=(BMSetCallbacks)GetSymbol(emu_dll,"bm_set_callbacks"))) { TRACE("bm_set_callbacks is missing\n");return(FALSE);}
 
   TRACE("   symbols connected\n");
   BMLX(bmlw_set_logger(logger));

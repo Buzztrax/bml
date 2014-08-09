@@ -28,10 +28,31 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef USE_DLLWRAPPER_IPC
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#endif
+
 #define BML_C
 #include "bml.h"
 #include "bmllog.h"
+#ifdef USE_DLLWRAPPER
+#include "bmlw.h"
+#endif
+#ifdef USE_DLLWRAPPER_IPC
+#include "strpool.h"
+#include "bmlipc.h"
+#endif
 
+// wrapped(ipc)
+#ifdef USE_DLLWRAPPER_IPC
+static int server_socket;
+static BmlIpcBuf *buf;
+static StrPool *sp;
+#endif
 // native
 static void *emu_so=NULL;
 
@@ -86,22 +107,66 @@ BMSetCallbacks bmln_set_callbacks;
 // global API
 
 void bmlw_set_master_info(long bpm, long tpb, long srat) {
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_SET_MASTER_INFO);
+  bmlipc_write_int(buf, bpm);
+  bmlipc_write_int(buf, tpb);
+  bmlipc_write_int(buf, srat);
+  send(server_socket, buf->buffer, buf->size, 0);
 }
 
 // library api
 
 BuzzMachineHandle *bmlw_open(char *bm_file_name) {
-	BuzzMachineHandle *bmh = NULL;
-
-	return(bmh);
+  TRACE("bmlw_open('%s')...\n", bm_file_name);
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_OPEN);
+  bmlipc_write_string(buf, bm_file_name);
+  send(server_socket, buf->buffer, buf->size, 0);
+  bmlipc_clear(buf);
+  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+  BuzzMachineHandle *bmh = (BuzzMachineHandle *)((long)bmlipc_read_int(buf));
+  TRACE("bmlw_open('%s')=%p\n", bm_file_name, bmh);
+  return bmh;
+	//return (BuzzMachineHandle *)((long)bmlipc_read_int(buf));
 }
 
 void bmlw_close(BuzzMachineHandle *bmh) {
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_CLOSE);
+  bmlipc_write_int(buf, (int)((long)bmh));
+  send(server_socket, buf->buffer, buf->size, 0);
 }
 
 
 int bmlw_get_machine_info(BuzzMachineHandle *bmh, BuzzMachineProperty key, void *value) {
-	return(0);
+  int ret;
+  int *ival=(int *)value;
+  const char **sval=(const char **)value;
+
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_GET_MACHINE_INFO);
+  bmlipc_write_int(buf, (int)((long)bmh));
+  bmlipc_write_int(buf, key);
+  send(server_socket, buf->buffer, buf->size, 0);
+  bmlipc_clear(buf);
+  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+  ret = bmlipc_read_int(buf);
+  TRACE("key: %d, ret: %d", key, ret);
+  // function writes result into value which is either an int or string :/
+  switch(ret) {
+    case 0: break;
+    case 1:
+      *ival = bmlipc_read_int(buf);
+      break;
+    case 2:
+      // this is a pointer to the receive buffer, we intern the received string
+      *sval = sp_intern(sp, bmlipc_read_string(buf));
+      break;
+    default:
+      TRACE("unhandled value type: %d", ret);
+  }
+	return (ret ? 1 : 0);
 }
 
 int bmlw_get_global_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachineParameter key,void *value) {
@@ -133,12 +198,20 @@ const char *bmlw_describe_track_value(BuzzMachineHandle *bmh, int const param,in
 // instance api
 
 BuzzMachine *bmlw_new(BuzzMachineHandle *bmh) {
-	BuzzMachine *bm = NULL;
-
-	return(bm);
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_NEW);
+  bmlipc_write_int(buf, (int)((long)bmh));
+  send(server_socket, buf->buffer, buf->size, 0);
+  bmlipc_clear(buf);
+  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+	return (BuzzMachine *)((long)bmlipc_read_int(buf));
 }
 
 void bmlw_free(BuzzMachine *bm) {
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_FREE);
+  bmlipc_write_int(buf, (int)((long)bm));
+  send(server_socket, buf->buffer, buf->size, 0);
 }
 
 
@@ -207,12 +280,6 @@ void bmlw_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks) {
 
 #endif /* USE_DLLWRAPPER_IPC */
 
-
-#ifdef USE_DLLWRAPPER_DIRECT
-int _bmlw_setup(BMLDebugLogger logger);
-void _bmlw_finalize(void);
-#endif
-
 int bml_setup(void) {
   const char *debug_log_flag_str=getenv("BML_DEBUG");
   const int debug_log_flags=debug_log_flag_str?atoi(debug_log_flag_str):0;
@@ -225,7 +292,53 @@ int bml_setup(void) {
   if (!_bmlw_setup(logger)) {
     return FALSE;
   }
-#endif /* USE_DLLWRAPPER_DIRECT */
+#endif /* USE_DLLWRAPPER_DIRECT */  
+#ifdef USE_DLLWRAPPER_IPC
+  struct sockaddr_un address;
+  char *socket_file = malloc(16 + 20);
+  //pid_t child_pid;
+  int retries = 0;
+  
+  // build socket filename
+#if 0
+  snprintf(socket_file, 16 + 20, "/tmp/bml.%d.XXXXXX", (int)getpid());
+  socket_file = mktemp(socket_file);
+  // spawn the server
+  child_pid = fork ();
+  if (child_pid == 0) {
+    char *args[] = { "bmlhost", socket_file, NULL };
+    int res = execvp("bmlhost", args);
+    TRACE("an error occurred in execvp\n", strerror(res));
+    return FALSE;
+  } else if (child_pid < 0) {
+    TRACE("fork failed: %s\n", strerror(child_pid));
+    return FALSE;
+  } else {
+    sleep(1);
+  }
+#else
+  snprintf(socket_file, 16 + 20, "/tmp/bml.sock");
+#endif
+
+  if ((server_socket=socket(PF_LOCAL, SOCK_STREAM, 0)) > 0) {
+    TRACE("server socket created\n");
+  }
+  address.sun_family = AF_LOCAL;
+  strcpy(address.sun_path, socket_file);
+  while (retries < 3) {
+    int res;
+    if ((res = connect(server_socket, (struct sockaddr *) &address, sizeof (address))) == 0) {
+      TRACE("server connected\n");
+      break;
+    } else {
+      TRACE("connection failed: %s\n", strerror(res));
+      retries++;
+      sleep(1);
+    }
+  }
+  buf = bmlipc_new();
+  sp = sp_new(25);
+#endif /* USE_DLLWRAPPER_IPC */
 
   if(!(emu_so=dlopen(NATIVE_BML_DIR "/libbuzzmachineloader.so",RTLD_LAZY))) {
     TRACE("   failed to load native bml : %s\n",dlerror());
@@ -233,50 +346,50 @@ int bml_setup(void) {
   }
   TRACE("   native bml loaded\n");
 
-  if(!(bmln_set_logger=(BMSetLogger)dlsym(emu_so,"bm_set_logger"))) { puts("bm_set_logger is missing");return(FALSE);}
+  if(!(bmln_set_logger=(BMSetLogger)dlsym(emu_so,"bm_set_logger"))) { TRACE("bm_set_logger is missing\n");return(FALSE);}
 
-  if(!(bmln_set_master_info=(BMSetMasterInfo)dlsym(emu_so,"bm_set_master_info"))) { puts("bm_set_master_info is missing");return(FALSE);}
-
-
-  if(!(bmln_open=(BMOpen)dlsym(emu_so,"bm_open"))) { puts("bm_open is missing");return(FALSE);}
-  if(!(bmln_close=(BMClose)dlsym(emu_so,"bm_close"))) { puts("bm_close is missing");return(FALSE);}
-
-  if(!(bmln_get_machine_info=(BMGetMachineInfo)dlsym(emu_so,"bm_get_machine_info"))) { puts("bm_get_machine_info is missing");return(FALSE);}
-  if(!(bmln_get_global_parameter_info=(BMGetGlobalParameterInfo)dlsym(emu_so,"bm_get_global_parameter_info"))) { puts("bm_get_global_parameter_info is missing");return(FALSE);}
-  if(!(bmln_get_track_parameter_info=(BMGetTrackParameterInfo)dlsym(emu_so,"bm_get_track_parameter_info"))) { puts("bm_get_track_parameter_info is missing");return(FALSE);}
-  if(!(bmln_get_attribute_info=(BMGetAttributeInfo)dlsym(emu_so,"bm_get_attribute_info"))) { puts("bm_get_attribute_info is missing");return(FALSE);}
-
-  if(!(bmln_describe_global_value=(BMDescribeGlobalValue)dlsym(emu_so,"bm_describe_global_value"))) { puts("bm_describe_global_value is missing");return(FALSE);}
-  if(!(bmln_describe_track_value=(BMDescribeTrackValue)dlsym(emu_so,"bm_describe_track_value"))) { puts("bm_describe_track_value is missing");return(FALSE);}
+  if(!(bmln_set_master_info=(BMSetMasterInfo)dlsym(emu_so,"bm_set_master_info"))) { TRACE("bm_set_master_info is missing\n");return(FALSE);}
 
 
-  if(!(bmln_new=(BMNew)dlsym(emu_so,"bm_new"))) { puts("bm_new is missing");return(FALSE);}
-  if(!(bmln_free=(BMFree)dlsym(emu_so,"bm_free"))) { puts("bm_free is missing");return(FALSE);}
+  if(!(bmln_open=(BMOpen)dlsym(emu_so,"bm_open"))) { TRACE("bm_open is missing\n");return(FALSE);}
+  if(!(bmln_close=(BMClose)dlsym(emu_so,"bm_close"))) { TRACE("bm_close is missing\n");return(FALSE);}
 
-  if(!(bmln_init=(BMInit)dlsym(emu_so,"bm_init"))) { puts("bm_init is missing");return(FALSE);}
+  if(!(bmln_get_machine_info=(BMGetMachineInfo)dlsym(emu_so,"bm_get_machine_info"))) { TRACE("bm_get_machine_info is missing\n");return(FALSE);}
+  if(!(bmln_get_global_parameter_info=(BMGetGlobalParameterInfo)dlsym(emu_so,"bm_get_global_parameter_info"))) { TRACE("bm_get_global_parameter_info is missing\n");return(FALSE);}
+  if(!(bmln_get_track_parameter_info=(BMGetTrackParameterInfo)dlsym(emu_so,"bm_get_track_parameter_info"))) { TRACE("bm_get_track_parameter_info is missing\n");return(FALSE);}
+  if(!(bmln_get_attribute_info=(BMGetAttributeInfo)dlsym(emu_so,"bm_get_attribute_info"))) { TRACE("bm_get_attribute_info is missing\n");return(FALSE);}
 
-  if(!(bmln_get_track_parameter_location=(BMGetTrackParameterLocation)dlsym(emu_so,"bm_get_track_parameter_location"))) { puts("bm_get_track_parameter_location is missing");return(FALSE);}
-  if(!(bmln_get_track_parameter_value=(BMGetTrackParameterValue)dlsym(emu_so,"bm_get_track_parameter_value"))) { puts("bm_get_track_parameter_value is missing");return(FALSE);}
-  if(!(bmln_set_track_parameter_value=(BMSetTrackParameterValue)dlsym(emu_so,"bm_set_track_parameter_value"))) { puts("bm_set_track_parameter_value is missing");return(FALSE);}
+  if(!(bmln_describe_global_value=(BMDescribeGlobalValue)dlsym(emu_so,"bm_describe_global_value"))) { TRACE("bm_describe_global_value is missing\n");return(FALSE);}
+  if(!(bmln_describe_track_value=(BMDescribeTrackValue)dlsym(emu_so,"bm_describe_track_value"))) { TRACE("bm_describe_track_value is missing\n");return(FALSE);}
 
-  if(!(bmln_get_global_parameter_location=(BMGetGlobalParameterLocation)dlsym(emu_so,"bm_get_global_parameter_location"))) { puts("bm_get_global_parameter_location is missing");return(FALSE);}
-  if(!(bmln_get_global_parameter_value=(BMGetGlobalParameterValue)dlsym(emu_so,"bm_get_global_parameter_value"))) { puts("bm_get_global_parameter_value is missing");return(FALSE);}
-  if(!(bmln_set_global_parameter_value=(BMSetGlobalParameterValue)dlsym(emu_so,"bm_set_global_parameter_value"))) { puts("bm_set_global_parameter_value is missing");return(FALSE);}
 
-  if(!(bmln_get_attribute_location=(BMGetAttributeLocation)dlsym(emu_so,"bm_get_attribute_location"))) { puts("bm_get_attribute_location is missing");return(FALSE);}
-  if(!(bmln_get_attribute_value=(BMGetAttributeValue)dlsym(emu_so,"bm_get_attribute_value"))) { puts("bm_get_attribute_value is missing");return(FALSE);}
-  if(!(bmln_set_attribute_value=(BMSetAttributeValue)dlsym(emu_so,"bm_set_attribute_value"))) { puts("bm_set_attribute_value is missing");return(FALSE);}
+  if(!(bmln_new=(BMNew)dlsym(emu_so,"bm_new"))) { TRACE("bm_new is missing\n");return(FALSE);}
+  if(!(bmln_free=(BMFree)dlsym(emu_so,"bm_free"))) { TRACE("bm_free is missing\n");return(FALSE);}
 
-  if(!(bmln_tick=(BMTick)dlsym(emu_so,"bm_tick"))) { puts("bm_tick is missing");return(FALSE);}
-  if(!(bmln_work=(BMWork)dlsym(emu_so,"bm_work"))) { puts("bm_work is missing");return(FALSE);}
-  if(!(bmln_work_m2s=(BMWorkM2S)dlsym(emu_so,"bm_work_m2s"))) { puts("bm_work_m2s is missing");return(FALSE);}
-  if(!(bmln_stop=(BMStop)dlsym(emu_so,"bm_stop"))) { puts("bm_stop is missing");return(FALSE);}
+  if(!(bmln_init=(BMInit)dlsym(emu_so,"bm_init"))) { TRACE("bm_init is missing\n");return(FALSE);}
 
-  if(!(bmln_attributes_changed=(BMAttributesChanged)dlsym(emu_so,"bm_attributes_changed"))) { puts("bm_attributes_changed is missing");return(FALSE);}
+  if(!(bmln_get_track_parameter_location=(BMGetTrackParameterLocation)dlsym(emu_so,"bm_get_track_parameter_location"))) { TRACE("bm_get_track_parameter_location is missing\n");return(FALSE);}
+  if(!(bmln_get_track_parameter_value=(BMGetTrackParameterValue)dlsym(emu_so,"bm_get_track_parameter_value"))) { TRACE("bm_get_track_parameter_value is missing\n");return(FALSE);}
+  if(!(bmln_set_track_parameter_value=(BMSetTrackParameterValue)dlsym(emu_so,"bm_set_track_parameter_value"))) { TRACE("bm_set_track_parameter_value is missing\n");return(FALSE);}
 
-  if(!(bmln_set_num_tracks=(BMSetNumTracks)dlsym(emu_so,"bm_set_num_tracks"))) { puts("bm_set_num_tracks is missing");return(FALSE);}
+  if(!(bmln_get_global_parameter_location=(BMGetGlobalParameterLocation)dlsym(emu_so,"bm_get_global_parameter_location"))) { TRACE("bm_get_global_parameter_location is missing\n");return(FALSE);}
+  if(!(bmln_get_global_parameter_value=(BMGetGlobalParameterValue)dlsym(emu_so,"bm_get_global_parameter_value"))) { TRACE("bm_get_global_parameter_value is missing\n");return(FALSE);}
+  if(!(bmln_set_global_parameter_value=(BMSetGlobalParameterValue)dlsym(emu_so,"bm_set_global_parameter_value"))) { TRACE("bm_set_global_parameter_value is missing\n");return(FALSE);}
 
-  if(!(bmln_set_callbacks=(BMSetCallbacks)dlsym(emu_so,"bm_set_callbacks"))) { puts("bm_set_callbacks is missing");return(FALSE);}
+  if(!(bmln_get_attribute_location=(BMGetAttributeLocation)dlsym(emu_so,"bm_get_attribute_location"))) { TRACE("bm_get_attribute_location is missing\n");return(FALSE);}
+  if(!(bmln_get_attribute_value=(BMGetAttributeValue)dlsym(emu_so,"bm_get_attribute_value"))) { TRACE("bm_get_attribute_value is missing\n");return(FALSE);}
+  if(!(bmln_set_attribute_value=(BMSetAttributeValue)dlsym(emu_so,"bm_set_attribute_value"))) { TRACE("bm_set_attribute_value is missing\n");return(FALSE);}
+
+  if(!(bmln_tick=(BMTick)dlsym(emu_so,"bm_tick"))) { TRACE("bm_tick is missing\n");return(FALSE);}
+  if(!(bmln_work=(BMWork)dlsym(emu_so,"bm_work"))) { TRACE("bm_work is missing\n");return(FALSE);}
+  if(!(bmln_work_m2s=(BMWorkM2S)dlsym(emu_so,"bm_work_m2s"))) { TRACE("bm_work_m2s is missing\n");return(FALSE);}
+  if(!(bmln_stop=(BMStop)dlsym(emu_so,"bm_stop"))) { TRACE("bm_stop is missing\n");return(FALSE);}
+
+  if(!(bmln_attributes_changed=(BMAttributesChanged)dlsym(emu_so,"bm_attributes_changed"))) { TRACE("bm_attributes_changed is missing\n");return(FALSE);}
+
+  if(!(bmln_set_num_tracks=(BMSetNumTracks)dlsym(emu_so,"bm_set_num_tracks"))) { TRACE("bm_set_num_tracks is missing\n");return(FALSE);}
+
+  if(!(bmln_set_callbacks=(BMSetCallbacks)dlsym(emu_so,"bm_set_callbacks"))) { TRACE("bm_set_callbacks is missing\n");return(FALSE);}
 
   TRACE("   symbols connected\n");
   bmln_set_logger(logger);
@@ -288,6 +401,15 @@ void bml_finalize(void) {
 #ifdef USE_DLLWRAPPER_DIRECT
   _bmlw_finalize();
 #endif /* USE_DLLWRAPPER_DIRECT */
+#ifdef USE_DLLWRAPPER_IPC
+  TRACE("string pool size: %d", sp_get_count(sp));
+  sp_delete(sp);
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, 0);
+  send(server_socket, buf->buffer, buf->size, 0);
+  bmlipc_free(buf);
+  close(server_socket);
+#endif /* USE_DLLWRAPPER_IPC */
   dlclose(emu_so);
   TRACE("   bml unloaded\n");
 }

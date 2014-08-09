@@ -82,7 +82,7 @@ int main( int argc, char **argv ) {
     bmlw_set_master_info(120,4,44100);
 #endif  /* USE_DLLWRAPPER */
     bmln_set_master_info(120,4,44100);
-    puts("  master info initialized");
+    puts("master info initialized");
 
     for(i=1;i<argc;i++) {
       lib_name=argv[i];
