@@ -91,21 +91,27 @@ void bml(test_info(char *libpath)) {
           if(bml(get_global_parameter_info(bmh,i,BM_PARA_MIN_VALUE,(void *)&mival)) &&
              bml(get_global_parameter_info(bmh,i,BM_PARA_MAX_VALUE,(void *)&maval)) &&
              bml(get_global_parameter_info(bmh,i,BM_PARA_NO_VALUE,(void *)&noval)) &&
-             bml(get_global_parameter_info(bmh,i,BM_PARA_DEF_VALUE,(void *)&val)))    printf("        Value: %d .. %d .. %d [%d]\n",mival,val,maval,noval);
-          val =        bml(get_global_parameter_value(bm,i));
-          addr=        bml(get_global_parameter_location(bm,i));
-          str =(char *)bml(describe_global_value(bmh,i,val));
-          switch(type) {
-            case 0: //PT_NOTE:
-            case 1: //PT_SWITCH:
-            case 2: //PT_BYTE:
-              ptrval=(int)(*(char *)addr);
-              break;
-            case 3: //PT_WORD:
-              ptrval=(int)(*(short *)addr);
-              break;
+             bml(get_global_parameter_info(bmh,i,BM_PARA_DEF_VALUE,(void *)&val))) {
+            printf("        Value: %d .. %d .. %d [%d]\n",mival,val,maval,noval);
+            val =        bml(get_global_parameter_value(bm,i));
+            addr=        bml(get_global_parameter_location(bm,i));
+            str =(char *)bml(describe_global_value(bmh,i,val));
+            if (addr) {
+              switch(type) {
+                case 0: //PT_NOTE:
+                case 1: //PT_SWITCH:
+                case 2: //PT_BYTE:
+                  ptrval=(int)(*(char *)addr);
+                  break;
+                case 3: //PT_WORD:
+                  ptrval=(int)(*(short *)addr);
+                  break;
+              }
+              printf("        RealValue: %d %s (%p -> %d)\n",val,str,addr,ptrval);
+            } else {
+              printf("        RealValue: %d %s (NULL)\n",val,str);
+            }            
           }
-          printf("        RealValue: %d %s (%p -> %d)\n",val,str,addr,ptrval);
         }
       }
       else {
@@ -133,21 +139,27 @@ void bml(test_info(char *libpath)) {
             if(bml(get_track_parameter_info(bmh,i,BM_PARA_MIN_VALUE,(void *)&mival)) &&
                bml(get_track_parameter_info(bmh,i,BM_PARA_MAX_VALUE,(void *)&maval)) &&
                bml(get_track_parameter_info(bmh,i,BM_PARA_NO_VALUE,(void *)&noval)) &&
-               bml(get_track_parameter_info(bmh,i,BM_PARA_DEF_VALUE,(void *)&val)))    printf("        Value: %d .. %d .. %d [%d]\n",mival,val,maval,noval);
-            val =        bml(get_track_parameter_value(bm,0,i));
-            addr=        bml(get_track_parameter_location(bm,0,i));
-            str =(char *)bml(describe_track_value(bmh,i,val));
-            switch(type) {
-              case 0: //PT_NOTE:
-              case 1: //PT_SWITCH:
-              case 2: //PT_BYTE:
-                ptrval=(int)(*(char *)addr);
-                break;
-              case 3: //PT_WORD:
-                ptrval=(int)(*(short *)addr);
-                break;
+               bml(get_track_parameter_info(bmh,i,BM_PARA_DEF_VALUE,(void *)&val))) {
+              printf("        Value: %d .. %d .. %d [%d]\n",mival,val,maval,noval);
+              val =        bml(get_track_parameter_value(bm,0,i));
+              addr=        bml(get_track_parameter_location(bm,0,i));
+              str =(char *)bml(describe_track_value(bmh,i,val));
+              if (addr) {
+                switch(type) {
+                  case 0: //PT_NOTE:
+                  case 1: //PT_SWITCH:
+                  case 2: //PT_BYTE:
+                    ptrval=(int)(*(char *)addr);
+                    break;
+                  case 3: //PT_WORD:
+                    ptrval=(int)(*(short *)addr);
+                    break;
+                }
+                printf("        RealValue: %d %s (%p -> %d)\n",val,str,addr,ptrval);
+              } else {
+                printf("        RealValue: %d %s (NULL)\n",val,str);
+              }
             }
-            printf("        RealValue: %d %s (%p -> %d)\n",val,str,addr,ptrval);
           }
         }
         else {
@@ -167,8 +179,10 @@ void bml(test_info(char *libpath)) {
           if(bml(get_attribute_info(bmh,i,BM_ATTR_NAME,(void *)&str)))         printf("        Name: \"%s\"\n",str);
           if(bml(get_attribute_info(bmh,i,BM_ATTR_MIN_VALUE,(void *)&mival)) &&
              bml(get_attribute_info(bmh,i,BM_ATTR_MAX_VALUE,(void *)&maval)) &&
-             bml(get_attribute_info(bmh,i,BM_ATTR_DEF_VALUE,(void *)&val)))    printf("        Value: %d .. %d .. %d\n",mival,val,maval);
-          val=bml(get_attribute_value(bm,i);printf("        RealValue: %d\n",val));
+             bml(get_attribute_info(bmh,i,BM_ATTR_DEF_VALUE,(void *)&val))) {
+            printf("        Value: %d .. %d .. %d\n",mival,val,maval);
+            val=bml(get_attribute_value(bm,i);printf("        RealValue: %d\n",val));
+          }
         }
       }
 
