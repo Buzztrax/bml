@@ -311,6 +311,12 @@ void bmlw_free(BuzzMachine *bm) {
 
 
 void bmlw_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data) {
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_INIT);
+  bmlipc_write_int(buf, (int)((long)bm));
+  bmlipc_write_int(buf, (int)blob_size);
+  bmlipc_write_data(buf, (int)blob_size, (char *)blob_data);
+  send(server_socket, buf->buffer, buf->size, 0);
 }
 
 

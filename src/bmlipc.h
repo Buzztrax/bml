@@ -39,8 +39,10 @@ void bmlipc_clear (BmlIpcBuf * self);
 
 int bmlipc_read_int (BmlIpcBuf * self);
 char *bmlipc_read_string (BmlIpcBuf * self);
+char *bmlipc_read_data (BmlIpcBuf * self, int size);
 
 void bmlipc_write_int (BmlIpcBuf * self, int buffer);
 void bmlipc_write_string (BmlIpcBuf * self, char *buffer);
+void bmlipc_write_data (BmlIpcBuf * self, int size, char *buffer);
 
 #endif // BMLIPC_H

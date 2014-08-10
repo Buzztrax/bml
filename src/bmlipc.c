@@ -79,6 +79,13 @@ char *bmlipc_read_string (BmlIpcBuf * self)
   return buffer;
 }
 
+char *bmlipc_read_data (BmlIpcBuf * self, int size)
+{
+  char *buffer = &self->buffer[self->pos];
+  self->pos += size;
+  return buffer;
+}
+
 // writer
 
 static int mem_write (BmlIpcBuf * self, void *ptr, int size, int n_items)
@@ -103,6 +110,12 @@ void bmlipc_write_int (BmlIpcBuf * self, int buffer)
 
 void bmlipc_write_string (BmlIpcBuf * self, char *buffer) {
   if (mem_write (self, buffer, strlen (buffer) + 1, 1) != 1) {
+    self->io_error = 1;
+  }
+}
+
+void bmlipc_write_data (BmlIpcBuf * self, int size, char *buffer) {
+  if (mem_write (self, buffer, size, 1) != 1) {
     self->io_error = 1;
   }
 }

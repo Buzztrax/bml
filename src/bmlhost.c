@@ -230,6 +230,11 @@ static void _bmlw_free(BmlIpcBuf *buf)
 
 static void _bmlw_init(BmlIpcBuf *buf)
 {
+  BuzzMachine *bm = (BuzzMachine *)bmlipc_read_int(buf);
+  unsigned long blob_size = bmlipc_read_int(buf);
+  unsigned char *blob_data = (unsigned char *)bmlipc_read_data(buf, (int)blob_size);
+  bmlw_init(bm, blob_size, blob_data);
+  bmlipc_clear(buf);
 }
 
 int main( int argc, char **argv ) {
