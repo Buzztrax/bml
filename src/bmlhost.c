@@ -237,6 +237,121 @@ static void _bmlw_init(BmlIpcBuf *buf)
   bmlipc_clear(buf);
 }
 
+static void _bmlw_get_track_parameter_value(BmlIpcBuf *buf)
+{
+  BuzzMachine *bm = (BuzzMachine *)bmlipc_read_int(buf);
+  int track = bmlipc_read_int(buf);
+  int index = bmlipc_read_int(buf);
+  int value = bmlw_get_track_parameter_value(bm, track, index);
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, value);
+}
+
+static void _bmlw_set_track_parameter_value(BmlIpcBuf *buf)
+{
+  BuzzMachine *bm = (BuzzMachine *)bmlipc_read_int(buf);
+  int track = bmlipc_read_int(buf);
+  int index = bmlipc_read_int(buf);
+  int value = bmlipc_read_int(buf);
+  bmlw_set_track_parameter_value(bm, track, index, value);
+  bmlipc_clear(buf);
+}
+
+static void _bmlw_get_global_parameter_value(BmlIpcBuf *buf)
+{
+  BuzzMachine *bm = (BuzzMachine *)bmlipc_read_int(buf);
+  int index = bmlipc_read_int(buf);
+  int value = bmlw_get_global_parameter_value(bm, index);
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, value);
+}
+
+static void _bmlw_set_global_parameter_value(BmlIpcBuf *buf)
+{
+  BuzzMachine *bm = (BuzzMachine *)bmlipc_read_int(buf);
+  int index = bmlipc_read_int(buf);
+  int value = bmlipc_read_int(buf);
+  bmlw_set_global_parameter_value(bm, index, value);
+  bmlipc_clear(buf);
+}
+
+static void _bmlw_get_attribute_value(BmlIpcBuf *buf)
+{
+  BuzzMachine *bm = (BuzzMachine *)bmlipc_read_int(buf);
+  int index = bmlipc_read_int(buf);
+  int value = bmlw_get_attribute_value(bm, index);
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, value);
+}
+
+static void _bmlw_set_attribute_value(BmlIpcBuf *buf)
+{
+  BuzzMachine *bm = (BuzzMachine *)bmlipc_read_int(buf);
+  int index = bmlipc_read_int(buf);
+  int value = bmlipc_read_int(buf);
+  bmlw_set_attribute_value(bm, index, value);
+  bmlipc_clear(buf);
+}
+
+static void _bmlw_tick(BmlIpcBuf *buf)
+{
+  BuzzMachine *bm = (BuzzMachine *)bmlipc_read_int(buf);
+  bmlw_tick(bm);
+  bmlipc_clear(buf);
+}
+
+static void _bmlw_work(BmlIpcBuf *buf)
+{
+  BuzzMachine *bm = (BuzzMachine *)bmlipc_read_int(buf);
+  int size = bmlipc_read_int(buf);
+  float *psamples = (float *)bmlipc_read_data(buf, size);
+  int numsamples = size / sizeof(float);
+  int mode = bmlipc_read_int(buf);
+  int ret = bmlw_work(bm, psamples, numsamples, mode);
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, ret);
+  bmlipc_write_int(buf, size);
+  bmlipc_write_data(buf, size, (char *)psamples);
+}
+
+static void _bmlw_work_m2s(BmlIpcBuf *buf)
+{
+  BuzzMachine *bm = (BuzzMachine *)bmlipc_read_int(buf);
+  int size = bmlipc_read_int(buf);
+  float *pin = (float *)bmlipc_read_data(buf, size);
+  float pout[256 + 256]; // MAX_BUFFER_LENGTH = 256 
+  int numsamples = size / sizeof(float);
+  int mode = bmlipc_read_int(buf);
+  int ret = bmlw_work_m2s(bm, pin, pout, numsamples, mode);
+  size+=size;
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, ret);
+  bmlipc_write_int(buf, size);
+  bmlipc_write_data(buf, size, (char *)pout);
+}
+
+static void _bmlw_stop(BmlIpcBuf *buf)
+{
+  BuzzMachine *bm = (BuzzMachine *)bmlipc_read_int(buf);
+  bmlw_stop(bm);
+  bmlipc_clear(buf);
+}
+
+static void _bmlw_attributes_changed(BmlIpcBuf *buf)
+{
+  BuzzMachine *bm = (BuzzMachine *)bmlipc_read_int(buf);
+  bmlw_attributes_changed(bm);
+  bmlipc_clear(buf);
+}
+
+static void _bmlw_set_num_tracks(BmlIpcBuf *buf)
+{
+  BuzzMachine *bm = (BuzzMachine *)bmlipc_read_int(buf);
+  int num = bmlipc_read_int(buf);
+  bmlw_set_num_tracks(bm,num);
+  bmlipc_clear(buf);
+}
+
 int main( int argc, char **argv ) {
   char *socket_file=NULL;
   const char *debug_log_flag_str=getenv("BML_DEBUG");
@@ -320,20 +435,20 @@ int main( int argc, char **argv ) {
       case BM_FREE:                          _bmlw_free(buf);break;
       case BM_INIT:                          _bmlw_init(buf);break;
       case BM_GET_TRACK_PARAMETER_LOCATION:  break;
-      case BM_GET_TRACK_PARAMETER_VALUE:     break;
-      case BM_SET_TRACK_PARAMETER_VALUE:     break;
+      case BM_GET_TRACK_PARAMETER_VALUE:     _bmlw_get_track_parameter_value(buf);break;
+      case BM_SET_TRACK_PARAMETER_VALUE:     _bmlw_set_track_parameter_value(buf);break;
       case BM_GET_GLOBAL_PARAMETER_LOCATION: break;
-      case BM_GET_GLOBAL_PARAMETER_VALUE:    break;
-      case BM_SET_GLOBAL_PARAMETER_VALUE:    break;
+      case BM_GET_GLOBAL_PARAMETER_VALUE:    _bmlw_get_global_parameter_value(buf);break;
+      case BM_SET_GLOBAL_PARAMETER_VALUE:    _bmlw_set_global_parameter_value(buf);break;
       case BM_GET_ATTRIBUTE_LOCATION:        break;
-      case BM_GET_ATTRIBUTE_VALUE:           break;
-      case BM_SET_ATTRIBUTE_VALUE:           break;
-      case BM_TICK:                          break;
-      case BM_WORK:                          break;
-      case BM__WORK_M2S:                     break;
-      case BM_STOP:                          break;
-      case BM_ATTRIBUTES_CHANGED:            break;
-      case BM_SET_NUM_TRACKS:                break;
+      case BM_GET_ATTRIBUTE_VALUE:           _bmlw_get_attribute_value(buf);break;
+      case BM_SET_ATTRIBUTE_VALUE:           _bmlw_set_attribute_value(buf);break;
+      case BM_TICK:                          _bmlw_tick(buf);break;
+      case BM_WORK:                          _bmlw_work(buf);break;
+      case BM_WORK_M2S:                      _bmlw_work_m2s(buf);break;
+      case BM_STOP:                          _bmlw_stop(buf);break;
+      case BM_ATTRIBUTES_CHANGED:            _bmlw_attributes_changed(buf);break;
+      case BM_SET_NUM_TRACKS:                _bmlw_set_num_tracks(buf);break;
       case BM_SET_CALLBACKS:                 break;
       default:
         break;

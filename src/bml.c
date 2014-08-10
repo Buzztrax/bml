@@ -321,62 +321,154 @@ void bmlw_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_dat
 
 
 void *bmlw_get_track_parameter_location(BuzzMachine *bm,int track,int index) {
-	return(NULL);
+  // TODO(ensonic): use a local address and swap the content before tick()
+	return NULL;
 }
 
 int bmlw_get_track_parameter_value(BuzzMachine *bm,int track,int index) {
-	return(0);
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_GET_TRACK_PARAMETER_VALUE);
+  bmlipc_write_int(buf, (int)((long)bm));
+  bmlipc_write_int(buf, track);
+  bmlipc_write_int(buf, index);
+  send(server_socket, buf->buffer, buf->size, 0);
+	bmlipc_clear(buf);
+  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+	return bmlipc_read_int(buf);
 }
 
 void bmlw_set_track_parameter_value(BuzzMachine *bm,int track,int index,int value) {
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_GET_TRACK_PARAMETER_VALUE);
+  bmlipc_write_int(buf, (int)((long)bm));
+  bmlipc_write_int(buf, track);
+  bmlipc_write_int(buf, index);
+  bmlipc_write_int(buf, value);
+  send(server_socket, buf->buffer, buf->size, 0);
 }
 
 
 void *bmlw_get_global_parameter_location(BuzzMachine *bm,int index) {
-	return(NULL);
+  // TODO(ensonic): use a local address and swap the content before tick()
+	return NULL;
 }
 
 int bmlw_get_global_parameter_value(BuzzMachine *bm,int index) {
-	return(0);
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_GET_GLOBAL_PARAMETER_VALUE);
+  bmlipc_write_int(buf, (int)((long)bm));
+  bmlipc_write_int(buf, index);
+  send(server_socket, buf->buffer, buf->size, 0);
+	bmlipc_clear(buf);
+  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+	return bmlipc_read_int(buf);
 }
 
 void bmlw_set_global_parameter_value(BuzzMachine *bm,int index,int value) {
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_GET_GLOBAL_PARAMETER_VALUE);
+  bmlipc_write_int(buf, (int)((long)bm));
+  bmlipc_write_int(buf, index);
+  bmlipc_write_int(buf, value);
+  send(server_socket, buf->buffer, buf->size, 0);
 }
 
 
 void *bmlw_get_attribute_location(BuzzMachine *bm,int index) {
-	return(NULL);
+  // TODO(ensonic): use a local address and swap the content before tick()
+	return NULL;
 }
 
 int bmlw_get_attribute_value(BuzzMachine *bm,int index) {
-	return(0);
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_GET_ATTRIBUTE_VALUE);
+  bmlipc_write_int(buf, (int)((long)bm));
+  bmlipc_write_int(buf, index);
+  send(server_socket, buf->buffer, buf->size, 0);
+	bmlipc_clear(buf);
+  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+	return bmlipc_read_int(buf);
 }
 
 void bmlw_set_attribute_value(BuzzMachine *bm,int index,int value) {
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_SET_ATTRIBUTE_VALUE);
+  bmlipc_write_int(buf, (int)((long)bm));
+  bmlipc_write_int(buf, index);
+  bmlipc_write_int(buf, value);
+  send(server_socket, buf->buffer, buf->size, 0);
 }
 
 
 void bmlw_tick(BuzzMachine *bm) {
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_TICK);
+  bmlipc_write_int(buf, (int)((long)bm));
+  send(server_socket, buf->buffer, buf->size, 0);
 }
 
 int bmlw_work(BuzzMachine *bm,float *psamples, int numsamples, int const mode) {
-	return(0);
+  int size = numsamples * sizeof(float);
+  int ret;
+
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_WORK);
+  bmlipc_write_int(buf, (int)((long)bm));
+  bmlipc_write_int(buf, size);
+  bmlipc_write_data(buf, size, (char *)psamples);
+  bmlipc_write_int(buf, mode);
+  send(server_socket, buf->buffer, buf->size, 0);
+  bmlipc_clear(buf);
+  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+  ret = bmlipc_read_int(buf);
+  size = bmlipc_read_int(buf);
+  memcpy(psamples, bmlipc_read_data(buf, size), size);
+	return ret;
 }
 
 int bmlw_work_m2s(BuzzMachine *bm,float *pin, float *pout, int numsamples, int const mode) {
-	return(0);
+  int size = numsamples * sizeof(float);
+  int ret;
+
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_WORK_M2S);
+  bmlipc_write_int(buf, (int)((long)bm));
+  bmlipc_write_int(buf, size);
+  bmlipc_write_data(buf, size, (char *)pin);
+  bmlipc_write_int(buf, mode);
+  send(server_socket, buf->buffer, buf->size, 0);
+  bmlipc_clear(buf);
+  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+  ret = bmlipc_read_int(buf);
+  size = bmlipc_read_int(buf);
+  memcpy(pout, bmlipc_read_data(buf, size), size);
+	return ret;
 }
 
 void bmlw_stop(BuzzMachine *bm) {
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_STOP);
+  bmlipc_write_int(buf, (int)((long)bm));
+  send(server_socket, buf->buffer, buf->size, 0);
 }
 
 void bmlw_attributes_changed(BuzzMachine *bm) {
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_ATTRIBUTES_CHANGED);
+  bmlipc_write_int(buf, (int)((long)bm));
+  send(server_socket, buf->buffer, buf->size, 0);
 }
 
 void bmlw_set_num_tracks(BuzzMachine *bm, int num) {
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_SET_NUM_TRACKS);
+  bmlipc_write_int(buf, (int)((long)bm));
+  bmlipc_write_int(buf, num);
+  send(server_socket, buf->buffer, buf->size, 0);
 }
 
 void bmlw_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks) {
+  // TODO(ensonic): maybe a proxy
 }
 
 #endif /* USE_DLLWRAPPER_IPC */
@@ -393,13 +485,13 @@ int bml_setup(void) {
   if (!_bmlw_setup(logger)) {
     return FALSE;
   }
-#endif /* USE_DLLWRAPPER_DIRECT */  
+#endif /* USE_DLLWRAPPER_DIRECT */
 #ifdef USE_DLLWRAPPER_IPC
   struct sockaddr_un address;
   char *socket_file = malloc(16 + 20);
   pid_t child_pid;
   int retries = 0;
-  
+
   if (getenv("BMLIPC_DEBUG")) {
     snprintf(socket_file, 16 + 20, "/tmp/bml.sock");
   } else {
