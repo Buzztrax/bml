@@ -152,8 +152,7 @@ int bmlw_get_machine_info(BuzzMachineHandle *bmh, BuzzMachineProperty key, void 
   bmlipc_clear(buf);
   buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
   ret = bmlipc_read_int(buf);
-  TRACE("key: %d, ret: %d", key, ret);
-  // function writes result into value which is either an int or string :/
+  // function writes result into value which is either an int or string
   switch(ret) {
     case 0: break;
     case 1:
@@ -170,30 +169,126 @@ int bmlw_get_machine_info(BuzzMachineHandle *bmh, BuzzMachineProperty key, void 
 }
 
 int bmlw_get_global_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachineParameter key,void *value) {
-	return(0);
+	int ret;
+  int *ival=(int *)value;
+  const char **sval=(const char **)value;
+
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_GET_GLOBAL_PARAMETER_INFO);
+  bmlipc_write_int(buf, (int)((long)bmh));
+  bmlipc_write_int(buf, key);
+  send(server_socket, buf->buffer, buf->size, 0);
+  bmlipc_clear(buf);
+  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+  ret = bmlipc_read_int(buf);
+  // function writes result into value which is either an int or string
+  switch(ret) {
+    case 0: break;
+    case 1:
+      *ival = bmlipc_read_int(buf);
+      break;
+    case 2:
+      // this is a pointer to the receive buffer, we intern the received string
+      *sval = sp_intern(sp, bmlipc_read_string(buf));
+      break;
+    default:
+      TRACE("unhandled value type: %d", ret);
+  }
+	return (ret ? 1 : 0);
 }
 
 int bmlw_get_track_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachineParameter key,void *value) {
-	return(0);
+	int ret;
+  int *ival=(int *)value;
+  const char **sval=(const char **)value;
+
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_GET_TRACK_PARAMETER_INFO);
+  bmlipc_write_int(buf, (int)((long)bmh));
+  bmlipc_write_int(buf, index);
+  bmlipc_write_int(buf, key);
+  send(server_socket, buf->buffer, buf->size, 0);
+  bmlipc_clear(buf);
+  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+  ret = bmlipc_read_int(buf);
+  // function writes result into value which is either an int or string
+  switch(ret) {
+    case 0: break;
+    case 1:
+      *ival = bmlipc_read_int(buf);
+      break;
+    case 2:
+      // this is a pointer to the receive buffer, we intern the received string
+      *sval = sp_intern(sp, bmlipc_read_string(buf));
+      break;
+    default:
+      TRACE("unhandled value type: %d", ret);
+  }
+	return (ret ? 1 : 0);
 }
 
 int bmlw_get_attribute_info(BuzzMachineHandle *bmh,int index,BuzzMachineAttribute key,void *value) {
-	return(0);
+	int ret;
+  int *ival=(int *)value;
+  const char **sval=(const char **)value;
+
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_GET_ATTRIBUTE_INFO);
+  bmlipc_write_int(buf, (int)((long)bmh));
+  bmlipc_write_int(buf, index);
+  bmlipc_write_int(buf, key);
+  send(server_socket, buf->buffer, buf->size, 0);
+  bmlipc_clear(buf);
+  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+  ret = bmlipc_read_int(buf);
+  // function writes result into value which is either an int or string
+  switch(ret) {
+    case 0: break;
+    case 1:
+      *ival = bmlipc_read_int(buf);
+      break;
+    case 2:
+      // this is a pointer to the receive buffer, we intern the received string
+      *sval = sp_intern(sp, bmlipc_read_string(buf));
+      break;
+    default:
+      TRACE("unhandled value type: %d", ret);
+  }
+	return (ret ? 1 : 0);
 }
 
 
 const char *bmlw_describe_global_value(BuzzMachineHandle *bmh, int const param,int const value) {
-	const char *ret = "";
+  int ret;
 
-	return(ret);
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_DESCRIBE_GLOBAL_VALUE);
+  bmlipc_write_int(buf, (int)((long)bmh));
+  bmlipc_write_int(buf, param);
+  bmlipc_write_int(buf, value);
+  send(server_socket, buf->buffer, buf->size, 0);
+  bmlipc_clear(buf);
+  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+  ret = bmlipc_read_int(buf);
+
+  return ret ? bmlipc_read_string(buf): NULL;
 }
 
 const char *bmlw_describe_track_value(BuzzMachineHandle *bmh, int const param,int const value) {
-	const char *ret = "";
+  int ret;
 
-	return(ret);
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, BM_DESCRIBE_TRACK_VALUE);
+  bmlipc_write_int(buf, (int)((long)bmh));
+  bmlipc_write_int(buf, param);
+  bmlipc_write_int(buf, value);
+  send(server_socket, buf->buffer, buf->size, 0);
+  bmlipc_clear(buf);
+  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+  ret = bmlipc_read_int(buf);
+
+  return ret ? bmlipc_read_string(buf): NULL;
 }
-
 
 // instance api
 
@@ -296,29 +391,28 @@ int bml_setup(void) {
 #ifdef USE_DLLWRAPPER_IPC
   struct sockaddr_un address;
   char *socket_file = malloc(16 + 20);
-  //pid_t child_pid;
+  pid_t child_pid;
   int retries = 0;
   
-  // build socket filename
-#if 0
-  snprintf(socket_file, 16 + 20, "/tmp/bml.%d.XXXXXX", (int)getpid());
-  socket_file = mktemp(socket_file);
-  // spawn the server
-  child_pid = fork ();
-  if (child_pid == 0) {
-    char *args[] = { "bmlhost", socket_file, NULL };
-    int res = execvp("bmlhost", args);
-    TRACE("an error occurred in execvp\n", strerror(res));
-    return FALSE;
-  } else if (child_pid < 0) {
-    TRACE("fork failed: %s\n", strerror(child_pid));
-    return FALSE;
+  if (getenv("BMLIPC_DEBUG")) {
+    snprintf(socket_file, 16 + 20, "/tmp/bml.sock");
   } else {
-    sleep(1);
+    snprintf(socket_file, 16 + 20, "/tmp/bml.%d.XXXXXX", (int)getpid());
+    socket_file = mktemp(socket_file);
+    // spawn the server
+    child_pid = fork ();
+    if (child_pid == 0) {
+      char *args[] = { "bmlhost", socket_file, NULL };
+      int res = execvp("bmlhost", args);
+      TRACE("an error occurred in execvp\n", strerror(res));
+      return FALSE;
+    } else if (child_pid < 0) {
+      TRACE("fork failed: %s\n", strerror(child_pid));
+      return FALSE;
+    } else {
+      sleep(1);
+    }
   }
-#else
-  snprintf(socket_file, 16 + 20, "/tmp/bml.sock");
-#endif
 
   if ((server_socket=socket(PF_LOCAL, SOCK_STREAM, 0)) > 0) {
     TRACE("server socket created\n");
@@ -402,14 +496,12 @@ void bml_finalize(void) {
   _bmlw_finalize();
 #endif /* USE_DLLWRAPPER_DIRECT */
 #ifdef USE_DLLWRAPPER_IPC
-  TRACE("string pool size: %d", sp_get_count(sp));
+  TRACE("string pool size: %d\n", sp_get_count(sp));
   sp_delete(sp);
-  bmlipc_clear(buf);
-  bmlipc_write_int(buf, 0);
-  send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("closing socket\n");
   bmlipc_free(buf);
-  close(server_socket);
+  shutdown(server_socket,SHUT_RDWR); // close(server_socket);
 #endif /* USE_DLLWRAPPER_IPC */
   dlclose(emu_so);
-  TRACE("   bml unloaded\n");
+  TRACE("bml unloaded\n");
 }

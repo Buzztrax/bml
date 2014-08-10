@@ -97,14 +97,120 @@ static void _bmlw_get_machine_info(BmlIpcBuf *buf)
 
 static void _bmlw_get_global_parameter_info(BmlIpcBuf *buf)
 {
+  BuzzMachineHandle *bmh = (BuzzMachineHandle *)bmlipc_read_int(buf);
+  int index = bmlipc_read_int(buf);
+  BuzzMachineParameter key = bmlipc_read_int(buf);
+  int ival,ret;
+  char *sval;
+  
+  switch(key) {
+    case BM_PARA_TYPE:
+    case BM_PARA_MIN_VALUE:
+    case BM_PARA_MAX_VALUE:
+    case BM_PARA_NO_VALUE:
+    case BM_PARA_FLAGS:
+    case BM_PARA_DEF_VALUE:
+      ret=bmlw_get_global_parameter_info(bmh, index, key, &ival);
+      bmlipc_clear(buf);
+      bmlipc_write_int(buf, (ret ? 1 : 0));
+      bmlipc_write_int(buf, ival);
+      break;
+    case BM_PARA_NAME:
+    case BM_PARA_DESCRIPTION:
+      ret=bmlw_get_global_parameter_info(bmh, index, key, &sval);
+      bmlipc_clear(buf);
+      bmlipc_write_int(buf, (ret ? 2 : 0));
+      if (sval) {
+        bmlipc_write_string(buf, sval);
+      }
+      break;
+  }
 }
 
 static void _bmlw_get_track_parameter_info(BmlIpcBuf *buf)
 {
+  BuzzMachineHandle *bmh = (BuzzMachineHandle *)bmlipc_read_int(buf);
+  int index = bmlipc_read_int(buf);
+  BuzzMachineParameter key = bmlipc_read_int(buf);
+  int ival,ret;
+  char *sval;
+  
+  switch(key) {
+    case BM_PARA_TYPE:
+    case BM_PARA_MIN_VALUE:
+    case BM_PARA_MAX_VALUE:
+    case BM_PARA_NO_VALUE:
+    case BM_PARA_FLAGS:
+    case BM_PARA_DEF_VALUE:
+      ret=bmlw_get_track_parameter_info(bmh, index, key, &ival);
+      bmlipc_clear(buf);
+      bmlipc_write_int(buf, (ret ? 1 : 0));
+      bmlipc_write_int(buf, ival);
+      break;
+    case BM_PARA_NAME:
+    case BM_PARA_DESCRIPTION:
+      ret=bmlw_get_track_parameter_info(bmh, index, key, &sval);
+      bmlipc_clear(buf);
+      bmlipc_write_int(buf, (ret ? 2 : 0));
+      if (sval) {
+        bmlipc_write_string(buf, sval);
+      }
+      break;
+  }
 }
 
 static void _bmlw_get_attribute_info(BmlIpcBuf *buf)
 {
+  BuzzMachineHandle *bmh = (BuzzMachineHandle *)bmlipc_read_int(buf);
+  int index = bmlipc_read_int(buf);
+  BuzzMachineAttribute key = bmlipc_read_int(buf);
+  int ival,ret;
+  char *sval;
+  
+  switch(key) {
+    case BM_ATTR_MIN_VALUE:
+    case BM_ATTR_MAX_VALUE:
+    case BM_ATTR_DEF_VALUE:
+      ret=bmlw_get_attribute_info(bmh, index, key, &ival);
+      bmlipc_clear(buf);
+      bmlipc_write_int(buf, (ret ? 1 : 0));
+      bmlipc_write_int(buf, ival);
+      break;
+    case BM_ATTR_NAME:
+      ret=bmlw_get_attribute_info(bmh, index, key, &sval);
+      bmlipc_clear(buf);
+      bmlipc_write_int(buf, (ret ? 2 : 0));
+      if (sval) {
+        bmlipc_write_string(buf, sval);
+      }
+      break;
+  }
+}
+
+static void _bmlw_describe_global_value(BmlIpcBuf *buf)
+{
+  BuzzMachineHandle *bmh = (BuzzMachineHandle *)bmlipc_read_int(buf);
+  int param = bmlipc_read_int(buf);
+  int value = bmlipc_read_int(buf);
+  char *res = (char *)bmlw_describe_global_value(bmh, param, value);
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, (res != NULL));
+  if (res) {
+    bmlipc_write_string(buf, res);
+  } 
+}
+
+static void _bmlw_describe_track_value(BmlIpcBuf *buf)
+{
+  BuzzMachineHandle *bmh = (BuzzMachineHandle *)bmlipc_read_int(buf);
+  int param = bmlipc_read_int(buf);
+  int value = bmlipc_read_int(buf);
+  char *res = (char *)bmlw_describe_track_value(bmh, param, value);
+  bmlipc_clear(buf);
+  bmlipc_write_int(buf, (res != NULL));
+  if (res) {
+    bmlipc_write_string(buf, res);
+  } 
 }
 
 static void _bmlw_new(BmlIpcBuf *buf)
@@ -173,11 +279,16 @@ int main( int argc, char **argv ) {
   }
   buf = bmlipc_new();
   while (running) {
-    TRACE("waiting for command\n");
+    TRACE("waiting for command ====================\n");
     bmlipc_clear(buf);
     size = recv(client_socket, buf->buffer, IPC_BUF_SIZE, 0);
     if (size < 0) {
       TRACE("recv failed: %s\n", strerror(size));
+      continue;
+    }
+    if (size == 0) {
+      TRACE("got EOF\n");
+      running = FALSE;
       continue;
     }
     buf->size = (int)size;
@@ -188,7 +299,7 @@ int main( int argc, char **argv ) {
       TRACE("message should be atleast 4 bytes");
       continue;
     }
-    TRACE("command: %d", id);
+    TRACE("command: %d\n", id);
     switch (id) {
       case 0:                                running = FALSE;break;
       case BM_SET_MASTER_INFO:               _bmlw_set_master_info(buf);break;
@@ -198,6 +309,8 @@ int main( int argc, char **argv ) {
       case BM_GET_GLOBAL_PARAMETER_INFO:     _bmlw_get_global_parameter_info(buf);break;
       case BM_GET_TRACK_PARAMETER_INFO:      _bmlw_get_track_parameter_info(buf);break;
       case BM_GET_ATTRIBUTE_INFO:            _bmlw_get_attribute_info(buf);break;
+      case BM_DESCRIBE_GLOBAL_VALUE:         _bmlw_describe_global_value(buf);break;
+      case BM_DESCRIBE_TRACK_VALUE:          _bmlw_describe_track_value(buf);break;
       case BM_NEW:                           _bmlw_new(buf);break;
       case BM_FREE:                          _bmlw_free(buf);break;
       case BM_INIT:                          _bmlw_init(buf);break;
@@ -216,14 +329,13 @@ int main( int argc, char **argv ) {
       case BM_STOP:                          break;
       case BM_ATTRIBUTES_CHANGED:            break;
       case BM_SET_NUM_TRACKS:                break;
-      case BM_DESCRIBE_GLOBAL_VALUE:         break;
-      case BM_DESCRIBE_TRACK_VALUE:          break;
       case BM_SET_CALLBACKS:                 break;
       default:
         break;
     }   
     if (buf->size) {
       send(client_socket, buf->buffer, buf->size, 0);
+      TRACE("sent %d bytes\n", buf->size);
     }
   }
   bmlipc_free(buf);
