@@ -107,12 +107,19 @@ BMSetCallbacks bmln_set_callbacks;
 // global API
 
 void bmlw_set_master_info(long bpm, long tpb, long srat) {
+  TRACE("bmlw_set_master_info(%d, %d, %d)...\n", bpm, tpb, srat);
   bmlipc_clear(buf);
   bmlipc_write_int(buf, BM_SET_MASTER_INFO);
   bmlipc_write_int(buf, bpm);
   bmlipc_write_int(buf, tpb);
   bmlipc_write_int(buf, srat);
-  send(server_socket, buf->buffer, buf->size, 0);
+  ssize_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    TRACE("got %d bytes\n", buf->size);
+  }
 }
 
 // library api
@@ -122,22 +129,34 @@ BuzzMachineHandle *bmlw_open(char *bm_file_name) {
   bmlipc_clear(buf);
   bmlipc_write_int(buf, BM_OPEN);
   bmlipc_write_string(buf, bm_file_name);
-  send(server_socket, buf->buffer, buf->size, 0);
-  bmlipc_clear(buf);
-  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
-	return (BuzzMachineHandle *)((long)bmlipc_read_int(buf));
+  ssize_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    TRACE("got %d bytes\n", buf->size);
+    return (BuzzMachineHandle *)((long)bmlipc_read_int(buf));
+  } else {
+    return NULL;
+  }
 }
 
 void bmlw_close(BuzzMachineHandle *bmh) {
   bmlipc_clear(buf);
   bmlipc_write_int(buf, BM_CLOSE);
   bmlipc_write_int(buf, (int)((long)bmh));
-  send(server_socket, buf->buffer, buf->size, 0);
+  ssize_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    TRACE("got %d bytes\n", buf->size);
+  }
 }
 
 
 int bmlw_get_machine_info(BuzzMachineHandle *bmh, BuzzMachineProperty key, void *value) {
-  int ret;
+  int ret = 0;
   int *ival=(int *)value;
   const char **sval=(const char **)value;
 
@@ -145,28 +164,31 @@ int bmlw_get_machine_info(BuzzMachineHandle *bmh, BuzzMachineProperty key, void 
   bmlipc_write_int(buf, BM_GET_MACHINE_INFO);
   bmlipc_write_int(buf, (int)((long)bmh));
   bmlipc_write_int(buf, key);
-  send(server_socket, buf->buffer, buf->size, 0);
-  bmlipc_clear(buf);
-  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
-  ret = bmlipc_read_int(buf);
-  // function writes result into value which is either an int or string
-  switch(ret) {
-    case 0: break;
-    case 1:
-      *ival = bmlipc_read_int(buf);
-      break;
-    case 2:
-      // this is a pointer to the receive buffer, we intern the received string
-      *sval = sp_intern(sp, bmlipc_read_string(buf));
-      break;
-    default:
-      TRACE("unhandled value type: %d", ret);
+  ssize_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    ret = bmlipc_read_int(buf);
+    // function writes result into value which is either an int or string
+    switch(ret) {
+      case 0: break;
+      case 1:
+        *ival = bmlipc_read_int(buf);
+        break;
+      case 2:
+        // this is a pointer to the receive buffer, we intern the received string
+        *sval = sp_intern(sp, bmlipc_read_string(buf));
+        break;
+      default:
+        TRACE("unhandled value type: %d", ret);
+    }
   }
-	return (ret ? 1 : 0);
+  return (ret ? 1 : 0);
 }
 
 int bmlw_get_global_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachineParameter key,void *value) {
-	int ret;
+	int ret = 0;
   int *ival=(int *)value;
   const char **sval=(const char **)value;
 
@@ -175,28 +197,31 @@ int bmlw_get_global_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachineP
   bmlipc_write_int(buf, (int)((long)bmh));
   bmlipc_write_int(buf, index);
   bmlipc_write_int(buf, key);
-  send(server_socket, buf->buffer, buf->size, 0);
-  bmlipc_clear(buf);
-  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
-  ret = bmlipc_read_int(buf);
-  // function writes result into value which is either an int or string
-  switch(ret) {
-    case 0: break;
-    case 1:
-      *ival = bmlipc_read_int(buf);
-      break;
-    case 2:
-      // this is a pointer to the receive buffer, we intern the received string
-      *sval = sp_intern(sp, bmlipc_read_string(buf));
-      break;
-    default:
-      TRACE("unhandled value type: %d", ret);
+  ssize_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    ret = bmlipc_read_int(buf);
+    // function writes result into value which is either an int or string
+    switch(ret) {
+      case 0: break;
+      case 1:
+        *ival = bmlipc_read_int(buf);
+        break;
+      case 2:
+        // this is a pointer to the receive buffer, we intern the received string
+        *sval = sp_intern(sp, bmlipc_read_string(buf));
+        break;
+      default:
+        TRACE("unhandled value type: %d", ret);
+    }
   }
 	return (ret ? 1 : 0);
 }
 
 int bmlw_get_track_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachineParameter key,void *value) {
-	int ret;
+	int ret = 0;
   int *ival=(int *)value;
   const char **sval=(const char **)value;
 
@@ -205,28 +230,31 @@ int bmlw_get_track_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachinePa
   bmlipc_write_int(buf, (int)((long)bmh));
   bmlipc_write_int(buf, index);
   bmlipc_write_int(buf, key);
-  send(server_socket, buf->buffer, buf->size, 0);
-  bmlipc_clear(buf);
-  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
-  ret = bmlipc_read_int(buf);
-  // function writes result into value which is either an int or string
-  switch(ret) {
-    case 0: break;
-    case 1:
-      *ival = bmlipc_read_int(buf);
-      break;
-    case 2:
-      // this is a pointer to the receive buffer, we intern the received string
-      *sval = sp_intern(sp, bmlipc_read_string(buf));
-      break;
-    default:
-      TRACE("unhandled value type: %d", ret);
+  ssize_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    ret = bmlipc_read_int(buf);
+    // function writes result into value which is either an int or string
+    switch(ret) {
+      case 0: break;
+      case 1:
+        *ival = bmlipc_read_int(buf);
+        break;
+      case 2:
+        // this is a pointer to the receive buffer, we intern the received string
+        *sval = sp_intern(sp, bmlipc_read_string(buf));
+        break;
+      default:
+        TRACE("unhandled value type: %d", ret);
+    }
   }
 	return (ret ? 1 : 0);
 }
 
 int bmlw_get_attribute_info(BuzzMachineHandle *bmh,int index,BuzzMachineAttribute key,void *value) {
-	int ret;
+	int ret = 0;
   int *ival=(int *)value;
   const char **sval=(const char **)value;
 
@@ -235,56 +263,63 @@ int bmlw_get_attribute_info(BuzzMachineHandle *bmh,int index,BuzzMachineAttribut
   bmlipc_write_int(buf, (int)((long)bmh));
   bmlipc_write_int(buf, index);
   bmlipc_write_int(buf, key);
-  send(server_socket, buf->buffer, buf->size, 0);
-  bmlipc_clear(buf);
-  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
-  ret = bmlipc_read_int(buf);
-  // function writes result into value which is either an int or string
-  switch(ret) {
-    case 0: break;
-    case 1:
-      *ival = bmlipc_read_int(buf);
-      break;
-    case 2:
-      // this is a pointer to the receive buffer, we intern the received string
-      *sval = sp_intern(sp, bmlipc_read_string(buf));
-      break;
-    default:
-      TRACE("unhandled value type: %d", ret);
+  ssize_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    ret = bmlipc_read_int(buf);
+    // function writes result into value which is either an int or string
+    switch(ret) {
+      case 0: break;
+      case 1:
+        *ival = bmlipc_read_int(buf);
+        break;
+      case 2:
+        // this is a pointer to the receive buffer, we intern the received string
+        *sval = sp_intern(sp, bmlipc_read_string(buf));
+        break;
+      default:
+        TRACE("unhandled value type: %d", ret);
+    }
   }
 	return (ret ? 1 : 0);
 }
 
 
 const char *bmlw_describe_global_value(BuzzMachineHandle *bmh, int const param,int const value) {
-  int ret;
+  int ret = 0;
 
   bmlipc_clear(buf);
   bmlipc_write_int(buf, BM_DESCRIBE_GLOBAL_VALUE);
   bmlipc_write_int(buf, (int)((long)bmh));
   bmlipc_write_int(buf, param);
   bmlipc_write_int(buf, value);
-  send(server_socket, buf->buffer, buf->size, 0);
-  bmlipc_clear(buf);
-  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
-  ret = bmlipc_read_int(buf);
-
+  ssize_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    ret = bmlipc_read_int(buf);
+  }
   return ret ? bmlipc_read_string(buf): NULL;
 }
 
 const char *bmlw_describe_track_value(BuzzMachineHandle *bmh, int const param,int const value) {
-  int ret;
+  int ret = 0;
 
   bmlipc_clear(buf);
   bmlipc_write_int(buf, BM_DESCRIBE_TRACK_VALUE);
   bmlipc_write_int(buf, (int)((long)bmh));
   bmlipc_write_int(buf, param);
   bmlipc_write_int(buf, value);
-  send(server_socket, buf->buffer, buf->size, 0);
-  bmlipc_clear(buf);
-  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
-  ret = bmlipc_read_int(buf);
-
+  ssize_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    ret = bmlipc_read_int(buf);
+  }
   return ret ? bmlipc_read_string(buf): NULL;
 }
 
@@ -294,17 +329,28 @@ BuzzMachine *bmlw_new(BuzzMachineHandle *bmh) {
   bmlipc_clear(buf);
   bmlipc_write_int(buf, BM_NEW);
   bmlipc_write_int(buf, (int)((long)bmh));
-  send(server_socket, buf->buffer, buf->size, 0);
-  bmlipc_clear(buf);
-  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
-	return (BuzzMachine *)((long)bmlipc_read_int(buf));
+  size_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    return (BuzzMachine *)((long)bmlipc_read_int(buf));
+  } else {
+    return NULL;
+  }
 }
 
 void bmlw_free(BuzzMachine *bm) {
   bmlipc_clear(buf);
   bmlipc_write_int(buf, BM_FREE);
   bmlipc_write_int(buf, (int)((long)bm));
-  send(server_socket, buf->buffer, buf->size, 0);
+  size_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    TRACE("got %d bytes\n", buf->size);
+  }
 }
 
 
@@ -314,7 +360,13 @@ void bmlw_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_dat
   bmlipc_write_int(buf, (int)((long)bm));
   bmlipc_write_int(buf, (int)blob_size);
   bmlipc_write_data(buf, (int)blob_size, (char *)blob_data);
-  send(server_socket, buf->buffer, buf->size, 0);
+  size_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    TRACE("got %d bytes\n", buf->size);
+  }
 }
 
 
@@ -329,10 +381,15 @@ int bmlw_get_track_parameter_value(BuzzMachine *bm,int track,int index) {
   bmlipc_write_int(buf, (int)((long)bm));
   bmlipc_write_int(buf, track);
   bmlipc_write_int(buf, index);
-  send(server_socket, buf->buffer, buf->size, 0);
-	bmlipc_clear(buf);
-  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
-	return bmlipc_read_int(buf);
+  size_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    return bmlipc_read_int(buf);
+  } else {
+    return 0;
+  }
 }
 
 void bmlw_set_track_parameter_value(BuzzMachine *bm,int track,int index,int value) {
@@ -342,7 +399,13 @@ void bmlw_set_track_parameter_value(BuzzMachine *bm,int track,int index,int valu
   bmlipc_write_int(buf, track);
   bmlipc_write_int(buf, index);
   bmlipc_write_int(buf, value);
-  send(server_socket, buf->buffer, buf->size, 0);
+  size_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    TRACE("got %d bytes\n", buf->size);
+  }
 }
 
 
@@ -356,10 +419,15 @@ int bmlw_get_global_parameter_value(BuzzMachine *bm,int index) {
   bmlipc_write_int(buf, BM_GET_GLOBAL_PARAMETER_VALUE);
   bmlipc_write_int(buf, (int)((long)bm));
   bmlipc_write_int(buf, index);
-  send(server_socket, buf->buffer, buf->size, 0);
-	bmlipc_clear(buf);
-  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
-	return bmlipc_read_int(buf);
+  size_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    return bmlipc_read_int(buf);
+  } else {
+    return 0;
+  }
 }
 
 void bmlw_set_global_parameter_value(BuzzMachine *bm,int index,int value) {
@@ -368,7 +436,13 @@ void bmlw_set_global_parameter_value(BuzzMachine *bm,int index,int value) {
   bmlipc_write_int(buf, (int)((long)bm));
   bmlipc_write_int(buf, index);
   bmlipc_write_int(buf, value);
-  send(server_socket, buf->buffer, buf->size, 0);
+  size_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    TRACE("got %d bytes\n", buf->size);
+  }
 }
 
 
@@ -382,10 +456,15 @@ int bmlw_get_attribute_value(BuzzMachine *bm,int index) {
   bmlipc_write_int(buf, BM_GET_ATTRIBUTE_VALUE);
   bmlipc_write_int(buf, (int)((long)bm));
   bmlipc_write_int(buf, index);
-  send(server_socket, buf->buffer, buf->size, 0);
-	bmlipc_clear(buf);
-  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
-	return bmlipc_read_int(buf);
+  size_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    return bmlipc_read_int(buf);
+  } else {
+    return 0;
+  }
 }
 
 void bmlw_set_attribute_value(BuzzMachine *bm,int index,int value) {
@@ -394,7 +473,13 @@ void bmlw_set_attribute_value(BuzzMachine *bm,int index,int value) {
   bmlipc_write_int(buf, (int)((long)bm));
   bmlipc_write_int(buf, index);
   bmlipc_write_int(buf, value);
-  send(server_socket, buf->buffer, buf->size, 0);
+  size_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    TRACE("got %d bytes\n", buf->size);
+  }
 }
 
 
@@ -402,44 +487,56 @@ void bmlw_tick(BuzzMachine *bm) {
   bmlipc_clear(buf);
   bmlipc_write_int(buf, BM_TICK);
   bmlipc_write_int(buf, (int)((long)bm));
-  send(server_socket, buf->buffer, buf->size, 0);
+  size_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    TRACE("got %d bytes\n", buf->size);
+  }
 }
 
 int bmlw_work(BuzzMachine *bm,float *psamples, int numsamples, int const mode) {
-  int size = numsamples * sizeof(float);
-  int ret;
+  int data_size = numsamples * sizeof(float);
+  int ret = 0;
 
   bmlipc_clear(buf);
   bmlipc_write_int(buf, BM_WORK);
   bmlipc_write_int(buf, (int)((long)bm));
-  bmlipc_write_int(buf, size);
-  bmlipc_write_data(buf, size, (char *)psamples);
+  bmlipc_write_int(buf, data_size);
+  bmlipc_write_data(buf, data_size, (char *)psamples);
   bmlipc_write_int(buf, mode);
-  send(server_socket, buf->buffer, buf->size, 0);
-  bmlipc_clear(buf);
-  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
-  ret = bmlipc_read_int(buf);
-  size = bmlipc_read_int(buf);
-  memcpy(psamples, bmlipc_read_data(buf, size), size);
+  size_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    ret = bmlipc_read_int(buf);
+    data_size = bmlipc_read_int(buf);
+    memcpy(psamples, bmlipc_read_data(buf, data_size), data_size);
+  }
 	return ret;
 }
 
 int bmlw_work_m2s(BuzzMachine *bm,float *pin, float *pout, int numsamples, int const mode) {
-  int size = numsamples * sizeof(float);
-  int ret;
+  int data_size = numsamples * sizeof(float);
+  int ret = 0;
 
   bmlipc_clear(buf);
   bmlipc_write_int(buf, BM_WORK_M2S);
   bmlipc_write_int(buf, (int)((long)bm));
-  bmlipc_write_int(buf, size);
-  bmlipc_write_data(buf, size, (char *)pin);
+  bmlipc_write_int(buf, data_size);
+  bmlipc_write_data(buf, data_size, (char *)pin);
   bmlipc_write_int(buf, mode);
-  send(server_socket, buf->buffer, buf->size, 0);
-  bmlipc_clear(buf);
-  buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
-  ret = bmlipc_read_int(buf);
-  size = bmlipc_read_int(buf);
-  memcpy(pout, bmlipc_read_data(buf, size), size);
+  size_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    ret = bmlipc_read_int(buf);
+    data_size = bmlipc_read_int(buf);
+    memcpy(pout, bmlipc_read_data(buf, data_size), data_size);
+  }
 	return ret;
 }
 
@@ -447,14 +544,26 @@ void bmlw_stop(BuzzMachine *bm) {
   bmlipc_clear(buf);
   bmlipc_write_int(buf, BM_STOP);
   bmlipc_write_int(buf, (int)((long)bm));
-  send(server_socket, buf->buffer, buf->size, 0);
+  size_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    TRACE("got %d bytes\n", buf->size);
+  }
 }
 
 void bmlw_attributes_changed(BuzzMachine *bm) {
   bmlipc_clear(buf);
   bmlipc_write_int(buf, BM_ATTRIBUTES_CHANGED);
   bmlipc_write_int(buf, (int)((long)bm));
-  send(server_socket, buf->buffer, buf->size, 0);
+  size_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    TRACE("got %d bytes\n", buf->size);
+  }
 }
 
 void bmlw_set_num_tracks(BuzzMachine *bm, int num) {
@@ -462,7 +571,13 @@ void bmlw_set_num_tracks(BuzzMachine *bm, int num) {
   bmlipc_write_int(buf, BM_SET_NUM_TRACKS);
   bmlipc_write_int(buf, (int)((long)bm));
   bmlipc_write_int(buf, num);
-  send(server_socket, buf->buffer, buf->size, 0);
+  size_t size = send(server_socket, buf->buffer, buf->size, 0);
+  TRACE("sent %d of %d bytes\n", size, buf->size);
+  if (size > 0) {
+    bmlipc_clear(buf);
+    buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
+    TRACE("got %d bytes\n", buf->size);
+  }
 }
 
 void bmlw_set_callbacks(BuzzMachine *bm, CHostCallbacks *callbacks) {

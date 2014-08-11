@@ -39,6 +39,7 @@ static void _bmlw_set_master_info(BmlIpcBuf *buf)
   TRACE("bmlw_set_master_info(%ld,%ld,%ld)\n",bpm,tpb,srat);
   bmlw_set_master_info(bpm,tpb,srat);
   bmlipc_clear(buf);
+  bmlipc_write_int(buf, 0);
 }
 
 static void _bmlw_open(BmlIpcBuf *buf)
@@ -56,6 +57,7 @@ static void _bmlw_close(BmlIpcBuf *buf)
   BuzzMachineHandle *bmh = (BuzzMachineHandle *)bmlipc_read_int(buf);
   bmlw_close(bmh);
   bmlipc_clear(buf);
+  bmlipc_write_int(buf, 0);
 }
 
 static void _bmlw_get_machine_info(BmlIpcBuf *buf)
@@ -226,6 +228,7 @@ static void _bmlw_free(BmlIpcBuf *buf)
   BuzzMachine *bm = (BuzzMachine *)bmlipc_read_int(buf);
   bmlw_free(bm);
   bmlipc_clear(buf);
+  bmlipc_write_int(buf, 0);
 }
 
 static void _bmlw_init(BmlIpcBuf *buf)
@@ -235,6 +238,7 @@ static void _bmlw_init(BmlIpcBuf *buf)
   unsigned char *blob_data = (unsigned char *)bmlipc_read_data(buf, (int)blob_size);
   bmlw_init(bm, blob_size, blob_data);
   bmlipc_clear(buf);
+  bmlipc_write_int(buf, 0);
 }
 
 static void _bmlw_get_track_parameter_value(BmlIpcBuf *buf)
@@ -255,6 +259,7 @@ static void _bmlw_set_track_parameter_value(BmlIpcBuf *buf)
   int value = bmlipc_read_int(buf);
   bmlw_set_track_parameter_value(bm, track, index, value);
   bmlipc_clear(buf);
+  bmlipc_write_int(buf, 0);
 }
 
 static void _bmlw_get_global_parameter_value(BmlIpcBuf *buf)
@@ -273,6 +278,7 @@ static void _bmlw_set_global_parameter_value(BmlIpcBuf *buf)
   int value = bmlipc_read_int(buf);
   bmlw_set_global_parameter_value(bm, index, value);
   bmlipc_clear(buf);
+  bmlipc_write_int(buf, 0);
 }
 
 static void _bmlw_get_attribute_value(BmlIpcBuf *buf)
@@ -291,6 +297,7 @@ static void _bmlw_set_attribute_value(BmlIpcBuf *buf)
   int value = bmlipc_read_int(buf);
   bmlw_set_attribute_value(bm, index, value);
   bmlipc_clear(buf);
+  bmlipc_write_int(buf, 0);
 }
 
 static void _bmlw_tick(BmlIpcBuf *buf)
@@ -298,6 +305,7 @@ static void _bmlw_tick(BmlIpcBuf *buf)
   BuzzMachine *bm = (BuzzMachine *)bmlipc_read_int(buf);
   bmlw_tick(bm);
   bmlipc_clear(buf);
+  bmlipc_write_int(buf, 0);
 }
 
 static void _bmlw_work(BmlIpcBuf *buf)
@@ -335,6 +343,7 @@ static void _bmlw_stop(BmlIpcBuf *buf)
   BuzzMachine *bm = (BuzzMachine *)bmlipc_read_int(buf);
   bmlw_stop(bm);
   bmlipc_clear(buf);
+  bmlipc_write_int(buf, 0);
 }
 
 static void _bmlw_attributes_changed(BmlIpcBuf *buf)
@@ -342,6 +351,7 @@ static void _bmlw_attributes_changed(BmlIpcBuf *buf)
   BuzzMachine *bm = (BuzzMachine *)bmlipc_read_int(buf);
   bmlw_attributes_changed(bm);
   bmlipc_clear(buf);
+  bmlipc_write_int(buf, 0);
 }
 
 static void _bmlw_set_num_tracks(BmlIpcBuf *buf)
@@ -350,6 +360,7 @@ static void _bmlw_set_num_tracks(BmlIpcBuf *buf)
   int num = bmlipc_read_int(buf);
   bmlw_set_num_tracks(bm,num);
   bmlipc_clear(buf);
+  bmlipc_write_int(buf, 0);
 }
 
 int main( int argc, char **argv ) {
@@ -454,8 +465,8 @@ int main( int argc, char **argv ) {
         break;
     }   
     if (buf->size) {
-      send(client_socket, buf->buffer, buf->size, 0);
-      TRACE("sent %d bytes\n", buf->size);
+      size = send(client_socket, buf->buffer, buf->size, 0);
+      TRACE("sent %d of %d bytes\n", size, buf->size);
     }
   }
   bmlipc_free(buf);
