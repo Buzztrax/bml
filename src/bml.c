@@ -492,6 +492,8 @@ int bml_setup(void) {
   pid_t child_pid;
   int retries = 0;
 
+  // TODO(ensonic): tmp is not ideal as everyone can read/write their and could
+  // steal the socket, we could create a user-owned subdir first to mitigate
   if (getenv("BMLIPC_DEBUG")) {
     snprintf(socket_file, 16 + 20, "/tmp/bml.sock");
   } else {
