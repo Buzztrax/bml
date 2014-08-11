@@ -156,7 +156,7 @@ FARPROC PE_FindExportedFunction(
 	rva_end = rva_start + PE_HEADER(wm->module)->OptionalHeader
 		.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].Size;
 
-    //TRACE(".. search in %ld symbols\n",exports->NumberOfNames);
+  //TRACE(".. search in %ld symbols\n",exports->NumberOfNames);
 	if (HIWORD(funcName))
     {
         int min = 0, max = exports->NumberOfNames - 1;
@@ -200,6 +200,7 @@ FARPROC PE_FindExportedFunction(
 	}
 
 found:
+    //TRACE("ordinal = %d (of %d)\n", ordinal, exports->NumberOfFunctions);
     if (ordinal >= exports->NumberOfFunctions)
     {
         TRACE("	ordinal %ld out of range!\n", ordinal + exports->Base );
@@ -230,14 +231,14 @@ found:
 
         TRACE("getting next module name from '%s'\n",forward);
 
-		if (!end) return NULL;
+        if (!end) return NULL;
         if (end - forward >= sizeof(module)) {
                 WARN("need to enlarge buffer from %d to %ld\n",sizeof(module),(long)(end - forward));
                 return NULL;
         }
         memcpy( module, forward, end - forward );
-		module[end-forward] = 0;
-        //TRACE("calling FindModule(%s)\n",module);
+        module[end-forward] = 0;
+        TRACE("calling FindModule(%s)\n",module);
         if (!(wm = MODULE_FindModule( module )))
         {
             ERR("module not found for forward '%s'\n", forward );

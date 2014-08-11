@@ -125,10 +125,7 @@ BuzzMachineHandle *bmlw_open(char *bm_file_name) {
   send(server_socket, buf->buffer, buf->size, 0);
   bmlipc_clear(buf);
   buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
-  BuzzMachineHandle *bmh = (BuzzMachineHandle *)((long)bmlipc_read_int(buf));
-  TRACE("bmlw_open('%s')=%p\n", bm_file_name, bmh);
-  return bmh;
-	//return (BuzzMachineHandle *)((long)bmlipc_read_int(buf));
+	return (BuzzMachineHandle *)((long)bmlipc_read_int(buf));
 }
 
 void bmlw_close(BuzzMachineHandle *bmh) {

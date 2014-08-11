@@ -1001,7 +1001,7 @@ FARPROC MODULE_GetProcAddress(
 #ifdef DEBUG_QTX_API
 #define DECL_COMPONENT(sname,name,type) \
     if(!strcmp(function,name)){ \
-	fprintf(stderr,name "dispatcher caught -> %p\n",retproc); \
+	TRACE(name "dispatcher caught -> %p\n",retproc); \
 	real_ ## sname = retproc; retproc = fake_ ## sname; \
     }
 #include "qt_comp.h"
@@ -1019,7 +1019,7 @@ FARPROC MODULE_GetProcAddress(
 
     }
 #endif
-
+    TRACE("GetProcAddress()=%p\n",retproc);
     return retproc;
 }
 
