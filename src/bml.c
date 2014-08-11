@@ -598,7 +598,8 @@ void bml_finalize(void) {
   sp_delete(sp);
   TRACE("closing socket\n");
   bmlipc_free(buf);
-  shutdown(server_socket,SHUT_RDWR); // close(server_socket);
+  //shutdown(server_socket,SHUT_RDWR);
+  close(server_socket);
 #endif /* USE_DLLWRAPPER_IPC */
   dlclose(emu_so);
   TRACE("bml unloaded\n");
