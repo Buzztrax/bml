@@ -148,23 +148,24 @@ http://www.codeproject.com/Articles/4210/C-Reverse-Disassembly
 http://www.pvdasm.tk-labs.com/
 
 = x86_64 bit support for native plugins =
-== IPC based ==
-- see http://www.tldp.org/LDP/lpg/node7.html
-- we need to build a launcher+libbml with -m32
-- in libbml's #ifdef USE_DLLWRAPPER section, we need to have alternative
-  implementations
-  for 64bit
-  - the 32bit build would use the one we have there
-  - the 64bit build would need to do IPC (shm for data sharing)
-  - the 32bit launcher would need to receive IPC and dispatch
-- the front-env tests (bmltest_*) would remain as they are
+== IPC based == (this is what we're currently trying)
+- ipc links
+  - http://www.tldp.org/LDP/lpg/node7.html
+  - http://openbook.galileocomputing.de/linux_unix_programmierung/Kap11-017.htm#RxxKap11017040003961F026100
+  - http://beej.us/guide/bgipc/output/html/singlepage/bgipc.html#unixsock
+  - http://troydhanson.github.io/misc/Unix_domain_sockets.html
 - will we launch 1 helper per using process or 1 helper per machine
-  - 1 helper per process: 1 shm key
-- creating the BuzzMachineHandle / BuzzMachine will create proxy structures with
-  the ids for the launcher (index values to arrays on the launcher side)
+  - trying 1 helper per process right now, downside:
+    - we have no multithreading for the running machines
+    - one dll would kill all other already running plugins
 - for the IPC we need to marshall (function, parameters, data)
   - we can just enumerate the API calls
   - the parameters will be hardcoded for each function
+  - we need a string-intering hashtable as we have a bunch of functions that
+    return pointers to static strings
+  - we have 3 methods that return the address of parameter/attribute locations
+    - among this is the callback support which is needed for wavetables
+- we need to SIGPIPE handle cases (e.g. bad dll kills the bmlhost)
 
 == calling into 32bit code from 64bit code ==
 - with a specific trampoline, we can call into 32bit code:
@@ -190,8 +191,6 @@ http://www.pvdasm.tk-labs.com/
   * (uint32_t *) &m_trampoline[23] =
           (uint32_t) (uint64_t) m_32bitCode;
   * (uint16_t *) &m_trampoline[27] = codeSelector;
-- for this the whole win32 emulation stuff should be build as 32bit code as well
-  to avoid calling back into 64bit
 
 
 = test single plugins =
