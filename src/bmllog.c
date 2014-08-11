@@ -47,9 +47,9 @@ _log_stdout_printf (const char *file, const int line, const char *func, const ch
 {
   va_list ap;
 
-  printf ("%10.4lf: %s:%d:%s: ", _get_timestamp(), (file?file:""), line, (func?func:""));
+  fprintf (stderr, "%10.4lf: %s:%d:%s: ", _get_timestamp(), (file?file:""), line, (func?func:""));
   va_start(ap, fmt);
-  vprintf (fmt, ap);
+  vfprintf (stderr, fmt, ap);
   va_end(ap);
 }
 
