@@ -173,6 +173,7 @@ int bmlw_get_global_parameter_info(BuzzMachineHandle *bmh,int index,BuzzMachineP
   bmlipc_clear(buf);
   bmlipc_write_int(buf, BM_GET_GLOBAL_PARAMETER_INFO);
   bmlipc_write_int(buf, (int)((long)bmh));
+  bmlipc_write_int(buf, index);
   bmlipc_write_int(buf, key);
   send(server_socket, buf->buffer, buf->size, 0);
   bmlipc_clear(buf);
