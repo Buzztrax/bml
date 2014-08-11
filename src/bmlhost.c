@@ -461,6 +461,7 @@ int main( int argc, char **argv ) {
   bmlipc_free(buf);
   close(client_socket);
   close(server_socket);
+  unlink(socket_file);
 
   _bmlw_finalize();
   TRACE("end\n");
