@@ -465,7 +465,7 @@ int main( int argc, char **argv ) {
         break;
     }   
     if (buf->size) {
-      size = send(client_socket, buf->buffer, buf->size, 0);
+      size = send(client_socket, buf->buffer, buf->size, MSG_NOSIGNAL);
       TRACE("sent %d of %d bytes\n", size, buf->size);
     }
   }
