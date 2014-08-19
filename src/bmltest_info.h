@@ -20,7 +20,7 @@ void bml(test_info(char *libpath)) {
   void *bmh,*bm;
   char *str;
   int type,val,i,num,tracks,numtrig;
-  int maval,mival,noval,ptrval=0;
+  int maval,mival,noval;
   double ts1, ts2;
 
   printf("%s: loading \"%s\"\n",__FUNCTION__,libpath);
@@ -31,7 +31,6 @@ void bml(test_info(char *libpath)) {
     if((bm=bml(new(bmh)))) {
       char *machine_types[]={"MT_MASTER","MT_GENERATOR","MT_EFFECT" };
       char *parameter_types[]={"PT_NOTE","PT_SWITCH","PT_BYTE","PT_WORD" };
-      void *addr;
 
       ts2=_get_timestamp();
       printf("  machine created in %lf sec\n",ts2-ts1);
@@ -94,23 +93,8 @@ void bml(test_info(char *libpath)) {
              bml(get_global_parameter_info(bmh,i,BM_PARA_DEF_VALUE,(void *)&val))) {
             printf("        Value: %d .. %d .. %d [%d]\n",mival,val,maval,noval);
             val =        bml(get_global_parameter_value(bm,i));
-            addr=        bml(get_global_parameter_location(bm,i));
             str =(char *)bml(describe_global_value(bmh,i,val));
-            if (addr) {
-              switch(type) {
-                case 0: //PT_NOTE:
-                case 1: //PT_SWITCH:
-                case 2: //PT_BYTE:
-                  ptrval=(int)(*(char *)addr);
-                  break;
-                case 3: //PT_WORD:
-                  ptrval=(int)(*(short *)addr);
-                  break;
-              }
-              printf("        RealValue: %d %s (%p -> %d)\n",val,str,addr,ptrval);
-            } else {
-              printf("        RealValue: %d %s (NULL)\n",val,str);
-            }            
+            printf("        RealValue: %d %s (NULL)\n",val,str);
           }
         }
       }
@@ -142,23 +126,8 @@ void bml(test_info(char *libpath)) {
                bml(get_track_parameter_info(bmh,i,BM_PARA_DEF_VALUE,(void *)&val))) {
               printf("        Value: %d .. %d .. %d [%d]\n",mival,val,maval,noval);
               val =        bml(get_track_parameter_value(bm,0,i));
-              addr=        bml(get_track_parameter_location(bm,0,i));
               str =(char *)bml(describe_track_value(bmh,i,val));
-              if (addr) {
-                switch(type) {
-                  case 0: //PT_NOTE:
-                  case 1: //PT_SWITCH:
-                  case 2: //PT_BYTE:
-                    ptrval=(int)(*(char *)addr);
-                    break;
-                  case 3: //PT_WORD:
-                    ptrval=(int)(*(short *)addr);
-                    break;
-                }
-                printf("        RealValue: %d %s (%p -> %d)\n",val,str,addr,ptrval);
-              } else {
-                printf("        RealValue: %d %s (NULL)\n",val,str);
-              }
+              printf("        RealValue: %d %s (NULL)\n",val,str);
             }
           }
         }

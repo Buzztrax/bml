@@ -456,7 +456,7 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
     }
 }
 
-extern "C" DE void * bm_get_track_parameter_location(BuzzMachine *bm,int track,int index) {
+static void * bm_get_track_parameter_location(BuzzMachine *bm,int track,int index) {
     void *res=NULL;
 
     if(!(track<bm->machine_info->maxTracks)) return(0);
@@ -524,7 +524,7 @@ extern "C" DE void bm_set_track_parameter_value(BuzzMachine *bm,int track,int in
     }
 }
 
-extern "C" DE void * bm_get_global_parameter_location(BuzzMachine *bm,int index) {
+static void * bm_get_global_parameter_location(BuzzMachine *bm,int index) {
     void *res=NULL;
 
     if(!(index<bm->machine_info->numGlobalParameters)) return(0);
@@ -588,13 +588,6 @@ extern "C" DE void bm_set_global_parameter_value(BuzzMachine *bm,int index,int v
             (*((word *)ptr))=(word)value;
             break;
     }
-}
-
-extern "C" DE void * bm_get_attribute_location(BuzzMachine *bm,int index) {
-    if(!(index<bm->machine_info->numAttributes)) return(0);
-    if(!(bm->machine_iface->AttrVals)) return(0);
-
-    return((void *)&bm->machine_iface->AttrVals[index]);
 }
 
 extern "C" DE int bm_get_attribute_value(BuzzMachine *bm,int index) {

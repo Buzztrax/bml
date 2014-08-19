@@ -75,15 +75,12 @@ BMFree bmln_free;
 
 BMInit bmln_init;
 
-BMGetTrackParameterLocation bmln_get_track_parameter_location;
 BMGetTrackParameterValue bmln_get_track_parameter_value;
 BMSetTrackParameterValue bmln_set_track_parameter_value;
 
-BMGetGlobalParameterLocation bmln_get_global_parameter_location;
 BMGetGlobalParameterValue bmln_get_global_parameter_value;
 BMSetGlobalParameterValue bmln_set_global_parameter_value;
 
-BMGetAttributeLocation bmln_get_attribute_location;
 BMGetAttributeValue bmln_get_attribute_value;
 BMSetAttributeValue bmln_set_attribute_value;
 
@@ -421,11 +418,6 @@ void bmlw_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_dat
 }
 
 
-void *bmlw_get_track_parameter_location(BuzzMachine *bm,int track,int index) {
-  // TODO(ensonic): use a local address and swap the content before tick()
-	return NULL;
-}
-
 int bmlw_get_track_parameter_value(BuzzMachine *bm,int track,int index) {
   bmlipc_clear(buf);
   bmlipc_write_int(buf, BM_GET_TRACK_PARAMETER_VALUE);
@@ -460,11 +452,6 @@ void bmlw_set_track_parameter_value(BuzzMachine *bm,int track,int index,int valu
 }
 
 
-void *bmlw_get_global_parameter_location(BuzzMachine *bm,int index) {
-  // TODO(ensonic): use a local address and swap the content before tick()
-	return NULL;
-}
-
 int bmlw_get_global_parameter_value(BuzzMachine *bm,int index) {
   bmlipc_clear(buf);
   bmlipc_write_int(buf, BM_GET_GLOBAL_PARAMETER_VALUE);
@@ -496,11 +483,6 @@ void bmlw_set_global_parameter_value(BuzzMachine *bm,int index,int value) {
   }
 }
 
-
-void *bmlw_get_attribute_location(BuzzMachine *bm,int index) {
-  // TODO(ensonic): use a local address and swap the content before tick()
-	return NULL;
-}
 
 int bmlw_get_attribute_value(BuzzMachine *bm,int index) {
   bmlipc_clear(buf);
@@ -695,15 +677,12 @@ int bml_setup(void) {
 
   if(!(bmln_init=(BMInit)dlsym(emu_so,"bm_init"))) { TRACE("bm_init is missing\n");return(FALSE);}
 
-  if(!(bmln_get_track_parameter_location=(BMGetTrackParameterLocation)dlsym(emu_so,"bm_get_track_parameter_location"))) { TRACE("bm_get_track_parameter_location is missing\n");return(FALSE);}
   if(!(bmln_get_track_parameter_value=(BMGetTrackParameterValue)dlsym(emu_so,"bm_get_track_parameter_value"))) { TRACE("bm_get_track_parameter_value is missing\n");return(FALSE);}
   if(!(bmln_set_track_parameter_value=(BMSetTrackParameterValue)dlsym(emu_so,"bm_set_track_parameter_value"))) { TRACE("bm_set_track_parameter_value is missing\n");return(FALSE);}
 
-  if(!(bmln_get_global_parameter_location=(BMGetGlobalParameterLocation)dlsym(emu_so,"bm_get_global_parameter_location"))) { TRACE("bm_get_global_parameter_location is missing\n");return(FALSE);}
   if(!(bmln_get_global_parameter_value=(BMGetGlobalParameterValue)dlsym(emu_so,"bm_get_global_parameter_value"))) { TRACE("bm_get_global_parameter_value is missing\n");return(FALSE);}
   if(!(bmln_set_global_parameter_value=(BMSetGlobalParameterValue)dlsym(emu_so,"bm_set_global_parameter_value"))) { TRACE("bm_set_global_parameter_value is missing\n");return(FALSE);}
 
-  if(!(bmln_get_attribute_location=(BMGetAttributeLocation)dlsym(emu_so,"bm_get_attribute_location"))) { TRACE("bm_get_attribute_location is missing\n");return(FALSE);}
   if(!(bmln_get_attribute_value=(BMGetAttributeValue)dlsym(emu_so,"bm_get_attribute_value"))) { TRACE("bm_get_attribute_value is missing\n");return(FALSE);}
   if(!(bmln_set_attribute_value=(BMSetAttributeValue)dlsym(emu_so,"bm_set_attribute_value"))) { TRACE("bm_set_attribute_value is missing\n");return(FALSE);}
 

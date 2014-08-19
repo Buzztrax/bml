@@ -70,15 +70,12 @@ BMFree BMLX(bmlw_free);
 
 BMInit BMLX(bmlw_init);
 
-BMGetTrackParameterLocation BMLX(bmlw_get_track_parameter_location);
 BMGetTrackParameterValue BMLX(bmlw_get_track_parameter_value);
 BMSetTrackParameterValue BMLX(bmlw_set_track_parameter_value);
 
-BMGetGlobalParameterLocation BMLX(bmlw_get_global_parameter_location);
 BMGetGlobalParameterValue BMLX(bmlw_get_global_parameter_value);
 BMSetGlobalParameterValue BMLX(bmlw_set_global_parameter_value);
 
-BMGetAttributeLocation BMLX(bmlw_get_attribute_location);
 BMGetAttributeValue BMLX(bmlw_get_attribute_value);
 BMSetAttributeValue BMLX(bmlw_set_attribute_value);
 
@@ -205,15 +202,6 @@ void bmlw_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_dat
 }
 
 
-void *bmlw_get_track_parameter_location(BuzzMachine *bm,int track,int index) {
-	void *ret;
-
-	win32_prolog();
-	ret=BMLX(bmlw_get_track_parameter_location(bm,track,index));
-	win32_eliplog();
-	return(ret);
-}
-
 int bmlw_get_track_parameter_value(BuzzMachine *bm,int track,int index) {
 	int ret;
 
@@ -230,15 +218,6 @@ void bmlw_set_track_parameter_value(BuzzMachine *bm,int track,int index,int valu
 }
 
 
-void *bmlw_get_global_parameter_location(BuzzMachine *bm,int index) {
-	void *ret;
-
-	win32_prolog();
-	ret=BMLX(bmlw_get_global_parameter_location(bm,index));
-	win32_eliplog();
-	return(ret);
-}
-
 int bmlw_get_global_parameter_value(BuzzMachine *bm,int index) {
 	int ret;
 
@@ -254,15 +233,6 @@ void bmlw_set_global_parameter_value(BuzzMachine *bm,int index,int value) {
 	win32_eliplog();
 }
 
-
-void *bmlw_get_attribute_location(BuzzMachine *bm,int index) {
-	void *ret;
-
-	win32_prolog();
-	ret=BMLX(bmlw_get_attribute_location(bm,index));
-	win32_eliplog();
-	return(ret);
-}
 
 int bmlw_get_attribute_value(BuzzMachine *bm,int index) {
 	int ret;
@@ -366,15 +336,12 @@ int _bmlw_setup(BMLDebugLogger logger) {
 
   if(!(BMLX(bmlw_init)=(BMInit)GetSymbol(emu_dll,"bm_init"))) { TRACE("bm_init is missing\n");return(FALSE);}
 
-  if(!(BMLX(bmlw_get_track_parameter_location)=(BMGetTrackParameterLocation)GetSymbol(emu_dll,"bm_get_track_parameter_location"))) { TRACE("bm_get_track_parameter_location is missing\n");return(FALSE);}
   if(!(BMLX(bmlw_get_track_parameter_value)=(BMGetTrackParameterValue)GetSymbol(emu_dll,"bm_get_track_parameter_value"))) { TRACE("bm_get_track_parameter_value is missing\n");return(FALSE);}
   if(!(BMLX(bmlw_set_track_parameter_value)=(BMSetTrackParameterValue)GetSymbol(emu_dll,"bm_set_track_parameter_value"))) { TRACE("bm_set_track_parameter_value is missing\n");return(FALSE);}
 
-  if(!(BMLX(bmlw_get_global_parameter_location)=(BMGetGlobalParameterLocation)GetSymbol(emu_dll,"bm_get_global_parameter_location"))) { TRACE("bm_get_global_parameter_location is missing\n");return(FALSE);}
   if(!(BMLX(bmlw_get_global_parameter_value)=(BMGetGlobalParameterValue)GetSymbol(emu_dll,"bm_get_global_parameter_value"))) { TRACE("bm_get_global_parameter_value is missing\n");return(FALSE);}
   if(!(BMLX(bmlw_set_global_parameter_value)=(BMSetGlobalParameterValue)GetSymbol(emu_dll,"bm_set_global_parameter_value"))) { TRACE("bm_set_global_parameter_value is missing\n");return(FALSE);}
 
-  if(!(BMLX(bmlw_get_attribute_location)=(BMGetAttributeLocation)GetSymbol(emu_dll,"bm_get_attribute_location"))) { TRACE("bm_get_attribute_location is missing\n");return(FALSE);}
   if(!(BMLX(bmlw_get_attribute_value)=(BMGetAttributeValue)GetSymbol(emu_dll,"bm_get_attribute_value"))) { TRACE("bm_get_attribute_value is missing\n");return(FALSE);}
   if(!(BMLX(bmlw_set_attribute_value)=(BMSetAttributeValue)GetSymbol(emu_dll,"bm_set_attribute_value"))) { TRACE("bm_set_attribute_value is missing\n");return(FALSE);}
 

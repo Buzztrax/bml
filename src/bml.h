@@ -101,15 +101,12 @@ extern void bmlw_free(BuzzMachine *bm);
 
 extern void bmlw_init(BuzzMachine *bm, unsigned long blob_size, unsigned char *blob_data);
 
-extern void *bmlw_get_track_parameter_location(BuzzMachine *bm,int track,int index);
 extern int bmlw_get_track_parameter_value(BuzzMachine *bm,int track,int index);
 extern void bmlw_set_track_parameter_value(BuzzMachine *bm,int track,int index,int value);
 
-extern void *bmlw_get_global_parameter_location(BuzzMachine *bm,int index);
 extern int bmlw_get_global_parameter_value(BuzzMachine *bm,int index);
 extern void bmlw_set_global_parameter_value(BuzzMachine *bm,int index,int value);
 
-extern void *bmlw_get_attribute_location(BuzzMachine *bm,int index);
 extern int bmlw_get_attribute_value(BuzzMachine *bm,int index);
 extern void bmlw_set_attribute_value(BuzzMachine *bm,int index,int value);
 
@@ -145,15 +142,12 @@ extern BMFree bmln_free;
 
 extern BMInit bmln_init;
 
-extern BMGetTrackParameterLocation bmln_get_track_parameter_location;
 extern BMGetTrackParameterValue bmln_get_track_parameter_value;
 extern BMSetTrackParameterValue bmln_set_track_parameter_value;
 
-extern BMGetGlobalParameterLocation bmln_get_global_parameter_location;
 extern BMGetGlobalParameterValue bmln_get_global_parameter_value;
 extern BMSetGlobalParameterValue bmln_set_global_parameter_value;
 
-extern BMGetAttributeLocation bmln_get_attribute_location;
 extern BMGetAttributeValue bmln_get_attribute_value;
 extern BMSetAttributeValue bmln_set_attribute_value;
 
