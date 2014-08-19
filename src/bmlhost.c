@@ -445,13 +445,10 @@ int main( int argc, char **argv ) {
       case BM_NEW:                           _bmlw_new(buf);break;
       case BM_FREE:                          _bmlw_free(buf);break;
       case BM_INIT:                          _bmlw_init(buf);break;
-      case BM_GET_TRACK_PARAMETER_LOCATION:  break;
       case BM_GET_TRACK_PARAMETER_VALUE:     _bmlw_get_track_parameter_value(buf);break;
       case BM_SET_TRACK_PARAMETER_VALUE:     _bmlw_set_track_parameter_value(buf);break;
-      case BM_GET_GLOBAL_PARAMETER_LOCATION: break;
       case BM_GET_GLOBAL_PARAMETER_VALUE:    _bmlw_get_global_parameter_value(buf);break;
       case BM_SET_GLOBAL_PARAMETER_VALUE:    _bmlw_set_global_parameter_value(buf);break;
-      case BM_GET_ATTRIBUTE_LOCATION:        break;
       case BM_GET_ATTRIBUTE_VALUE:           _bmlw_get_attribute_value(buf);break;
       case BM_SET_ATTRIBUTE_VALUE:           _bmlw_set_attribute_value(buf);break;
       case BM_TICK:                          _bmlw_tick(buf);break;
