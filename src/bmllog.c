@@ -46,11 +46,13 @@ static void
 _log_stdout_printf (const char *file, const int line, const char *func, const char *fmt, ...)
 {
   va_list ap;
+  char msg[4000];
 
-  fprintf (stderr, "%10.4lf: %s:%d:%s: ", _get_timestamp(), (file?file:""), line, (func?func:""));
   va_start(ap, fmt);
-  vfprintf (stderr, fmt, ap);
+  vsnprintf (msg, 4000, fmt, ap);
   va_end(ap);
+  msg[3999]='\0';
+  fprintf (stderr, "%10.4lf: %s:%d:%s: %s", _get_timestamp(), (file?file:""), line, (func?func:""), msg);
 }
 
 static void
