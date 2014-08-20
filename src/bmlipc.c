@@ -45,7 +45,7 @@ static int mem_read (BmlIpcBuf * self, void *ptr, int size, int n_items)
   int bytes = size * n_items;
 
   if (self->pos + bytes <= self->size) {
-    memcpy (ptr, &self->buffer[self->pos], bytes);
+    memmove (ptr, &self->buffer[self->pos], bytes);
     self->pos += bytes;
     return n_items;
   }
@@ -93,7 +93,7 @@ static int mem_write (BmlIpcBuf * self, void *ptr, int size, int n_items)
   int bytes = size * n_items;
 
   if (self->pos + bytes <= IPC_BUF_SIZE) {
-    memcpy (&self->buffer[self->pos], ptr, bytes);
+    memmove (&self->buffer[self->pos], ptr, bytes);
     self->pos += bytes;
     self->size += bytes;
     return n_items;

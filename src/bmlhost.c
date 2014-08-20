@@ -316,6 +316,9 @@ static void _bmlw_work(BmlIpcBuf *buf)
   int numsamples = size / sizeof(float);
   int mode = bmlipc_read_int(buf);
   int ret = bmlw_work(bm, psamples, numsamples, mode);
+  // TODO(ensonic): yieks, this kills the data in psamples (pointer to buf)
+  // we're now using memmove, but that relies on that fact that the reply is
+  // shorter than the request
   bmlipc_clear(buf);
   bmlipc_write_int(buf, ret);
   bmlipc_write_int(buf, size);
