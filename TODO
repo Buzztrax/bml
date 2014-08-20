@@ -158,13 +158,7 @@ http://www.pvdasm.tk-labs.com/
   - trying 1 helper per process right now, downside:
     - we have no multithreading for the running machines
     - one dll would kill all other already running plugins
-- for the IPC we need to marshall (function, parameters, data)
-  - we can just enumerate the API calls
-  - the parameters will be hardcoded for each function
-  - we need a string-intering hashtable as we have a bunch of functions that
-    return pointers to static strings
-  - we have 3 methods that return the address of parameter/attribute locations
-    - among this is the callback support which is needed for wavetables
+- we need to handle callback support which is needed for wavetables
 - we need to SIGPIPE handle cases (e.g. bad dll kills the bmlhost)
 
 == calling into 32bit code from 64bit code ==

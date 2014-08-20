@@ -148,6 +148,20 @@ bmpipc_connect (void)
 
 // global API
 
+// TODO(ensonic): separate bmlhost processes:
+// - in bmlw_set_master_info() store params and send the, from bmlw_open() for
+//   each instance
+// - in bmlw_open() create a host instance and return a struct that contains
+//   the server_socket, the ipc-buf and the actual BuzzMachineHandle
+// - in bmlw_new() return a struct that contains the the server_socket, the
+//   ipc-buf and the actual BuzzMachine
+
+// TODO(ensonic): ipc performance
+// - add varargs version of setters/getters handle multiple attributes/parameters
+//   in one call (mostly helpful for introspection)
+// - we could also fetch all params in bmlw_init(), update them in the library
+//   side and only send them if changed before bmlw_tick()
+
 void bmlw_set_master_info(long bpm, long tpb, long srat) {
   TRACE("bmlw_set_master_info(%d, %d, %d)...\n", bpm, tpb, srat);
   bmlipc_clear(buf);
