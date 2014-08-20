@@ -123,10 +123,10 @@ bmpipc_connect (void)
     }
   }
 
-    if ((server_socket=socket(PF_LOCAL, SOCK_STREAM, 0)) > 0) {
+  if ((server_socket=socket(PF_LOCAL, SOCK_STREAM, 0)) > 0) {
     TRACE("server socket created\n");
   } else {
-    TRACE("server socket cretion failed\n");
+    TRACE("server socket creation failed\n");
     return FALSE;
   }
   address.sun_family = AF_LOCAL;

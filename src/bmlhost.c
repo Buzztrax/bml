@@ -427,7 +427,7 @@ int main( int argc, char **argv ) {
     // parse message
     id = bmlipc_read_int(buf);
     if (buf->io_error) {
-      TRACE("message should be atleast 4 bytes");
+      TRACE("message should be at least 4 bytes");
       continue;
     }
     TRACE("command: %d\n", id);
