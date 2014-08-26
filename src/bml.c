@@ -558,10 +558,10 @@ int bmlw_work(BuzzMachine *bm,float *psamples, int numsamples, int const mode) {
   if (size > 0) {
     bmlipc_clear(buf);
     buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
-    TRACE("got %d bytes\n", buf->size);
     ret = bmlipc_read_int(buf);
     data_size = bmlipc_read_int(buf);
     memcpy(psamples, bmlipc_read_data(buf, data_size), data_size);
+    TRACE("got %d bytes, data_size=%d\n", buf->size, data_size);
   }
 	return ret;
 }
@@ -581,10 +581,10 @@ int bmlw_work_m2s(BuzzMachine *bm,float *pin, float *pout, int numsamples, int c
   if (size > 0) {
     bmlipc_clear(buf);
     buf->size = (int) recv(server_socket, buf->buffer, IPC_BUF_SIZE, 0);
-    TRACE("got %d bytes\n", buf->size);
     ret = bmlipc_read_int(buf);
     data_size = bmlipc_read_int(buf);
     memcpy(pout, bmlipc_read_data(buf, data_size), data_size);
+    TRACE("got %d bytes, data_size=%d\n", buf->size, data_size);
   }
 	return ret;
 }
