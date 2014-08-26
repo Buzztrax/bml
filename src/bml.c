@@ -451,7 +451,7 @@ int bmlw_get_track_parameter_value(BuzzMachine *bm,int track,int index) {
 
 void bmlw_set_track_parameter_value(BuzzMachine *bm,int track,int index,int value) {
   bmlipc_clear(buf);
-  bmlipc_write_int(buf, BM_GET_TRACK_PARAMETER_VALUE);
+  bmlipc_write_int(buf, BM_SET_TRACK_PARAMETER_VALUE);
   bmlipc_write_int(buf, (int)((long)bm));
   bmlipc_write_int(buf, track);
   bmlipc_write_int(buf, index);
@@ -484,7 +484,7 @@ int bmlw_get_global_parameter_value(BuzzMachine *bm,int index) {
 
 void bmlw_set_global_parameter_value(BuzzMachine *bm,int index,int value) {
   bmlipc_clear(buf);
-  bmlipc_write_int(buf, BM_GET_GLOBAL_PARAMETER_VALUE);
+  bmlipc_write_int(buf, BM_SET_GLOBAL_PARAMETER_VALUE);
   bmlipc_write_int(buf, (int)((long)bm));
   bmlipc_write_int(buf, index);
   bmlipc_write_int(buf, value);
