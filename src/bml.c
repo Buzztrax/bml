@@ -129,7 +129,7 @@ bmpipc_connect (void)
     TRACE("server socket creation failed\n");
     return FALSE;
   }
-  address.sun_family = AF_LOCAL;
+  address.sun_family = PF_LOCAL;
   strcpy(address.sun_path, socket_file);
   while (retries < 3) {
     int res;
