@@ -51,9 +51,9 @@ touch testmachine.failtmp
 rm -f testmachine.body.html
 touch testmachine.body.html
 
-if [ ! -e input.raw ]; then
-  dd count=10 if=/dev/zero of=input.raw
-fi
+# create input sound for effects
+gst-launch-1.0 >/dev/null 2>&1 audiotestsrc wave="ticks" num-buffers=100 ! audio/x-raw,format=S16LE,channels=1 ! filesink location=input.raw
+#dd count=200 if=/dev/zero of=input.raw
 
 # run test loop
 
@@ -100,7 +100,8 @@ for machine in $machine_glob ; do
       echo "okay : $machine";
       m_okay=$((m_okay+1))
       mv "$log_name" "$log_name".okay
-      gst-launch-0.10 >/dev/null 2>&1 filesrc location=output.raw ! audio/x-raw-int,width=16,channels=$fieldOutputChannels,rate=44100 ! wavenc ! filesink location="testmachine/$name.wav"
+      # convert raw audio to wav
+      gst-launch-1.0 >/dev/null 2>&1 filesrc location=output.raw ! audio/x-raw,format=S16LE,channels=$fieldOutputChannels,rate=44100 ! wavenc ! filesink location="testmachine/$name.wav"
       tablecolor="#E0FFE0"
       tableresult="okay"
     else
@@ -163,6 +164,7 @@ done
 
 rm -f bmltest_info.log bmltest_info.tmp
 rm -f bmltest_process.log bmltest_process.tmp
+rm -f input.raw output.raw
 sort testmachine.failtmp >testmachine/_.fails
 rm testmachine.failtmp
 
