@@ -15,21 +15,23 @@
  * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include <sys/types.h>
+#include <sys/socket.h>
+
 #include "bmlipc.h"
+#include "bmllog.h"
 
 BmlIpcBuf *bmlipc_new (void)
 {
-  BmlIpcBuf *self = calloc(1, sizeof(BmlIpcBuf));
-  self->buffer = malloc(IPC_BUF_SIZE);  
-  return self;
+  return calloc(1, sizeof(BmlIpcBuf));
 }
 
 void bmlipc_free (BmlIpcBuf *self)
 {
-  free (self->buffer);
   free (self);
 }
 
@@ -86,6 +88,41 @@ char *bmlipc_read_data (BmlIpcBuf * self, int size)
   return buffer;
 }
 
+void bmlipc_read (BmlIpcBuf * self, StrPool *sp, char *fmt, ...)
+{
+  va_list var_args;
+  char *t = fmt;
+  
+  va_start (var_args, fmt);
+  while (t && *t) {
+    switch (*t) {
+      case 'i': {
+        int *v = va_arg (var_args, int*);
+        *v = bmlipc_read_int(self);
+        break;
+      }
+      case 's': {
+        const char **v = va_arg (var_args, const char **);
+        *v = sp_intern(sp, bmlipc_read_string(self));
+        break;
+      }
+      case 'd': {
+        int *s = va_arg (var_args, int*);
+        char *v = va_arg (var_args, char *);
+        *s = bmlipc_read_int(self);
+        memcpy(v, bmlipc_read_data(self, *s), *s);
+        break;
+      }
+      default:
+        TRACE ("unhandled type: '%c'", t);
+        break;
+    }
+    t++;
+  }
+  va_end (var_args);
+}
+
+
 // writer
 
 static int mem_write (BmlIpcBuf * self, void *ptr, int size, int n_items)
@@ -119,3 +156,38 @@ void bmlipc_write_data (BmlIpcBuf * self, int size, char *buffer) {
     self->io_error = 1;
   }
 }
+
+void bmlipc_write (BmlIpcBuf * self, char *fmt, ...)
+{
+  va_list var_args;
+  char *t = fmt;
+
+  va_start (var_args, fmt);
+  while (t && *t) {
+    switch (*t) {
+      case 'i': {
+        int v = va_arg (var_args, int);
+        bmlipc_write_int(self, v);
+        break;
+      }
+      case 's': {
+        char *v = va_arg (var_args, char *);
+        bmlipc_write_string(self, v);
+        break;
+      }
+      case 'd': {
+        int s = va_arg (var_args, int);
+        char *v = va_arg (var_args, char *);
+        bmlipc_write_int(self, s);
+        bmlipc_write_data(self, s, v);
+        break;
+      }
+      default:
+        TRACE ("unhandled type: '%c'", t);
+        break;
+    }
+    t++;
+  }
+  va_end (var_args);
+}
+

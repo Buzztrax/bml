@@ -18,19 +18,21 @@
 #ifndef BMLIPC_H
 #define BMLIPC_H
 
+#include "strpool.h"
+
 // TODO(ensonic): figure max message block size
 // buzzmachines use MAX_BUFFER_LENGTH = 256 * sizeof(float) = 1024 bytes for
 // wave data
-#define IPC_BUF_SIZE 4096
+#define IPC_BUF_SIZE 2048
 
-// TODO(ensonic): maybe use this on the stack with a built-in array, we're using
-// multiple threads on the sending side and that won't work with a single buffer
 typedef struct {
-  char *buffer;
+  char buffer[IPC_BUF_SIZE];
   int pos;
   int size;
   int io_error;
 } BmlIpcBuf;
+
+#define IPC_BUF_INIT {{0,},0, }
 
 BmlIpcBuf *bmlipc_new (void);
 void bmlipc_free (BmlIpcBuf *self);
@@ -40,9 +42,11 @@ void bmlipc_clear (BmlIpcBuf * self);
 int bmlipc_read_int (BmlIpcBuf * self);
 char *bmlipc_read_string (BmlIpcBuf * self);
 char *bmlipc_read_data (BmlIpcBuf * self, int size);
+void bmlipc_read (BmlIpcBuf * self, StrPool *sp, char *fmt, ...);
 
 void bmlipc_write_int (BmlIpcBuf * self, int buffer);
 void bmlipc_write_string (BmlIpcBuf * self, char *buffer);
 void bmlipc_write_data (BmlIpcBuf * self, int size, char *buffer);
+void bmlipc_write (BmlIpcBuf * self, char *fmt, ...);
 
 #endif // BMLIPC_H

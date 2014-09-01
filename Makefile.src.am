@@ -26,7 +26,7 @@ libbml_la_LDFLAGS = \
 if USE_DLLWRAPPER_IPC
 bin_PROGRAMS = bmlhost
 
-bmlhost_SOURCES = src/bmlhost.c src/bmllog.c src/bmlw.c src/bmlipc.c
+bmlhost_SOURCES = src/bmlhost.c src/bmllog.c src/bmlw.c src/bmlipc.c src/strpool.c
 bmlhost_CFLAGS = $(BML_CFLAGS) $(ARCH_CFLAGS)
 bmlhost_LDADD = $(PTHREAD_LIBS) $(BML_LIBS) libloader.la 
 
