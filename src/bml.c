@@ -155,6 +155,9 @@ bmpipc_connect (void)
 //   the server_socket, the ipc-buf and the actual BuzzMachineHandle
 // - in bmlw_new() return a struct that contains the the server_socket, the
 //   ipc-buf and the actual BuzzMachine
+// - we could expand the BmlIpcBuf and add a union for
+//   { BuzzMachineHandle, BuzzMachine}
+// - the struct will be freed in bmlw_close() and bmlw_free()
 
 // TODO(ensonic): ipc performance
 // - add varargs version of setters/getters handle multiple attributes/parameters
