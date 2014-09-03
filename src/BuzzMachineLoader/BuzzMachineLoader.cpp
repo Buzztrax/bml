@@ -40,7 +40,7 @@
 #ifdef _MSC_VER
 #define DE __declspec(dllexport)
 #else
-#define DE 
+#define DE
 #endif
 
 // buzz emulation code
@@ -169,7 +169,7 @@ extern "C" DE BuzzMachineHandle *bm_open(char *bm_file_name) {
             bmh->machine_info->maxTracks=0;
         }
     }
-    
+
     //-- we need to temporarily create an instance to query extra data
     if((bmh->bm=bm_new(bmh))) {
       bm_init(bmh->bm,0,NULL);
@@ -184,7 +184,7 @@ extern "C" DE BuzzMachineHandle *bm_open(char *bm_file_name) {
       bm_close(bmh);
       return(NULL);
     }
-    
+
     return(bmh);
 }
 
@@ -321,7 +321,7 @@ extern "C" DE void bm_free(BuzzMachine *bm) {
         DBG("freeing\n");
         delete bm->machine_iface;
         delete bm->machine;
-        
+
         if(callbacks) {
             int version = bm->machine_info->Version;
             DBG1("freeing callbacks 0x%04x\n",version);
@@ -343,7 +343,7 @@ extern "C" DE BuzzMachine *bm_new(BuzzMachineHandle *bmh) {
 
     // we need to create a CMachine object
     bm->machine=new CMachine(bm->machine_iface,bm->machine_info);
-    
+
     // not callbacks set by host so far
     bm->host_callbacks = NULL;
 
@@ -381,7 +381,7 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
     if (blob_size && blob_data) {
       pcmdii = new CMachineDataInputImpl(blob_data, blob_size);
     }
-   
+
     // call Init (this also calles mdkHelper::Init()
     bm->machine_iface->Init(pcmdii);
     DBG("  CMachineInterface::Init() called\n");
@@ -457,117 +457,109 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
 }
 
 static void * bm_get_track_parameter_location(BuzzMachine *bm,int track,int index) {
-    void *res=NULL;
-
-    if(!(track<bm->machine_info->maxTracks)) return(0);
-    if(!(index<bm->machine_info->numTrackParameters)) return(0);
-    if(!(bm->machine_iface->TrackVals)) return(0);
-
     byte *ptr=(byte *)bm->machine_iface->TrackVals;
-    if(!ptr) {
-      DBG(" -> machine->TrackVals is NULL!\n");
-    }
-
     // @todo prepare pointer array in bm_init
     for(int j=0;j<=track;j++) {
         for(int i=0;i<bm->machine_info->numTrackParameters;i++) {
+            if((j==track) && (i==index))
+                return (void *)ptr;
             switch(bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->Type) {
                 case pt_note:
                 case pt_switch:
                 case pt_byte:
-                    if((j==track) && (i==index)) res=(void *)ptr;
-                    else ptr++;
+                    ptr++;
                     break;
                 case pt_word:
-                    if((j==track) && (i==index)) res=(void *)ptr;
-                    else ptr+=2;
+                    ptr+=2;
                     break;
             }
         }
     }
-    return(res);
+    DBG("parameter not found\n");
+    return NULL;
 }
 
 extern "C" DE int bm_get_track_parameter_value(BuzzMachine *bm,int track,int index) {
-    int value=0;
-    if(!(index<bm->machine_info->numTrackParameters)) return(0);
-    if(!(bm->machine_iface->TrackVals)) return(0);
+    if(!(track<bm->machine_info->maxTracks)) return 0;
+    if(!(index<bm->machine_info->numTrackParameters)) return 0;
+    if(!(bm->machine_iface->TrackVals)) return 0;
 
+    int value=0;
     void *ptr=bm_get_track_parameter_location(bm,track,index);
-    switch(bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+index]->Type) {
-        case pt_note:
-        case pt_switch:
-        case pt_byte:
-            value=(int)(*((byte *)ptr));
-            break;
-        case pt_word:
-            value=(int)(*((word *)ptr));
-            break;
+    if (ptr) {
+        switch(bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+index]->Type) {
+            case pt_note:
+            case pt_switch:
+            case pt_byte:
+                value=(int)(*((byte *)ptr));
+                break;
+            case pt_word:
+                value=(int)(*((word *)ptr));
+                break;
+        }
     }
     return(value);
 }
 
 extern "C" DE void bm_set_track_parameter_value(BuzzMachine *bm,int track,int index,int value) {
+    if(!(track<bm->machine_info->maxTracks)) return;
     if(!(index<bm->machine_info->numTrackParameters)) return;
     if(!(bm->machine_iface->TrackVals)) return;
 
     void *ptr=bm_get_track_parameter_location(bm,track,index);
-    switch(bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+index]->Type) {
-        case pt_note:
-        case pt_switch:
-        case pt_byte:
-            (*((byte *)ptr))=(byte)value;
-            break;
-        case pt_word:
-            (*((word *)ptr))=(word)value;
-            break;
+    DBG4("track=%d, index=%d, TrackVals :%p, %p\n",track, index,bm->machine_iface->TrackVals,ptr);
+    if (ptr) {
+        switch(bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+index]->Type) {
+            case pt_note:
+            case pt_switch:
+            case pt_byte:
+                (*((byte *)ptr))=(byte)value;
+                break;
+            case pt_word:
+                (*((word *)ptr))=(word)value;
+                break;
+        }
     }
 }
 
 static void * bm_get_global_parameter_location(BuzzMachine *bm,int index) {
-    void *res=NULL;
-
-    if(!(index<bm->machine_info->numGlobalParameters)) return(0);
-    if(!(bm->machine_iface->GlobalVals)) return(0);
-
     byte *ptr=(byte *)bm->machine_iface->GlobalVals;
-    if(!ptr) {
-      DBG(" -> machine->GlobalVals is NULL!\n");
-    }
-
     // @todo prepare pointer array in bm_init
     for(int i=0;i<=index;i++) {
+        if(i==index)
+            return (void *)ptr;
         switch(bm->machine_info->Parameters[i]->Type) {
             case pt_note:
             case pt_switch:
             case pt_byte:
-                if(i==index) res=(void *)ptr;
-                else ptr++;
+                ptr++;
                 break;
             case pt_word:
-                if(i==index) res=(void *)ptr;
-                else ptr+=2;
+                ptr+=2;
                 break;
         }
     }
-    return(res);
+    DBG("parameter not found\n");
+    return NULL;
 }
 
 extern "C" DE int bm_get_global_parameter_value(BuzzMachine *bm,int index) {
-    int value=0;
-    if(!(index<bm->machine_info->numGlobalParameters)) return(0);
-    if(!(bm->machine_iface->GlobalVals)) return(0);
+    if(!(index<bm->machine_info->numGlobalParameters)) return 0;
+    if(!(bm->machine_iface->GlobalVals)) return 0;
 
+    int value=0;
     void *ptr=bm_get_global_parameter_location(bm,index);
-    switch(bm->machine_info->Parameters[index]->Type) {
-        case pt_note:
-        case pt_switch:
-        case pt_byte:
-            value=(int)(*((byte *)ptr));
-            break;
-        case pt_word:
-            value=(int)(*((word *)ptr));
-            break;
+    if (ptr) {
+        switch(bm->machine_info->Parameters[index]->Type) {
+            case pt_note:
+            case pt_switch:
+            case pt_byte:
+                value=(int)(*((byte *)ptr));
+                break;
+            case pt_word:
+                value=(int)(*((word *)ptr));
+                break;
+        }
     }
     return(value);
 }
@@ -577,16 +569,18 @@ extern "C" DE void bm_set_global_parameter_value(BuzzMachine *bm,int index,int v
     if(!(bm->machine_iface->GlobalVals)) return;
 
     void *ptr=bm_get_global_parameter_location(bm,index);
-    //printf("%s: index=%d, GlobalVals :%p, %p\n",__PRETTY_FUNCTION__,index,bm->machine_iface->GlobalVals,ptr);
-    switch(bm->machine_info->Parameters[index]->Type) {
-        case pt_note:
-        case pt_switch:
-        case pt_byte:
-            (*((byte *)ptr))=(byte)value;
-            break;
-        case pt_word:
-            (*((word *)ptr))=(word)value;
-            break;
+    DBG3("index=%d, GlobalVals :%p, %p\n",index,bm->machine_iface->GlobalVals,ptr);
+    if (ptr) {
+        switch(bm->machine_info->Parameters[index]->Type) {
+            case pt_note:
+            case pt_switch:
+            case pt_byte:
+                (*((byte *)ptr))=(byte)value;
+                break;
+            case pt_word:
+                (*((word *)ptr))=(word)value;
+                break;
+        }
     }
 }
 
