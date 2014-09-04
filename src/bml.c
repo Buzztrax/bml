@@ -136,7 +136,7 @@ bmpipc_connect (void)
       TRACE("server connected after %d retries\n", retries);
       break;
     } else {
-      TRACE("connection failed: %s\n", strerror(res));
+      TRACE("connection failed: %s\n", strerror(errno));
       retries++;
       sleep(1);
     }
