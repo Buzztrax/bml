@@ -30,7 +30,7 @@ BMLDebugLogger _bmllog_init (int debug_log_flags);
 #  define TRACE_INIT(flags) _bmllog_init(flags)
 #  define TRACE(...) _log_printf(__FILE__,__LINE__,__FUNCTION__,__VA_ARGS__)
 #else
-#  define TRACE_INIT(flags)
+#  define TRACE_INIT(flags) NULL
 #  define TRACE(...)
 #endif
 
