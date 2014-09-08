@@ -23,6 +23,8 @@
  *   2 : only logging from bml and dllwrapper
  */
 
+#include "config.h"
+
 #include <sys/time.h>
 #include <time.h>
 #include <stdarg.h>
@@ -36,10 +38,17 @@ static double _first_ts = 0.0;
 static double
 _get_timestamp (void)
 {
+#ifdef HAVE_CLOCK_GETTIME
   struct timespec ts;
 
   clock_gettime(CLOCK_MONOTONIC, &ts);
-  return (((double) ts.tv_sec+ (double) ts.tv_nsec * 1.0e-9) - _first_ts);
+  return (((double) ts.tv_sec + (double) ts.tv_nsec * 1.0e-9) - _first_ts);
+#else
+  struct timeval ts;
+
+  gettimeofday (&ts, NULL);
+  return (((double) ts.tv_sec + (double) ts.tv_usec * 1.0e-6) -  _first_ts);
+#endif
 }
 
 static void
