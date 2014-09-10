@@ -42,18 +42,16 @@ static inline double
 _get_timestamp (void)
 {
 #ifdef HAVE_CLOCK_GETTIME
-  struct timespec now;
+  struct timespec ts;
 
-  clock_gettime (CLOCK_MONOTONIC, &now);
-  return ((double)now.tv_sec + ((double)now.tv_nsec/1000000000.0));
+  clock_gettime (CLOCK_MONOTONIC, &ts);
+  return ((double)ts.tv_sec + ((double)ts.tv_nsec * 1.0e-9));
 #else
-/*
-  GTimeVal now;
+  struct timeval ts;
 
-  g_get_current_time (&now);
-  return GST_TIMEVAL_TO_TIME (now);
-*/
-  return 0UL;
+  gettimeofday (&ts, NULL);
+  return ((double)ts.tv_sec + ((double)ts.tv_usec * 1.0e-6));
+
 #endif
 }
 
