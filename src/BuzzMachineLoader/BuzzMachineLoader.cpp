@@ -325,6 +325,12 @@ extern "C" DE void bm_free(BuzzMachine *bm) {
         if(callbacks) {
             int version = bm->machine_info->Version;
             DBG1("freeing callbacks 0x%04x\n",version);
+            if((bm->machine_info->Version & 0xff) < 15) {
+              delete (BuzzMachineCallbacksPre12 *)callbacks;
+            }
+            else {
+              delete (BuzzMachineCallbacks *)callbacks;
+            }
         }
         free(bm);
     }
