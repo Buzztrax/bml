@@ -16,6 +16,7 @@
  */
 
 int bml(test_process(char *libpath,const char *infilename,const char *outfilename)) {
+  int okay=0;
   // buzz machine handle
   void *bmh,*bm;
 
@@ -241,10 +242,10 @@ int bml(test_process(char *libpath,const char *infilename,const char *outfilenam
       if(den) puts("some values are denormal");
       printf("Clipped: %d\n",clipped);
       printf("MaxAmp: %f\n",ma);
-      return 1;
+      okay=1;
     }
     bml(close(bmh));
   }
-  return 0;
+  return okay;
 }
 

@@ -16,6 +16,7 @@
  */
 
 int bml(test_info(char *libpath)) {
+  int okay=0;
   // buzz machine handle
   void *bmh,*bm;
   char *str;
@@ -157,7 +158,7 @@ int bml(test_info(char *libpath)) {
       bml(free(bm));
 
       puts("  done");
-      return 1;
+      okay=1;
     } else {
       printf("%s: can't instantiate plugin \"%s\"\n",__FUNCTION__,libpath);
     }
@@ -165,5 +166,5 @@ int bml(test_info(char *libpath)) {
   } else {
     printf("%s: can't open plugin \"%s\"\n",__FUNCTION__,libpath);
   }
-  return 0;
+  return okay;
 }
