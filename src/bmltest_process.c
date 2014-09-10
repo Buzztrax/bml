@@ -83,7 +83,7 @@ int main( int argc, char **argv ) {
       lib_name=argv[1];
       sl=strlen(lib_name);
       if(sl>4) {
-        if(!strcmp(&lib_name[sl-4],".dll")) {
+        if(!strcasecmp(&lib_name[sl-4],".dll")) {
 #ifdef USE_DLLWRAPPER
           bmlw_test_process(lib_name,argv[2],argv[3]);
 #else
