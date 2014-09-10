@@ -231,6 +231,8 @@ int bml(test_process(char *libpath,const char *infilename,const char *outfilenam
         //printf("\n");
       }
       else puts("    file error!");
+      bml(free(bm));
+
       if(infile) fclose(infile);
       if(outfile) fclose(outfile);
       puts("  done");

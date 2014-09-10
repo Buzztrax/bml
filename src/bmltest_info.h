@@ -154,6 +154,7 @@ int bml(test_info(char *libpath)) {
           }
         }
       }
+      bml(free(bm));
 
       puts("  done");
       return 1;
