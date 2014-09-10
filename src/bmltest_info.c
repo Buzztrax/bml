@@ -68,14 +68,14 @@ _get_timestamp (void)
 #undef bml
 
 int main( int argc, char **argv ) {
+  int okay=0;
   setlinebuf(stdout);
   setlinebuf(stderr);
   puts("main beg");
 
   if(bml_setup()) {
     char *lib_name;
-    int sl;
-    int i;
+    int sl,i;
 
 #ifdef USE_DLLWRAPPER
     /* FIXME: if people have no real win32 dlls, only emulated things, this will crash here */
@@ -90,13 +90,13 @@ int main( int argc, char **argv ) {
       if(sl>4) {
         if(!strcasecmp(&lib_name[sl-4],".dll")) {
 #ifdef USE_DLLWRAPPER
-          bmlw_test_info(lib_name);
+          okay=bmlw_test_info(lib_name);
 #else
           puts("no dll emulation on non x86 platforms");
 #endif  /* USE_DLLWRAPPER */
         }
         else {
-          bmln_test_info(lib_name);
+          okay=bmln_test_info(lib_name);
         }
       }
     }
@@ -104,6 +104,6 @@ int main( int argc, char **argv ) {
   }
 
   puts("main end");
-  return 0;
+  return okay ? 0 : 1;
 }
 

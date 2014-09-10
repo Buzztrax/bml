@@ -65,6 +65,7 @@
 #undef bml
 
 int main( int argc, char **argv ) {
+  int okay=0;
   setlinebuf(stdout);
   setlinebuf(stderr);
   puts("main beg");
@@ -85,13 +86,13 @@ int main( int argc, char **argv ) {
       if(sl>4) {
         if(!strcasecmp(&lib_name[sl-4],".dll")) {
 #ifdef USE_DLLWRAPPER
-          bmlw_test_process(lib_name,argv[2],argv[3]);
+          okay=bmlw_test_process(lib_name,argv[2],argv[3]);
 #else
           puts("no dll emulation on non x86 platforms");
 #endif  /* USE_DLLWRAPPER */
         }
         else {
-          bmln_test_process(lib_name,argv[2],argv[3]);
+          okay=bmln_test_process(lib_name,argv[2],argv[3]);
         }
       }
     }
@@ -100,5 +101,5 @@ int main( int argc, char **argv ) {
   }
 
   puts("main end");
-  return 0;
+  return okay ? 0 : 1;
 }

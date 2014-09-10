@@ -15,7 +15,7 @@
  * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
-void bml(test_process(char *libpath,const char *infilename,const char *outfilename)) {
+int bml(test_process(char *libpath,const char *infilename,const char *outfilename)) {
   // buzz machine handle
   void *bmh,*bm;
 
@@ -239,8 +239,10 @@ void bml(test_process(char *libpath,const char *infilename,const char *outfilena
       if(den) puts("some values are denormal");
       printf("Clipped: %d\n",clipped);
       printf("MaxAmp: %f\n",ma);
+      return 1;
     }
     bml(close(bmh));
   }
+  return 0;
 }
 
