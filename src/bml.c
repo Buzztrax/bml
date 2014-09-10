@@ -113,8 +113,8 @@ bmpipc_connect (void)
     child_pid = fork ();
     if (child_pid == 0) {
       char *args[] = { "bmlhost", socket_file, NULL };
-      int res = execvp("bmlhost", args);
-      TRACE("an error occurred in execvp\n", strerror(res));
+      execvp("bmlhost", args);
+      TRACE("an error occurred in execvp: %s\n", strerror(errno));
       return FALSE;
     } else if (child_pid < 0) {
       TRACE("fork failed: %s\n", strerror(child_pid));
