@@ -1,6 +1,6 @@
 dnl Initialise autoconf/automake/libtool
 AC_PREREQ(2.61)
-AC_INIT([bml],[0.8.0],[buzztrax-devel@lists.sourceforge.net])
+AC_INIT([bml],[0.8.0],[buzztrax-devel@buzztrax.org])
 AC_CANONICAL_TARGET([])
 AM_INIT_AUTOMAKE([-Wall -Werror check-news std-options foreign subdir-objects])
 AC_CONFIG_SRCDIR([README.md])
@@ -123,7 +123,7 @@ case "x${target_cpu}" in
     ;;
   xx86_64|xamd64)
     dnl switch this to 'yes' to try building it for 32bit using the ipc wrapper
-    if test "$have_x32_h" = "xyes"; then
+    if test "$have_x32_h" = "yes"; then
       HAVE_X86=yes
       ARCH_CFLAGS="-m32"
       ARCH_CCASFLAGS="-m32"
