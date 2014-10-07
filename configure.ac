@@ -123,7 +123,7 @@ case "x${target_cpu}" in
     ;;
   xx86_64|xamd64)
     dnl switch this to 'yes' to try building it for 32bit using the ipc wrapper
-    if test "$have_x32_h" = "yes"; then
+    if test "$have_x32_h" = "xyes"; then
       HAVE_X86=yes
       ARCH_CFLAGS="-m32"
       ARCH_CCASFLAGS="-m32"
