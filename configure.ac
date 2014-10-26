@@ -1,6 +1,6 @@
 dnl Initialise autoconf/automake/libtool
 AC_PREREQ(2.61)
-AC_INIT([bml],[0.8.0],[buzztrax-devel@buzztrax.org])
+AC_INIT([bml],[0.9.0],[buzztrax-devel@buzztrax.org])
 AC_CANONICAL_TARGET([])
 AM_INIT_AUTOMAKE([-Wall -Werror check-news std-options foreign subdir-objects])
 AC_CONFIG_SRCDIR([README.md])
