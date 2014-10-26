@@ -36,7 +36,7 @@
 #include "config.h"
 
 #define _ISOC99_SOURCE /* for isinf() and co. */
-#define _BSD_SOURCE /* for setlinebuf() */
+#define _DEFAULT_SOURCE /* for setlinebuf() */
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -67,7 +67,6 @@
 int main( int argc, char **argv ) {
   int okay=0;
   setlinebuf(stdout);
-  setlinebuf(stderr);
   puts("main beg");
 
   if(bml_setup()) {
