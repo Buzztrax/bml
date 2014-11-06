@@ -45,6 +45,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <strings.h>
 #include <math.h>
 
 //#include <fpu_control.h>
