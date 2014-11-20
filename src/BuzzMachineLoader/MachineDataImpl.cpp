@@ -46,7 +46,7 @@ void CMachineDataInputImpl::Read(void* pmem, const int n_size) {
 			m_dwBufferLen -= n_size;
 		}
 		else {
-            DBG2("(pbuf=%p,numbytes=%d) : out of buffer\n",pmem,n_size);
+			DBG2("(pbuf=%p,numbytes=%d) : out of buffer\n",pmem,n_size);
 			memcpy(pmem, m_pbyBuffer, m_dwBufferLen);
 			m_pbyBuffer += m_dwBufferLen;
 			m_dwBufferLen = 0;
@@ -54,12 +54,12 @@ void CMachineDataInputImpl::Read(void* pmem, const int n_size) {
 	}
 	else if (m_hFile) {
 		// clear ...
-        DBG2("(pbuf=%p,numbytes=%d) : no file\n",pmem,n_size);
+		DBG2("(pbuf=%p,numbytes=%d) : no file\n",pmem,n_size);
 		memset(pmem, 0, n_size);
 	}
 	else {
 		// clear ...
-        DBG2("(pbuf=%p,numbytes=%d) : no buffer\n",pmem,n_size);
+		DBG2("(pbuf=%p,numbytes=%d) : no buffer\n",pmem,n_size);
 		memset(pmem, 0, n_size);
 	}
 }
@@ -78,5 +78,16 @@ const BYTE * CMachineDataOutputImpl::GetOutputBuffer() const {
 }
 
 CMachineDataOutputImpl::~CMachineDataOutputImpl() {
-	///
+}
+
+void CMachineDataOutputImpl::Write(void *pmem, int const n_size) {
+	if (m_pbyBuffer) {
+		DBG2("(pbuf=%p,numbytes=%d) : no file\n",pmem,n_size);
+	}
+	else if (m_hFile) {
+		DBG2("(pbuf=%p,numbytes=%d) : no file\n",pmem,n_size);
+	}
+	else {
+		DBG2("(pbuf=%p,numbytes=%d) : no buffer\n",pmem,n_size);
+	}
 }

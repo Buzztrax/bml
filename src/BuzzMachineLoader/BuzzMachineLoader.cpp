@@ -381,6 +381,37 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
     }
     DBG("  attributes initialized\n");
 
+    // CyanPhase DTMF-1 access gval.xxx in mi::Init
+    // so we need to call these before
+
+    // initialise global parameters (DefValue or NoValue, Buzz seems to use NoValue)
+    for(i=0;i<bm->machine_info->numGlobalParameters;i++) {
+        if(bm->machine_info->Parameters[i]->Flags&MPF_STATE) {
+            bm_set_global_parameter_value(bm,i,bm->machine_info->Parameters[i]->DefValue);
+        }
+        else {
+            bm_set_global_parameter_value(bm,i,bm->machine_info->Parameters[i]->NoValue);
+        }
+    }
+    DBG("  global parameters initialized\n");
+    // initialise track parameters
+    if((bm->machine_info->minTracks>0) && (bm->machine_info->maxTracks>0)) {
+        int k=bm->machine_info->numGlobalParameters;
+        DBG3(" need to initialize %d track params for tracks: %d...%d\n",bm->machine_info->numTrackParameters,bm->machine_info->minTracks,bm->machine_info->maxTracks);
+        for(j=0;j<bm->machine_info->maxTracks;j++) {
+            DBG1("  initialize track %d\n", j);
+            for(i=0;i<bm->machine_info->numTrackParameters;i++) {
+                if(bm->machine_info->Parameters[k+i]->Flags&MPF_STATE) {
+                    bm_set_track_parameter_value(bm,j,i,bm->machine_info->Parameters[k+i]->DefValue);
+                }
+                else {
+                    bm_set_track_parameter_value(bm,j,i,bm->machine_info->Parameters[k+i]->NoValue);
+                }
+            }
+        }
+    }
+    DBG("  track parameters initialized\n");
+
     // create the machine data input
     CMachineDataInput * pcmdii = NULL;
 
@@ -412,39 +443,10 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
 
     // call SetNumTracks
     //DBG1("  CMachineInterface::SetNumTracks(%d)\n",bm->machine_info->minTracks);
-	// calling this without the '-1' crashes: Automaton Parametric EQ.dll
-	//bm->machine_iface->SetNumTracks(bm->machine_info->minTracks-1);
-	bm->machine_iface->SetNumTracks(bm->machine_info->minTracks);
+    // calling this without the '-1' crashes: Automaton Parametric EQ.dll
+    //bm->machine_iface->SetNumTracks(bm->machine_info->minTracks-1);
+    bm->machine_iface->SetNumTracks(bm->machine_info->minTracks);
     DBG1("  CMachineInterface::SetNumTracks(%d) called\n",bm->machine_info->minTracks);
-
-    // FIXME: CyanPhase DTMF-1 access gval.xxx in mi::Init
-    // -> so we might need to call these before
-
-    // initialise global parameters (DefValue or NoValue, Buzz seems to use NoValue)
-    for(i=0;i<bm->machine_info->numGlobalParameters;i++) {
-        if(bm->machine_info->Parameters[i]->Flags&MPF_STATE) {
-            bm_set_global_parameter_value(bm,i,bm->machine_info->Parameters[i]->DefValue);
-        }
-        else {
-            bm_set_global_parameter_value(bm,i,bm->machine_info->Parameters[i]->NoValue);
-        }
-    }
-    DBG("  global parameters initialized\n");
-    // initialise track parameters
-    if((bm->machine_info->minTracks>0) && (bm->machine_info->maxTracks>0)) {
-        DBG3(" need to initialize %d track params for tracks: %d...%d\n",bm->machine_info->numTrackParameters,bm->machine_info->minTracks,bm->machine_info->maxTracks);
-        for(j=0;j<bm->machine_info->maxTracks;j++) {
-            for(i=0;i<bm->machine_info->numTrackParameters;i++) {
-                if(bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->Flags&MPF_STATE) {
-                    bm_set_track_parameter_value(bm,j,i,bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->DefValue);
-                }
-                else {
-                    bm_set_track_parameter_value(bm,j,i,bm->machine_info->Parameters[bm->machine_info->numGlobalParameters+i]->NoValue);
-                }
-            }
-        }
-    }
-    DBG("  track parameters initialized\n");
 
     /* we've given the machine the initial global- and track-parameters,
      * and the attributes, give it a tick
@@ -453,8 +455,8 @@ extern "C" DE void bm_init(BuzzMachine *bm, unsigned long blob_size, unsigned ch
      * - tick AFTER AttributesChanged, and after we've set initial track and
      *   global data for machine)
      */
-    bm->machine_iface->Tick();
-    DBG("  CMachineInterface::Tick() called\n");
+    //bm->machine_iface->Tick();
+    //DBG("  CMachineInterface::Tick() called\n");
 
     if(bm->machine_info->Flags&MIF_USES_LIB_INTERFACE) {
         DBG(" MIF_USES_LIB_INTERFACE");

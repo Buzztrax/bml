@@ -49,6 +49,8 @@ public:
 	DWORD GetCount() const;
 	const BYTE * GetOutputBuffer() const;
 	virtual ~CMachineDataOutputImpl();
+	
+	virtual void Write(void *pmem, int const n_size);
 private:
 	HANDLE m_hFile;
 	BYTE * m_pbyBuffer;

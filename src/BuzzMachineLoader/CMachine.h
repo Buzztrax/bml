@@ -33,7 +33,7 @@ class CMachine {
     char* _internal_trackState;     // 0x6C: copy of machines track state
     char _placeholder4[120];
     int _internal_seqCommand;       // 0xE8: used by mooter, 0 = --, 1 = mute, 2 = thru
-    char _placeholder6[17];
+    char _placeholder5[17];
     bool hardMuted;                 // 0xFD: true when muted by user, used by mooter
     // End of Buzz compatible header
 public:
@@ -42,13 +42,26 @@ public:
 
 public:
     CMachine() {
-      machine_interface=NULL;
-      machine_info=NULL;
+        machine_interface=NULL;
+        machine_info=NULL;
+        _placeholder[0] = 0;
+        _internal_name = NULL;
+        _placeholder2[0] = 0;
+        _internal_machine = this;
+        _internal_machine_ex = NULL;
+        _placeholder3[0] = 0;
+        _internal_globalState = NULL;
+        _internal_trackState = NULL;
+        _placeholder4[0] = 0;
+        _internal_seqCommand = 0;
+        _placeholder5[0] = 0;
+        hardMuted = 0;
     }
     
     CMachine(CMachineInterface *_machine_interface,CMachineInfo *_machine_info) {
         machine_interface=_machine_interface;
         machine_info=_machine_info;
+        _internal_machine = this;
     }
 };
 
