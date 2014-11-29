@@ -122,7 +122,7 @@ case "x${target_cpu}" in
     CALLING_MODE=direct
     ;;
   xx86_64|xamd64)
-    dnl switch this to 'yes' to try building it for 32bit using the ipc wrapper
+    dnl switch 'xyes' to 'yes' to build it for 32bit using the ipc wrapper
     if test "$have_x32_h" = "xyes"; then
       HAVE_X86=yes
       ARCH_CFLAGS="-m32"
@@ -169,9 +169,8 @@ AM_CONDITIONAL(USE_DLLWRAPPER_IPC, test x$CALLING_MODE = xipc)
 dnl check for headers
 AC_HEADER_STDC([])
 AC_CHECK_HEADERS( \
-  alloca.h assert.h byteswap.h dirent.h execinfo.h kstat.h libgen.h malloc.h \
-  netdb.h ucontext.h \
-  sys/mman.h sys/mixer.h sys/times.h sys/ioctl.h sys/param.h \
+  alloca.h assert.h dirent.h kstat.h malloc.h \
+  sys/mman.h sys/time.h sys/times.h \
 )
 
 AC_CHECK_DECL(sysi86,[
