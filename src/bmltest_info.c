@@ -34,7 +34,12 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+
+#ifdef HAVE_CLOCK_GETTIME
 #include <time.h>
+#else
+#include <sys/time.h>
+#endif
 
 #include "bml.h"
 
@@ -51,7 +56,6 @@ _get_timestamp (void)
 
   gettimeofday (&ts, NULL);
   return ((double)ts.tv_sec + ((double)ts.tv_usec * 1.0e-6));
-
 #endif
 }
 
