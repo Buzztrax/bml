@@ -613,7 +613,7 @@ INT WINAPI WideCharToMultiByte(UINT codepage, DWORD flags, LPCWSTR src,
     }
     if(used_defch)
 	*used_defch=0;
-    for(i=0; i<min(srclen, destlen); i++)
+    for(i=0; i<__min(srclen, destlen); i++)
     {
 	*dest=(char)*src;
 	dest++;
@@ -621,7 +621,7 @@ INT WINAPI WideCharToMultiByte(UINT codepage, DWORD flags, LPCWSTR src,
 	if(*src==0)
 	    return i+1;
     }
-    return min(srclen, destlen);
+    return __min(srclen, destlen);
 }
 INT WINAPI MultiByteToWideChar(UINT codepage,DWORD flags, LPCSTR src, INT srclen,
     LPWSTR dest, INT destlen)

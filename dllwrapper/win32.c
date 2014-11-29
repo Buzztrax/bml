@@ -206,7 +206,6 @@ static inline void __attribute__((__format__(__printf__, 1, 2))) dbgprintf(char*
 char export_names[NUM_STUB_ENTRIES][32]={
     "name1",
 };
-//#define min(x,y) ((x)<(y)?(x):(y))
 
 struct th_list_t;
 typedef struct th_list_t{
@@ -243,7 +242,7 @@ static void test_heap(void)
 	}
 	offset+=8+*(int*)(heap+offset+4);
     }
-    for(;offset<min(offset+1000, 20000000); offset++)
+    for(;offset<__min(offset+1000, 20000000); offset++)
 	if(heap[offset]!=0xCC)
 	{
 	    dbgprintf("Free heap corruption at address %d\n", offset);

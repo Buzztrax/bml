@@ -297,7 +297,7 @@ INT WINAPI LoadStringA( HINSTANCE instance, UINT resource_id,
 		abuflen = WideCharToMultiByte(CP_ACP,0,wbuf,wbuflen,abuf,abuflen,NULL,NULL);
 		if ( abuflen > 0 )
 		{
-		    abuflen = min(abuflen,buflen - 1);
+		    abuflen = __min(abuflen,buflen - 1);
 		    memcpy( buffer, abuf, abuflen );
 		    buffer[abuflen] = 0;
 		    retval = abuflen;
@@ -344,7 +344,7 @@ INT WINAPI LoadStringW( HINSTANCE instance, UINT resource_id,
     TRACE("strlen = %d\n", (int)*p );
     
     if (buffer == NULL) return *p;
-    i = min(buflen - 1, *p);
+    i = __min(buflen - 1, *p);
     if (i > 0) {
 	memcpy(buffer, p + 1, i * sizeof (WCHAR));
 	buffer[i] = (WCHAR) 0;
@@ -425,7 +425,7 @@ INT WINAPI LoadMessageA( HMODULE instance, UINT id, WORD lang,
     }
     slen=mre->Length;
     TRACE("	- strlen=%d\n",slen);
-    i = min(buflen - 1, slen);
+    i = __min(buflen - 1, slen);
     if (buffer == NULL)
 	return slen;
     if (i>0) {
