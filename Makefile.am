@@ -19,7 +19,7 @@ include $(top_srcdir)/Makefile.dllwrapper.am
 endif
 include $(top_srcdir)/Makefile.src.am
 
-AUTHORS::
+AUTHORS: .git/index
 	$(AM_V_GEN)if test -d "$(srcdir)/.git"; \
 	then \
 		( cd "$(top_srcdir)" && \
@@ -28,8 +28,9 @@ AUTHORS::
 		      -e 's/\(Joseph Orbegoso Pea <joseph.pea@climate.com>\|trusktr <trusktr@gmail.com>\)/Joe Pea <trusktr@gmail.com>/' | \
 		  sort | uniq -c | sed -e 's/^\ *//' | sort -rn | cut -d' ' -f2-; echo; \
 		  echo 'dllwrapper based on the work of various authors of the winelib and xine projects' \
-		  ) > $@.tmp \
-		&& mv -f $@.tmp $@ \
+		  ) > $@.tmp && \
+		cmp -s $@ $@.tmp; \
+		if test "$(?)" = "0"; then rm -f $@.tmp; touch $@; else mv -f $@.tmp $@; fi \
 		|| ( rm -f $@.tmp ; \
 		     echo Failed to generate $@ >&2 ); \
 	fi
