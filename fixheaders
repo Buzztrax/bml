@@ -1,4 +1,0 @@
-#!/bin/sh
-
-sed -e "/       VstFileType (.*/,/      }/d;s/VstFileType \*fileTypes;/struct VstFileType *fileTypes;/" aeffectx.h >aeffectx.h.new
-mv -f aeffectx.h.new aeffectx.h
