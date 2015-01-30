@@ -1,3 +1,9 @@
+all:
+	@echo "*"
+	@echo "* This module has been discontinued and merged into buzztrax!"
+	@echo "*"
+	@exit 1
+
 SUBDIRS =
 noinst_HEADERS =
 
